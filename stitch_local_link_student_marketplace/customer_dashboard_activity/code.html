@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile - Local Link</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#00dfc1",
+                        "on-tertiary-fixed-variant": "#3f465f",
+                        "surface-container": "#eceef0",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-variant": "#e0e3e5",
+                        "outline-variant": "#c3c5d9",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed": "#dce1ff",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "outline": "#737688",
+                        "on-primary-fixed-variant": "#0038b6",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#005144",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "secondary-fixed": "#26fedc",
+                        "primary": "#003ec7",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434656",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "primary-container": "#0052ff",
+                        "on-secondary-container": "#007261",
+                        "surface-container-low": "#f2f4f6",
+                        "inverse-primary": "#b7c4ff",
+                        "secondary": "#006b5b",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#bfc5e4",
+                        "on-background": "#191c1e",
+                        "background": "#f7f9fb",
+                        "on-primary-fixed": "#001452",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-container": "#dfe3ff",
+                        "on-tertiary-fixed": "#141a32",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "tertiary-container": "#5e6580",
+                        "secondary-container": "#26fedc",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#004ced",
+                        "surface-bright": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "on-tertiary-container": "#dfe3ff",
+                        "on-secondary-fixed": "#00201a",
+                        "tertiary": "#464d67",
+                        "primary-fixed": "#dde1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1.5rem"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "gutter": "20px",
+                        "base": "8px",
+                        "md": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "xl": "64px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Spline Sans"],
+                        "headline-lg": ["Spline Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Spline Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar (Hidden on lg, typically. We'll show a simplified one for mobile/web hybrid) -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,82,255,0.12)]">
+<div class="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto">
+<div class="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400 font-['Spline_Sans'] antialiased">Local Link</div>
+<!-- Web Navigation Links -->
+<nav class="hidden md:flex gap-8 items-center font-['Spline_Sans'] antialiased">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">My Leads</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">Subscriptions</a>
+<a class="text-blue-600 dark:text-blue-400 font-bold border-b-2 border-blue-600 active:scale-95 duration-200" href="#">Profile</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">Admin</a>
+</nav>
+<div class="flex gap-4 items-center">
+<button class="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-grow flex w-full max-w-7xl mx-auto pb-24 lg:pb-0">
+<!-- SideNavBar (Hidden on md, visible on lg) -->
+<!-- Suppressing SideNav as this is a customer profile, the provided SideNav JSON is for businesses ("Business Profile", "Lead Manager"). We will rely on TopAppBar and BottomNavBar for general navigation. -->
+<main class="flex-grow p-gutter md:p-margin lg:p-lg w-full">
+<div class="max-w-4xl mx-auto space-y-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row items-center md:items-start gap-md bg-surface-container-lowest p-md rounded-2xl shadow-[0_4px_20px_rgba(0,82,255,0.08)]">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-[0_4px_20px_rgba(0,82,255,0.12)] shrink-0">
+<img alt="Customer Avatar" class="w-full h-full object-cover" data-alt="A bright, high-energy professional headshot of a young adult looking approachable and friendly. The lighting is soft and even, highlighting their features against a clean, vibrant electric blue background. The aesthetic is modern and fresh, matching a Gen-Z professional networking app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS1AhkaLCGYxW7ctueApCItLoMG_w__t0LhpzLs46Pum2g5wn692AgeO0ErHSrt7IsL-VXNETYRySY1Tu0fzPVvf31IOCkk55DcKI8e6reLsHOD0f29uraCkuoTiUVL-7urSvFPLEV-E6fpmA6ogaNANivWb1MpqlqAuMfqIq691pGvs92DcKo-mGYOn0HJHyjXz3rxNLD6SS0a8R9T20wubWJWOU6VB3g81HUn6xxMYDyUss5oNnXc-NkrHvbn-jxrDOH4yeHRQ"/>
+</div>
+<div class="flex-grow text-center md:text-left space-y-base">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Alex Mercer</h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center justify-center md:justify-start gap-xs">
+<span class="material-symbols-outlined text-outline">location_on</span>
+                            Austin, TX Campus Area
+                        </p>
+<div class="flex flex-wrap gap-sm justify-center md:justify-start pt-sm">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg shadow-[0_4px_12px_rgba(0,62,199,0.2)] hover:bg-primary-container hover:text-on-primary-container transition-colors min-h-[48px] flex items-center gap-xs">
+                                Edit Profile
+                            </button>
+<button class="border border-outline-variant text-on-surface font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-container-low transition-colors min-h-[48px] flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+                                Account Settings
+                            </button>
+</div>
+</div>
+</div>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Interest Forms History -->
+<div class="md:col-span-2 bg-surface-container-lowest p-md rounded-2xl shadow-[0_4px_20px_rgba(0,82,255,0.05)] space-y-md">
+<div class="flex justify-between items-center border-b border-surface-variant pb-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface">Interest Forms</h2>
+<button class="text-primary font-label-md text-label-md hover:text-primary-container transition-colors">View All</button>
+</div>
+<div class="space-y-sm">
+<!-- Form Card 1 -->
+<div class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined filled">laptop_mac</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-xs">
+                                            Tech Wizards Tutoring
+                                            <div class="w-5 h-5 bg-primary text-on-primary rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+</h3>
+<span class="font-body-md text-[12px] text-outline">Oct 24</span>
+</div>
+<p class="font-body-md text-[14px] text-on-surface-variant line-clamp-1">Inquired about advanced calculus tutoring sessions.</p>
+</div>
+<div class="shrink-0 text-secondary-fixed-dim bg-secondary-fixed-dim/10 px-xs py-[2px] rounded text-[12px] font-label-md uppercase tracking-wider">Replied</div>
+</div>
+<!-- Form Card 2 -->
+<div class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined filled">camera_alt</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-xs">
+                                            Lumina Photography
+                                        </h3>
+<span class="font-body-md text-[12px] text-outline">Oct 18</span>
+</div>
+<p class="font-body-md text-[14px] text-on-surface-variant line-clamp-1">Requesting quote for graduation portraits.</p>
+</div>
+<div class="shrink-0 text-outline bg-surface-variant px-xs py-[2px] rounded text-[12px] font-label-md uppercase tracking-wider">Pending</div>
+</div>
+</div>
+</div>
+<!-- Joined Topics & Actions -->
+<div class="space-y-md">
+<!-- Joined Topics -->
+<div class="bg-surface-container-lowest p-md rounded-2xl shadow-[0_4px_20px_rgba(0,82,255,0.05)] space-y-md">
+<div class="flex justify-between items-center border-b border-surface-variant pb-sm">
+<h2 class="font-headline-md text-[20px] text-on-surface">My Topics</h2>
+</div>
+<div class="flex flex-wrap gap-xs">
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-[12px] px-sm py-xs rounded-full cursor-pointer hover:bg-surface-container-highest transition-colors">Study Groups</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-[12px] px-sm py-xs rounded-full cursor-pointer hover:bg-surface-container-highest transition-colors">Local Events</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-[12px] px-sm py-xs rounded-full cursor-pointer hover:bg-surface-container-highest transition-colors">Tech Deals</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-[12px] px-sm py-xs rounded-full cursor-pointer hover:bg-surface-container-highest transition-colors">Fitness</span>
+<button class="border border-dashed border-outline text-outline font-label-md text-[12px] px-sm py-xs rounded-full hover:bg-surface-container-low hover:text-on-surface transition-colors flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[14px]">add</span> Add
+                                </button>
+</div>
+</div>
+<!-- Report Issue Action -->
+<div class="bg-error-container p-md rounded-2xl shadow-[0_4px_20px_rgba(186,26,26,0.05)] space-y-sm flex flex-col items-start justify-center">
+<div class="w-10 h-10 rounded-full bg-on-error-container text-error-container flex items-center justify-center mb-xs">
+<span class="material-symbols-outlined">flag</span>
+</div>
+<h3 class="font-headline-md text-[18px] text-on-error-container">Need Help?</h3>
+<p class="font-body-md text-[14px] text-on-error-container/80">Encountered a problem with a business or the app?</p>
+<button class="mt-sm bg-on-error-container text-error-container font-label-md text-label-md px-md py-sm rounded-lg hover:bg-error transition-colors min-h-[48px] w-full shadow-sm">
+                                Report an Issue
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg z-50 rounded-t-2xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] tap-highlight-transparent">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 w-16 h-14 rounded-xl" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-medium font-['Spline_Sans'] mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 w-16 h-14 rounded-xl" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium font-['Spline_Sans'] mt-1">My Interest</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 w-16 h-14 rounded-xl" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="text-[10px] font-medium font-['Spline_Sans'] mt-1">Leads</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110 transition-transform active:bg-slate-50 dark:active:bg-slate-800 w-16 h-14 rounded-xl" href="#">
+<span class="material-symbols-outlined filled">person</span>
+<span class="text-[10px] font-medium font-['Spline_Sans'] mt-1 font-bold">Profile</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 border-t border-slate-200 dark:border-slate-800 mt-auto hidden md:block">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 max-w-7xl mx-auto">
+<div class="col-span-1 md:col-span-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+<span class="font-bold text-slate-900 dark:text-white font-['Spline_Sans']">Local Link</span>
+<p class="font-['Spline_Sans'] text-xs text-slate-500">© 2024 Local Link. Empowering Student Entrepreneurs.</p>
+</div>
+<div class="col-span-1 md:col-span-4 flex flex-wrap gap-6 font-['Spline_Sans'] text-xs text-slate-500">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">About Us</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Verification Process</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Pricing</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,7 @@
+backend/node_modules
+backend/.env
+backend/locallink.db
+backend/locallink.db-shm
+backend/locallink.db-wal
+backend/uploads/*
+!backend/uploads/.gitkeep

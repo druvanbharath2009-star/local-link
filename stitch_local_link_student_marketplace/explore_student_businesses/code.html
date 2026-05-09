@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Marketplace - Local Link</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Spline+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#191c1e",
+                      "secondary-fixed": "#26fedc",
+                      "on-background": "#191c1e",
+                      "outline": "#737688",
+                      "on-error": "#ffffff",
+                      "tertiary-container": "#5e6580",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-variant": "#e0e3e5",
+                      "surface-dim": "#d8dadc",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#003ec7",
+                      "inverse-surface": "#2d3133",
+                      "on-primary-container": "#dfe3ff",
+                      "outline-variant": "#c3c5d9",
+                      "surface-tint": "#004ced",
+                      "surface-container-high": "#e6e8ea",
+                      "primary-fixed": "#dde1ff",
+                      "on-tertiary-fixed-variant": "#3f465f",
+                      "on-tertiary-fixed": "#141a32",
+                      "secondary-fixed-dim": "#00dfc1",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#26fedc",
+                      "on-primary-fixed-variant": "#0038b6",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-container": "#eceef0",
+                      "on-tertiary-container": "#dfe3ff",
+                      "background": "#f7f9fb",
+                      "on-secondary-container": "#007261",
+                      "surface": "#f7f9fb",
+                      "on-primary-fixed": "#001452",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#dce1ff",
+                      "secondary": "#006b5b",
+                      "on-surface-variant": "#434656",
+                      "tertiary": "#464d67",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#0052ff",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#bfc5e4",
+                      "inverse-primary": "#b7c4ff",
+                      "surface-bright": "#f7f9fb",
+                      "primary-fixed-dim": "#b7c4ff",
+                      "on-secondary-fixed-variant": "#005144",
+                      "on-secondary-fixed": "#00201a",
+                      "surface-container-highest": "#e0e3e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "20px",
+                      "margin": "24px",
+                      "xl": "64px",
+                      "base": "8px",
+                      "xs": "4px",
+                      "lg": "40px",
+                      "md": "24px",
+                      "sm": "12px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Spline Sans"
+                      ],
+                      "headline-md": [
+                              "Spline Sans"
+                      ],
+                      "headline-xl": [
+                              "Spline Sans"
+                      ],
+                      "label-md": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-[0_4px_20px_rgba(0,82,255,0.12)] font-['Spline_Sans'] antialiased sticky top-0 z-50 w-full transition-all duration-300">
+<div class="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-2">
+<span class="text-xl font-bold tracking-tight text-blue-600 active:scale-95 duration-200 cursor-pointer">Local Link</span>
+</div>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center gap-8">
+<!-- Active Item -->
+<a class="text-blue-600 font-bold border-b-2 border-blue-600 py-1 hover:text-blue-500 transition-colors active:scale-95 duration-200 flex flex-col justify-center" href="#">Marketplace</a>
+<!-- Inactive Items -->
+<a class="text-slate-600 font-medium hover:text-blue-500 transition-colors active:scale-95 duration-200 py-1" href="#">My Leads</a>
+<a class="text-slate-600 font-medium hover:text-blue-500 transition-colors active:scale-95 duration-200 py-1" href="#">Subscriptions</a>
+<a class="text-slate-600 font-medium hover:text-blue-500 transition-colors active:scale-95 duration-200 py-1" href="#">Admin</a>
+</nav>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-4 text-blue-600">
+<button class="hover:text-blue-500 transition-colors active:scale-95 duration-200 flex items-center justify-center rounded-full p-2 hover:bg-slate-50">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:text-blue-500 transition-colors active:scale-95 duration-200 flex items-center justify-center rounded-full p-2 hover:bg-slate-50">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-6 py-12 flex flex-col gap-12">
+<!-- Hero & Search Section -->
+<section class="flex flex-col gap-6 items-center text-center max-w-3xl mx-auto mt-8">
+<h1 class="font-headline-xl text-headline-xl text-primary tracking-tight">Discover Student Businesses</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Connect with ambitious student entrepreneurs in your community. Quality services, energetic professionalism, and verified local talent.</p>
+<!-- Search & Filter Bar Container -->
+<div class="w-full mt-6 flex flex-col gap-4">
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input id="search-input" class="w-full bg-surface-container border border-outline-variant text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-primary focus:border-primary focus:bg-surface-container-lowest transition-all shadow-sm placeholder:text-outline h-[56px] outline-none" placeholder="Search by name, service, or keyword..." type="text"/>
+</div>
+<!-- Topic/Category Filters -->
+<div id="filter-buttons" class="flex flex-wrap items-center justify-center gap-3">
+<button data-cat="" class="cat-btn px-5 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">All</button>
+</div>
+</div>
+</section>
+<!-- Results Grid -->
+<section id="businesses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
+<div class="col-span-full text-center text-on-surface-variant py-12">Loading businesses...</div>
+</section>
+
+<!-- Interest Form Modal -->
+<div id="interest-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+<div class="bg-surface-container-lowest rounded-xl p-8 max-w-md w-full shadow-xl">
+<h2 class="font-headline-md text-headline-md mb-4">Send Interest</h2>
+<p id="modal-biz-name" class="text-on-surface-variant font-body-md mb-6"></p>
+<form id="interest-form" class="space-y-4">
+<input type="hidden" id="interest-biz-id"/>
+<div><label class="font-label-md text-sm text-on-surface">Your Name *</label>
+<input id="interest-name" type="text" required class="w-full mt-1 px-4 py-3 bg-surface-container border border-outline-variant rounded-lg font-body-md outline-none focus:border-primary"/></div>
+<div><label class="font-label-md text-sm text-on-surface">Email *</label>
+<input id="interest-email" type="email" required class="w-full mt-1 px-4 py-3 bg-surface-container border border-outline-variant rounded-lg font-body-md outline-none focus:border-primary"/></div>
+<div><label class="font-label-md text-sm text-on-surface">Phone</label>
+<input id="interest-phone" type="tel" class="w-full mt-1 px-4 py-3 bg-surface-container border border-outline-variant rounded-lg font-body-md outline-none focus:border-primary"/></div>
+<div><label class="font-label-md text-sm text-on-surface">Why are you interested?</label>
+<textarea id="interest-message" rows="3" class="w-full mt-1 px-4 py-3 bg-surface-container border border-outline-variant rounded-lg font-body-md outline-none focus:border-primary resize-none"></textarea></div>
+<div class="flex gap-3 pt-2">
+<button type="button" id="modal-cancel" class="flex-1 h-11 border border-outline-variant rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container">Cancel</button>
+<button type="submit" id="interest-submit" class="flex-1 h-11 bg-primary text-on-primary rounded-lg font-label-md shadow-md hover:bg-primary/90">Submit</button>
+</div>
+</form>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 font-['Spline_Sans'] text-xs text-slate-500 w-full py-12 border-t border-slate-200 mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 max-w-7xl mx-auto">
+<!-- Brand Column -->
+<div class="flex flex-col gap-4">
+<span class="font-bold text-slate-900 text-lg">Local Link</span>
+<p>© 2024 Local Link. Empowering Student Entrepreneurs.</p>
+</div>
+<!-- Links Column -->
+<div class="flex flex-col gap-3">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">About Us</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Verification Process</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Pricing</a>
+</div>
+<!-- Links Column 2 -->
+<div class="flex flex-col gap-3">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+</div>
+<!-- Action/Support Column (Optional filling space to match 4 cols) -->
+<div class="flex flex-col gap-3">
+<span class="font-bold text-slate-900">Support</span>
+<a class="text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">mail</span> Contact Us
+                </a>
+</div>
+</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  let allBusinesses = [];
+  let activeCategory = '';
+
+  function businessCard(b) {
+    const verified = b.verified ? `<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm" title="Verified Student Business"><span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>` : '';
+    const img = b.image_url ? `<img src="${b.image_url}" alt="${b.business_name}" class="w-full h-32 object-cover rounded-lg mb-2"/>` : '';
+    return `<article class="bg-surface-container-lowest rounded-xl p-6 flex flex-col gap-5 border border-outline-variant/30 shadow-[0_4px_24px_rgba(0,62,199,0.06)] hover:shadow-[0_8px_32px_rgba(0,62,199,0.12)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-secondary-fixed/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+      ${img}
+      <div class="flex justify-between items-start">
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">${b.category || 'General'}</span>
+        <span class="font-label-md text-label-md text-on-surface bg-surface px-2 py-1 rounded-DEFAULT border border-outline-variant/50">${b.price || ''}</span>
+      </div>
+      <div class="flex flex-col gap-1 z-10">
+        <div class="flex items-center gap-2">
+          <h3 class="font-headline-md text-headline-md text-on-surface leading-tight">${b.business_name}</h3>
+          ${verified}
+        </div>
+        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-2">${b.mission || 'Student-run business on Local Link.'}</p>
+      </div>
+      <div class="mt-auto pt-4 flex items-center justify-between border-t border-surface-variant">
+        <div class="flex items-center gap-2 text-outline">
+          <span class="material-symbols-outlined text-[18px]">storefront</span>
+          <span class="font-label-md text-label-md">${b.owner_name || ''}</span>
+        </div>
+        <button onclick="openInterestModal(${b.id}, '${b.business_name.replace(/'/g, "\\'")}')" class="h-[48px] px-6 bg-primary text-on-primary font-label-md text-label-md rounded-DEFAULT shadow-md hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95 flex items-center justify-center">
+          Send Interest
+        </button>
+      </div>
+    </article>`;
+  }
+
+  function renderGrid(businesses) {
+    const grid = document.getElementById('businesses-grid');
+    if (!businesses.length) {
+      grid.innerHTML = '<div class="col-span-full text-center text-on-surface-variant py-12">No businesses found.</div>';
+      return;
+    }
+    grid.innerHTML = businesses.map(businessCard).join('');
+  }
+
+  async function loadBusinesses(category = '', search = '') {
+    try {
+      let url = '/businesses?';
+      if (category) url += `category=${encodeURIComponent(category)}&`;
+      if (search) url += `search=${encodeURIComponent(search)}`;
+      const data = await api.get(url);
+      allBusinesses = data;
+      renderGrid(data);
+    } catch (e) {
+      document.getElementById('businesses-grid').innerHTML = '<div class="col-span-full text-center text-error py-12">Failed to load businesses.</div>';
+    }
+  }
+
+  async function loadCategories() {
+    try {
+      const topics = await api.get('/topics');
+      const container = document.getElementById('filter-buttons');
+      topics.forEach(t => {
+        const btn = document.createElement('button');
+        btn.dataset.cat = t.name;
+        btn.className = 'cat-btn px-5 py-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-variant font-label-md text-label-md transition-colors active:scale-95 border border-outline-variant';
+        btn.textContent = t.name.split(' ')[0];
+        container.appendChild(btn);
+      });
+
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.cat-btn');
+        if (!btn) return;
+        activeCategory = btn.dataset.cat;
+        container.querySelectorAll('.cat-btn').forEach(b => {
+          b.className = b === btn
+            ? 'cat-btn px-5 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95'
+            : 'cat-btn px-5 py-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-variant font-label-md text-label-md transition-colors active:scale-95 border border-outline-variant';
+        });
+        loadBusinesses(activeCategory, document.getElementById('search-input').value);
+      });
+    } catch {}
+  }
+
+  let searchTimeout;
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => loadBusinesses(activeCategory, e.target.value), 400);
+  });
+
+  function openInterestModal(bizId, bizName) {
+    document.getElementById('interest-biz-id').value = bizId;
+    document.getElementById('modal-biz-name').textContent = `Reaching out to: ${bizName}`;
+    const user = api.getUser();
+    if (user) {
+      document.getElementById('interest-name').value = user.name || '';
+      document.getElementById('interest-email').value = user.email || '';
+      document.getElementById('interest-phone').value = user.phone || '';
+    }
+    document.getElementById('interest-modal').classList.remove('hidden');
+  }
+
+  document.getElementById('modal-cancel').addEventListener('click', () => {
+    document.getElementById('interest-modal').classList.add('hidden');
+  });
+
+  document.getElementById('interest-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('interest-submit');
+    showLoading(btn, 'Sending...');
+    try {
+      await api.post('/customers/interest', {
+        business_id: parseInt(document.getElementById('interest-biz-id').value),
+        customer_name: document.getElementById('interest-name').value,
+        customer_email: document.getElementById('interest-email').value,
+        customer_phone: document.getElementById('interest-phone').value,
+        message: document.getElementById('interest-message').value,
+      });
+      document.getElementById('interest-modal').classList.add('hidden');
+      document.getElementById('interest-form').reset();
+      showToast('Interest form sent successfully!');
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      hideLoading(btn);
+    }
+  });
+
+  loadCategories();
+  loadBusinesses();
+</script>
+</body></html>

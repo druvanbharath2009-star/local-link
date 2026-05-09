@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Creative &amp; Graphic Design - Local Link</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#dfe3ff",
+                    "tertiary-container": "#5e6580",
+                    "surface-tint": "#004ced",
+                    "primary-container": "#0052ff",
+                    "on-error-container": "#93000a",
+                    "secondary": "#006b5b",
+                    "on-primary-fixed": "#001452",
+                    "outline": "#737688",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary-fixed": "#141a32",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#c3c5d9",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-highest": "#e0e3e5",
+                    "secondary-fixed": "#26fedc",
+                    "secondary-fixed-dim": "#00dfc1",
+                    "surface-variant": "#e0e3e5",
+                    "tertiary-fixed": "#dce1ff",
+                    "on-tertiary-fixed-variant": "#3f465f",
+                    "on-secondary-fixed": "#00201a",
+                    "on-error": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-tertiary-container": "#dfe3ff",
+                    "on-secondary-fixed-variant": "#005144",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#bfc5e4",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#434656",
+                    "inverse-primary": "#b7c4ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-high": "#e6e8ea",
+                    "on-primary-fixed-variant": "#0038b6",
+                    "tertiary": "#464d67",
+                    "surface-container": "#eceef0",
+                    "primary": "#003ec7",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary-container": "#007261",
+                    "surface": "#f7f9fb",
+                    "secondary-container": "#26fedc",
+                    "primary-fixed": "#dde1ff",
+                    "on-surface": "#191c1e",
+                    "primary-fixed-dim": "#b7c4ff",
+                    "background": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "md": "24px",
+                    "margin": "24px",
+                    "lg": "40px",
+                    "xl": "64px",
+                    "base": "8px",
+                    "sm": "12px",
+                    "gutter": "20px"
+            },
+            "fontFamily": {
+                    "headline-md": [
+                            "Spline Sans"
+                    ],
+                    "headline-xl": [
+                            "Spline Sans"
+                    ],
+                    "label-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-lg": [
+                            "Spline Sans"
+                    ],
+                    "body-md": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-xl": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-blue-600 dark:text-blue-400 font-['Spline_Sans'] antialiased docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,82,255,0.12)] sticky top-0">
+<div class="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto">
+<div class="flex items-center gap-md">
+<span class="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400">Local Link</span>
+</div>
+<nav class="hidden md:flex gap-md items-center">
+<a class="text-blue-600 dark:text-blue-400 font-bold border-b-2 border-blue-600 py-2 active:scale-95 duration-200" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors py-2 active:scale-95 duration-200" href="#">My Leads</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors py-2 active:scale-95 duration-200" href="#">Subscriptions</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors py-2 active:scale-95 duration-200" href="#">Admin</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-slate-600 hover:text-blue-500 active:scale-95 transition-all rounded-full hover:bg-slate-100">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:text-blue-500 active:scale-95 transition-all rounded-full hover:bg-slate-100">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="relative w-full py-xl bg-surface-container-lowest overflow-hidden border-b border-surface-variant">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container/10 to-transparent z-0 pointer-events-none"></div>
+<div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-xl items-center">
+<div class="flex flex-col gap-md">
+<span class="inline-flex items-center gap-xs px-sm py-xs bg-secondary-container text-on-secondary-container rounded-full text-label-md font-label-md w-max">
+<span class="material-symbols-outlined text-[16px] filled">category</span>
+                        Featured Category
+                    </span>
+<h1 class="font-headline-xl text-headline-xl text-on-background">Creative &amp; Graphic Design</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">Get high-quality branding and design from talented student creators. Elevate your business identity with fresh, modern aesthetics while supporting emerging local talent.</p>
+<div class="flex flex-wrap gap-sm mt-sm">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg shadow-[0_4px_12px_rgba(0,62,199,0.2)] hover:bg-primary-container hover:text-on-primary-container transition-colors min-h-[48px] flex items-center justify-center">
+                            Join Topic
+                        </button>
+<button class="border-2 border-outline-variant text-on-surface-variant font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-variant transition-colors min-h-[48px] flex items-center justify-center">
+                            Learn More
+                        </button>
+</div>
+</div>
+<div class="hidden lg:block relative h-[400px] w-full rounded-[24px] overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
+<img alt="Creative workspace" class="w-full h-full object-cover" data-alt="A modern, bright creative workspace featuring a student designer working on a high-end laptop with graphic design software open. The scene is illuminated by soft, natural light coming from a nearby window, creating a warm and energetic mood. The aesthetic is clean and professional, with subtle accents of electric blue and mint green in the room's decor, aligning with a high-energy, modern corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc5eYZaz7mqHSqlDnvfHy0a2vr0i1ptQGA4hWfXvf8DUWGESymuSq46t8C-L2lx2LzX2eUkwws2CzxDwZWFDc4K9Ks_jEZFNjUPb5OFOXMvI03gHYGpzKgxeqrsgqc9rnrn7DN4BMM2bgJxpGZqYi_yr3ACYHJa3dZtIZfCIafwor5RoVLdsV5eU1Rw_jU-5YRbA7oYkF964ZLeAFKIivgr_Wkwp-mmZN-Siqoah_ZA8KgVRpI25xzE2k07eaRe3_GnPQl9iUI3g"/>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="w-full bg-surface-container-low py-margin border-b border-surface-variant">
+<div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-center md:justify-start gap-lg">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined filled">verified</span>
+</div>
+<div>
+<p class="font-headline-md text-[20px] font-bold text-on-background">15+</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Verified Businesses</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div>
+<p class="font-headline-md text-[20px] font-bold text-on-background">2 hrs</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Avg. Response Time</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div>
+<p class="font-headline-md text-[20px] font-bold text-on-background">4.8/5</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Average Rating</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Search & Filters -->
+<section class="w-full py-lg max-w-7xl mx-auto px-6">
+<div class="flex flex-col md:flex-row gap-sm items-center justify-between mb-margin">
+<h2 class="font-headline-lg text-headline-lg text-on-background w-full md:w-auto">Explore Talent</h2>
+<div class="w-full md:w-auto flex flex-col sm:flex-row gap-sm">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg pl-10 pr-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary transition-shadow font-body-md text-body-md outline-none" placeholder="Search designers..." type="text"/>
+</div>
+<div class="flex gap-xs overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-colors">All</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors">Logo Design</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors">Social Media</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors">Illustrations</button>
+</div>
+</div>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] p-md shadow-[0_4px_20px_rgba(0,20,82,0.08)] hover:shadow-[0_8px_30px_rgba(0,76,237,0.15)] transition-all duration-300 border border-surface-variant flex flex-col gap-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-sm">
+<img alt="Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-lowest shadow-sm" data-alt="A professional headshot of a young female student entrepreneur. She has a confident, welcoming smile. The lighting is soft and natural, creating a trustworthy and approachable mood. The background is a blurred modern workspace, fitting the energetic professionalism of the brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCejHoVbRaK2f1zBH2Y42hjHZptICbHjpD-ejDakta3LGRzaM1DexaNwABXrjP9cYhUyVM06OQVFR-QAQpD0m7t9n4hdaeIxtz4pcXLF6QobhHLccO9VO2c_TP00GHMbGsPaXS2LFdQXCnGqwcNJi2YrmAHp_17BQXS-akYJrqjjjbNIvCg3ql_42rya06ZMIHxyyVpicZeueFYWkhcqLDLxUeIZZSDPiShJqDbT-v93CD19c2lD-dVO-30GrQGHR-1-2XZUZR1GQ"/>
+<div>
+<h3 class="font-headline-md text-[18px] text-on-background flex items-center gap-1">
+                                    Aura Designs
+                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-primary rounded-full text-on-primary" title="Verified">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+</h3>
+<p class="font-body-md text-sm text-on-surface-variant">by Sarah J.</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-sm font-label-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary filled">star</span>
+                            4.9
+                        </span>
+</div>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-secondary-container/30 text-on-secondary-container rounded text-xs font-label-md">Branding</span>
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-xs font-label-md">Social Media</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm flex-grow">Specializing in minimalist brand identities and engaging social media kits for local cafes and boutiques.</p>
+<div class="pt-sm border-t border-surface-variant flex justify-end">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-sm py-2 rounded-lg hover:bg-primary-container transition-colors min-h-[40px] flex items-center justify-center w-full">
+                            Send Interest
+                        </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] p-md shadow-[0_4px_20px_rgba(0,20,82,0.08)] hover:shadow-[0_8px_30px_rgba(0,76,237,0.15)] transition-all duration-300 border border-surface-variant flex flex-col gap-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-sm">
+<img alt="Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-lowest shadow-sm" data-alt="A bright, professional headshot of a male student designer looking directly at the camera with a friendly expression. Soft studio lighting highlights his features against a clean, light-grey background. The aesthetic is modern and trustworthy, aligning perfectly with a polished corporate energy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPZfltEwmQp8E-nGN2cyl8FhuCbRAfr_ikl_6wGff6Y74shZkZqGcvqe74p4xZSfMP0wbVo6lPxS8jIMsyaOOdUA5HoR0s51HyflbqdyoKWJiBL0GKXk1ITqcDo6QtcEBaWQMRwpVFOIaZRWTu5SoLpeedvUcAnDNrHgoe__3S2E8Ct9Ywnh57bbPNGqEMRLBBoEFAONikk9n_NYWacrtg4TxC2sBbr97xNGp_COsfB6u8kK57VL8NPE4lG0uZ1wl5qT7pgNioVQ"/>
+<div>
+<h3 class="font-headline-md text-[18px] text-on-background flex items-center gap-1">
+                                    Pixel Perfect
+                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-primary rounded-full text-on-primary" title="Verified">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+</h3>
+<p class="font-body-md text-sm text-on-surface-variant">by Marcus T.</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-sm font-label-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary filled">star</span>
+                            4.7
+                        </span>
+</div>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-secondary-container/30 text-on-secondary-container rounded text-xs font-label-md">Web Design</span>
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-xs font-label-md">UI/UX</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm flex-grow">I create clean, user-friendly website mockups and digital interfaces that help local businesses stand out online.</p>
+<div class="pt-sm border-t border-surface-variant flex justify-end">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-sm py-2 rounded-lg hover:bg-primary-container transition-colors min-h-[40px] flex items-center justify-center w-full">
+                            Send Interest
+                        </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] p-md shadow-[0_4px_20px_rgba(0,20,82,0.08)] hover:shadow-[0_8px_30px_rgba(0,76,237,0.15)] transition-all duration-300 border border-surface-variant flex flex-col gap-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-md border-2 border-surface-container-lowest shadow-sm">
+                                EP
+                            </div>
+<div>
+<h3 class="font-headline-md text-[18px] text-on-background flex items-center gap-1">
+                                    Elevate Print
+                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-primary rounded-full text-on-primary" title="Verified">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+</h3>
+<p class="font-body-md text-sm text-on-surface-variant">by Elena P.</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-sm font-label-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary filled">star</span>
+                            5.0
+                        </span>
+</div>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-secondary-container/30 text-on-secondary-container rounded text-xs font-label-md">Print Media</span>
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant rounded text-xs font-label-md">Flyers</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm flex-grow">High-impact flyer and poster design for campus events and local business promotions. Fast turnaround guaranteed.</p>
+<div class="pt-sm border-t border-surface-variant flex justify-end">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-sm py-2 rounded-lg hover:bg-primary-container transition-colors min-h-[40px] flex items-center justify-center w-full">
+                            Send Interest
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- How it Works -->
+<section class="w-full bg-surface-bright py-xl border-t border-surface-variant mt-auto">
+<div class="max-w-7xl mx-auto px-6 text-center">
+<h2 class="font-headline-lg text-headline-lg text-on-background mb-lg">How It Works</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-4xl mx-auto">
+<div class="flex flex-col items-center gap-sm">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm shadow-sm">
+<span class="material-symbols-outlined text-[32px] text-primary">search</span>
+</div>
+<h3 class="font-headline-md text-[20px] text-on-background">1. Browse Talent</h3>
+<p class="font-body-md text-on-surface-variant text-center text-sm">Explore verified student designers in your area and review their portfolios.</p>
+</div>
+<div class="flex flex-col items-center gap-sm">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm shadow-sm relative">
+<span class="material-symbols-outlined text-[32px] text-primary">send</span>
+<div class="absolute -right-4 top-1/2 w-8 h-[2px] bg-outline-variant hidden md:block"></div>
+<div class="absolute -left-4 top-1/2 w-8 h-[2px] bg-outline-variant hidden md:block"></div>
+</div>
+<h3 class="font-headline-md text-[20px] text-on-background">2. Send Interest</h3>
+<p class="font-body-md text-on-surface-variant text-center text-sm">Connect with a designer by sending a brief description of your project needs.</p>
+</div>
+<div class="flex flex-col items-center gap-sm">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm shadow-sm">
+<span class="material-symbols-outlined text-[32px] text-secondary">handshake</span>
+</div>
+<h3 class="font-headline-md text-[20px] text-on-background">3. Collaborate</h3>
+<p class="font-body-md text-on-surface-variant text-center text-sm">Discuss details, agree on terms, and receive high-quality creative work.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-50 rounded-t-2xl">
+<button class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110 transition-transform active:bg-slate-50 dark:active:bg-slate-800 tap-highlight-transparent p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 tap-highlight-transparent p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1">favorite</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">My Interest</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 tap-highlight-transparent p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1">list_alt</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">Leads</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 tap-highlight-transparent p-2 rounded-lg">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">Profile</span>
+</button>
+</nav>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 w-full py-12 text-blue-600 dark:text-blue-400 font-['Spline_Sans'] text-xs text-slate-500 pb-24 md:pb-12">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 max-w-7xl mx-auto">
+<div class="col-span-1">
+<span class="font-bold text-slate-900 dark:text-white text-lg block mb-4">Local Link</span>
+<p>© 2024 Local Link. Empowering Student Entrepreneurs.</p>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">About Us</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Verification Process</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Pricing</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

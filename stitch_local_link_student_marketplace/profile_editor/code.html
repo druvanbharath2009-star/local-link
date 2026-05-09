@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Business Profile Editor - Local Link</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Custom Shadow for Level 1 Ambient Depth as per guidance */
+        .shadow-ambient-1 {
+            box-shadow: 0 4px 20px rgba(0, 20, 82, 0.12);
+        }
+        .shadow-ambient-2 {
+            box-shadow: 0 8px 30px rgba(0, 82, 255, 0.15);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f7f9fb",
+                        "tertiary-container": "#5e6580",
+                        "on-surface-variant": "#434656",
+                        "on-primary-container": "#dfe3ff",
+                        "primary-fixed": "#dde1ff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001452",
+                        "on-tertiary-container": "#dfe3ff",
+                        "tertiary": "#464d67",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#dce1ff",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#007261",
+                        "tertiary-fixed-dim": "#bfc5e4",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-tint": "#004ced",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#141a32",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f7f9fb",
+                        "primary-container": "#0052ff",
+                        "surface-container": "#eceef0",
+                        "primary": "#003ec7",
+                        "outline-variant": "#c3c5d9",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "on-tertiary-fixed-variant": "#3f465f",
+                        "secondary": "#006b5b",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#0038b6",
+                        "secondary-container": "#26fedc",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed-variant": "#005144",
+                        "secondary-fixed": "#26fedc",
+                        "outline": "#737688",
+                        "secondary-fixed-dim": "#00dfc1",
+                        "surface-variant": "#e0e3e5",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed": "#00201a",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-primary": "#b7c4ff",
+                        "background": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "gutter": "20px",
+                        "margin": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "xl": "64px",
+                        "sm": "12px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Spline Sans"],
+                        "headline-lg": ["Spline Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Spline Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface flex h-screen overflow-hidden antialiased">
+<!-- Desktop SideNavBar -->
+<nav class="hidden lg:flex flex-col h-full py-6 h-screen w-64 border-r bg-slate-50 border-r border-slate-200 transition-all duration-300 ease-in-out shrink-0">
+<div class="px-4 mb-8">
+<h1 class="text-lg font-black text-blue-600 px-4 font-['Spline_Sans'] text-sm tracking-tight">Local Link</h1>
+<div class="px-4 mt-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Student Entrepreneur</p>
+<p class="font-body-md text-[12px] text-outline">Business Owner Profile</p>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 text-slate-500 hover:bg-slate-100 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-50" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Spline_Sans'] text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 bg-blue-50 text-blue-700 rounded-lg mx-2 px-4 py-2 font-semibold transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="storefront" data-weight="fill" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-['Spline_Sans'] text-sm">Business Profile</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 hover:bg-slate-100 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-50" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="font-['Spline_Sans'] text-sm">Lead Manager</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 hover:bg-slate-100 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-50" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-['Spline_Sans'] text-sm">Topic Hub</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 hover:bg-slate-100 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-50" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Spline_Sans'] text-sm">Settings</span>
+</a>
+</div>
+<div class="px-4 mt-auto space-y-2">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-ambient-1 hover:shadow-ambient-2 transition-shadow">Upgrade Plan</button>
+<div class="border-t border-slate-200 pt-4 mt-4 space-y-2">
+<a class="flex items-center gap-3 text-slate-500 hover:bg-slate-100 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-50" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-['Spline_Sans'] text-sm">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 hover:bg-slate-100 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-50" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-['Spline_Sans'] text-sm">Logout</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto relative pb-24 lg:pb-0">
+<!-- Mobile Header Wrapper (Simplified) -->
+<header class="lg:hidden bg-surface-container-lowest px-4 py-4 flex items-center justify-between border-b border-surface-variant sticky top-0 z-40">
+<h1 class="font-headline-md text-headline-md text-primary">Local Link</h1>
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<div class="max-w-7xl mx-auto p-4 md:p-margin lg:p-lg">
+<div class="mb-lg">
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Edit Profile</h2>
+<p class="font-body-md text-body-md text-outline mt-xs">Update your business details to build consumer trust in the marketplace.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-lg">
+<!-- Form Editor Section -->
+<div class="lg:col-span-7 space-y-margin bg-surface-container-lowest p-margin rounded-[24px] shadow-sm border border-surface-variant">
+<!-- Image Upload -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-primary-fixed block">Business Cover Image</label>
+<div class="w-full h-48 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container transition-colors group relative overflow-hidden" onclick="document.getElementById('imageFile').click()">
+<div id="image-preview" class="absolute inset-0 bg-cover bg-center opacity-60 transition-opacity"></div>
+<span class="material-symbols-outlined text-4xl text-primary z-10 group-hover:scale-110 transition-transform">add_photo_alternate</span>
+<p class="font-body-md text-body-md text-on-surface-variant z-10 mt-2 font-medium">Click to upload</p>
+<p class="font-body-md text-xs text-outline z-10">JPEG or PNG (max 5MB)</p>
+<input id="imageFile" type="file" accept="image/*" class="hidden"/>
+</div>
+</div>
+<!-- Business Name -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-primary-fixed block" for="businessName">Business Name</label>
+<input class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" id="businessName" placeholder="Enter your business name" type="text" value="Vertex Design Studio"/>
+</div>
+<!-- Mission Statement -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-primary-fixed block" for="missionStatement">Mission Statement</label>
+<textarea class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all resize-none" id="missionStatement" placeholder="What problem are you solving?" rows="4">Delivering high-end, responsive web solutions for local startups, bridging the gap between youthful creativity and reliable corporate execution.</textarea>
+</div>
+<!-- Pricing Simple -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-primary-fixed block" for="startingPrice">Starting Price (Hourly or Project)</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-body-md text-outline">$</span>
+<input class="w-full bg-surface-container border-transparent rounded-xl pl-8 pr-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" id="startingPrice" placeholder="e.g. 50.00 / hr" type="text" value="50.00 / hr"/>
+</div>
+</div>
+<!-- Category -->
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-on-primary-fixed block" for="bizCategory">Category</label>
+<select id="bizCategory" class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all">
+<option value="">Select a category...</option>
+</select>
+</div>
+<!-- Action Buttons -->
+<div id="profile-error" class="hidden bg-error-container text-error rounded-lg px-md py-sm text-sm"></div>
+<div class="pt-margin flex items-center justify-end gap-4 border-t border-surface-variant">
+<a href="/business_dashboard/code.html" class="px-6 py-3 rounded-lg font-label-md text-label-md text-primary border-2 border-primary hover:bg-primary-fixed transition-colors h-12 flex items-center justify-center">Discard</a>
+<button id="save-btn" class="px-6 py-3 rounded-lg font-label-md text-label-md text-on-primary bg-primary shadow-ambient-1 hover:-translate-y-0.5 transition-all h-12 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>Save Profile
+</button>
+</div>
+</div>
+<!-- Live Preview Section -->
+<div class="lg:col-span-5 relative">
+<div class="sticky top-lg space-y-margin">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="visibility">visibility</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Marketplace Preview</h3>
+</div>
+<p class="font-body-md text-body-md text-outline text-sm">This is how customers will see your business card when searching.</p>
+<!-- Lead Card Component (Glassmorphism inspired, Level 1 Elevation) -->
+<div class="bg-surface-container-lowest rounded-[24px] shadow-ambient-1 overflow-hidden group border border-surface-variant transform transition-transform hover:scale-[1.02] duration-300">
+<!-- Card Header Image -->
+<div class="h-40 w-full relative">
+<img alt="Business Cover" class="w-full h-full object-cover" data-alt="A modern, brightly lit interior of a small, trendy local business, possibly a cafe or boutique. The aesthetic is clean and youthful with energetic pops of electric blue and mint green against a pristine white background. Natural sunlight streams in, emphasizing a polished, high-contrast professional yet welcoming atmosphere typical of a successful Gen-Z student enterprise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANl6iK2_uHhcpDjAuSfyHUDrRSWKDX-UczXpc6a-At7SlkwCnFWwSDkAYSFagxjLj1UOtj0-xhcYkn8aTdCSFPs7MSL_qIrnmNjDBgFry_nJip8naguZH8P-N6gjTJFXDqR3qvFad5LSGQbBEKLaWpX4R0Lv7b2Iq0IZXZRkhi5VBQE2Dhmv4tCRbEQWuDEQjAAK4FU4RrehZW0qZMAlfLbKJvKk72_Dpu5_36VHuwfBe197-ZUyX3heidlH7NmZrcjpRv-GZIgw"/>
+<!-- Mint Green Category Tag -->
+<div class="absolute top-4 left-4 bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-md text-[11px] uppercase tracking-wider shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="code">code</span>
+                                    Web Design
+                                </div>
+</div>
+<!-- Card Body -->
+<div class="p-margin">
+<!-- Title & Verified Badge -->
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface truncate max-w-[200px]">Vertex Design Studio</h4>
+<!-- Verified Badge -->
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm" title="Verified Student Business">
+<span class="material-symbols-outlined text-[14px] text-on-primary font-bold" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+</div>
+<!-- Mission Snippet -->
+<p class="font-body-md text-body-md text-outline line-clamp-2 leading-relaxed mb-margin">
+                                    Delivering high-end, responsive web solutions for local startups, bridging the gap between youthful creativity and reliable corporate execution.
+                                </p>
+<!-- Divider -->
+<div class="h-px w-full bg-surface-variant mb-margin"></div>
+<!-- Footer: Pricing & CTA -->
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-md text-[12px] text-outline uppercase tracking-wider mb-1">Starting At</p>
+<p class="font-headline-md text-[20px] text-primary font-bold">$50.00 <span class="text-sm font-normal text-outline">/ hr</span></p>
+</div>
+<button class="bg-surface-container text-on-surface font-label-md text-label-md px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary hover:text-on-primary transition-colors duration-300">
+                                        View Profile
+                                        <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Trust Indicator Note -->
+<div class="bg-primary-fixed/30 rounded-xl p-4 flex gap-3 items-start border border-primary-fixed">
+<span class="material-symbols-outlined text-primary mt-0.5" data-icon="verified_user">verified_user</span>
+<div>
+<h5 class="font-label-md text-label-md text-on-primary-fixed">Verification Badge Active</h5>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">Your business is verified. The blue checkmark establishes instant credibility with adult consumers.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile BottomNavBar -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/95 backdrop-blur-lg rounded-t-2xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)] tap-highlight-transparent z-50">
+<a class="flex flex-col items-center justify-center text-slate-400 active:bg-slate-50 w-16 h-14 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 active:bg-slate-50 w-16 h-14 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="favorite">favorite</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">My Interest</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 active:bg-slate-50 w-16 h-14 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="list_alt">list_alt</span>
+<span class="text-[10px] font-medium font-['Spline_Sans']">Leads</span>
+</a>
+<!-- Active Nav Item -->
+<a class="flex flex-col items-center justify-center text-blue-600 scale-110 transition-transform w-16 h-14 rounded-xl" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-medium font-['Spline_Sans'] font-bold">Profile</span>
+</a>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  if (!api.requireAuth('business')) {}
+
+  async function loadTopics() {
+    const sel = document.getElementById('bizCategory');
+    try {
+      const topics = await api.get('/topics');
+      topics.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.name;
+        opt.textContent = t.name;
+        sel.appendChild(opt);
+      });
+    } catch {}
+  }
+
+  async function loadProfile() {
+    try {
+      const biz = await api.get('/businesses/me');
+      document.getElementById('businessName').value = biz.business_name || '';
+      document.getElementById('missionStatement').value = biz.mission || '';
+      document.getElementById('startingPrice').value = biz.price || '';
+      const catSel = document.getElementById('bizCategory');
+      if (biz.category) catSel.value = biz.category;
+      if (biz.image_url) {
+        document.getElementById('image-preview').style.backgroundImage = `url(http://localhost:3000${biz.image_url})`;
+      }
+    } catch {}
+  }
+
+  document.getElementById('imageFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        document.getElementById('image-preview').style.backgroundImage = `url(${ev.target.result})`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('save-btn');
+    const errEl = document.getElementById('profile-error');
+    errEl.classList.add('hidden');
+    showLoading(btn, 'Saving...');
+
+    try {
+      const formData = new FormData();
+      formData.append('business_name', document.getElementById('businessName').value);
+      formData.append('mission', document.getElementById('missionStatement').value);
+      formData.append('price', document.getElementById('startingPrice').value);
+      formData.append('category', document.getElementById('bizCategory').value);
+      const file = document.getElementById('imageFile').files[0];
+      if (file) formData.append('image', file);
+
+      await api.putForm('/businesses/me', formData);
+      showToast('Profile saved successfully!');
+    } catch (err) {
+      errEl.textContent = err.message;
+      errEl.classList.remove('hidden');
+    } finally {
+      hideLoading(btn);
+    }
+  });
+
+  loadTopics().then(loadProfile);
+</script>
+</body></html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Local Link - Student Entrepreneurs</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS & Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#191c1e",
+                    "secondary-fixed": "#26fedc",
+                    "on-background": "#191c1e",
+                    "outline": "#737688",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#5e6580",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-variant": "#e0e3e5",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-lowest": "#ffffff",
+                    "primary": "#003ec7",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-container": "#dfe3ff",
+                    "outline-variant": "#c3c5d9",
+                    "surface-tint": "#004ced",
+                    "surface-container-high": "#e6e8ea",
+                    "primary-fixed": "#dde1ff",
+                    "on-tertiary-fixed-variant": "#3f465f",
+                    "on-tertiary-fixed": "#141a32",
+                    "secondary-fixed-dim": "#00dfc1",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#26fedc",
+                    "on-primary-fixed-variant": "#0038b6",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-container": "#dfe3ff",
+                    "background": "#f7f9fb",
+                    "on-secondary-container": "#007261",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed": "#001452",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#dce1ff",
+                    "secondary": "#006b5b",
+                    "on-surface-variant": "#434656",
+                    "tertiary": "#464d67",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#0052ff",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#bfc5e4",
+                    "inverse-primary": "#b7c4ff",
+                    "surface-bright": "#f7f9fb",
+                    "primary-fixed-dim": "#b7c4ff",
+                    "on-secondary-fixed-variant": "#005144",
+                    "on-secondary-fixed": "#00201a",
+                    "surface-container-highest": "#e0e3e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "20px",
+                    "margin": "24px",
+                    "xl": "64px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "lg": "40px",
+                    "md": "24px",
+                    "sm": "12px"
+            },
+            "fontFamily": {
+                    "body-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-lg": [
+                            "Spline Sans"
+                    ],
+                    "headline-md": [
+                            "Spline Sans"
+                    ],
+                    "headline-xl": [
+                            "Spline Sans"
+                    ],
+                    "label-md": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-xl": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Level 1 Card Shadow Custom Utility */
+        .shadow-level-1 {
+            box-shadow: 0 4px 20px rgba(0, 20, 82, 0.12);
+        }
+        /* Level 2 Active Shadow Custom Utility */
+        .shadow-level-2 {
+            box-shadow: 0 8px 30px rgba(0, 82, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md font-['Spline_Sans'] border-b border-slate-100 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,82,255,0.12)]">
+<div class="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400">
+                    Local Link
+                </div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+                        Marketplace
+                    </a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+                        My Leads
+                    </a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+                        Subscriptions
+                    </a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+                        Admin
+                    </a>
+</nav>
+</div>
+<div class="flex items-center gap-4 text-blue-600 dark:text-blue-400">
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-xl">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-6 mb-xl mt-lg">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-7 flex flex-col gap-margin">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md self-start">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+                        Student Verified Platform
+                    </div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface">
+                        Connecting you to the <span class="text-primary">next generation</span> of entrepreneurs.
+                    </h1>
+<p class="font-body-lg text-body-lg text-tertiary max-w-lg">
+                        Discover reliable, enthusiastic student-run businesses in your local area. Support youthful ambition while getting high-quality services.
+                    </p>
+<div class="flex flex-wrap gap-4 mt-sm">
+<button class="bg-primary text-on-primary font-label-md text-label-md h-[48px] px-8 rounded-lg shadow-level-1 hover:shadow-level-2 transition-shadow duration-300">
+                            Explore Marketplace
+                        </button>
+<button class="border border-outline-variant text-on-surface font-label-md text-label-md h-[48px] px-8 rounded-lg hover:bg-surface-container-low transition-colors duration-300">
+                            List Your Business
+                        </button>
+</div>
+</div>
+<div class="md:col-span-5 h-[400px] md:h-[500px] rounded-[1.5rem] overflow-hidden relative shadow-level-1">
+<img alt="Students collaborating" class="w-full h-full object-cover" data-alt="A bright, energetic image showing a diverse group of college students collaborating around a modern wooden table. They are reviewing blueprints and digital tablets, embodying youthful entrepreneurship. The lighting is soft, high-key white light typical of a modern coworking space. Accents of electric blue and mint green are subtly visible in their clothing and notebooks, reinforcing a clean, professional, yet vibrant aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOr4zslpXwJQLhQWRW1i1Bbu5dJFSnJt7Ebo_6JVHEVRZAydA13aqGMWH8-bzPRhtUaLJbIsvj-bUn0WnuvcAYWbFNRojt9TSWymzLT0i-KRzmJcpGS1a9t-fDsviZXHQeECPR3YXK3R7e1j5dsgp1wJQHUse6GITVGsIOlkiPFCxrXbEu-oig47_tQHVvKH49J-x4yi6m9PLLjxV01J3R_TM78NsflPJLRfWVVhVFjHwfDupIJm9-w5WClSKjdWtdkUMvFfD_rA"/>
+</div>
+</div>
+</section>
+<!-- How it Works (Bento Grid) -->
+<section class="max-w-7xl mx-auto px-6 mb-xl py-lg">
+<div class="text-center mb-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">How it Works</h2>
+<p class="font-body-md text-body-md text-tertiary">A seamless ecosystem for growth and connection.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
+<!-- For Customers Card (Spans 2 cols on desktop) -->
+<div class="md:col-span-2 row-span-1 bg-surface-container-lowest rounded-xl p-margin flex flex-col justify-between shadow-level-1 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">search</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">For Customers</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Search your local area for verified student ventures. Filter by category, read reviews, and book services with confidence knowing they are actively enrolled and vetted.</p>
+</div>
+</div>
+<!-- Trust Badge Card -->
+<div class="col-span-1 row-span-1 bg-primary text-on-primary rounded-xl p-margin flex flex-col justify-center items-center text-center shadow-level-2">
+<span class="material-symbols-outlined text-[48px] mb-4" style="font-variation-settings: 'FILL' 1;">shield</span>
+<h3 class="font-headline-md text-headline-md mb-2">100% Vetted</h3>
+<p class="font-body-md text-body-md opacity-90">Every business is verified through their university email to ensure authentic student operation.</p>
+</div>
+<!-- For Businesses Card -->
+<div class="col-span-1 row-span-1 bg-surface-container-lowest rounded-xl p-margin flex flex-col justify-between shadow-level-1 relative overflow-hidden group">
+<div class="absolute bottom-0 right-0 w-32 h-32 bg-secondary-container/20 rounded-tl-full -z-10 group-hover:scale-110 transition-transform"></div>
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-4">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">For Businesses</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Create a profile, manage leads in real-time, and build a local reputation.</p>
+</div>
+</div>
+<!-- Growth Card (Spans 2 cols on desktop) -->
+<div class="md:col-span-2 row-span-1 bg-surface-container-lowest rounded-xl p-margin flex items-center gap-margin shadow-level-1">
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Scale Your Venture</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Access our premium lead management dashboard to track interactions and convert views into sales.</p>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:gap-2 transition-all">
+                            View Pricing Plans <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="hidden sm:block w-40 h-full bg-surface-container-low rounded-lg relative overflow-hidden">
+<img alt="Analytics Dashboard" class="w-full h-full object-cover opacity-80" data-alt="A close-up view of a sleek digital dashboard displayed on a modern tablet screen. The UI shows upward trending charts and bar graphs in vibrant mint green and electric blue against a crisp white background. The setting implies a clean, organized workspace bathed in natural sunlight. The image conveys themes of growth, data-driven success, and modern corporate professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF-H95KAVp-2lTbm8lVEW3qVreHhtMtcyM3WhI-nDNeYVEKyD65bwyolEgmrwEgxF_AvDUhcTts0SqAm0XopGBU-IgGRQve1UANlE-TYyRvBCG0zKTAx_R7HWMqeVkAEJKdGmJev8aIyZfvNym3wG8SV6U1z-HeotGKe7E_ltZL_s4qGd9Zb0a6cVqwPLjsNtcy1pAVyg0u5doWKuzVSJ4Vt0p3B5z4y5AtYD-McNN__u-Vjivn-5x5RgTiQkHh8lgE5wnC82cqg"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Businesses -->
+<section class="max-w-7xl mx-auto px-6 mb-xl py-lg bg-surface-container-low rounded-[2rem]">
+<div class="flex justify-between items-end mb-lg px-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Featured Ventures</h2>
+<p class="font-body-md text-body-md text-tertiary">Top-rated student services in your area.</p>
+</div>
+<button class="hidden md:flex items-center gap-2 text-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-surface-container-lowest transition-colors">
+                    View All <span class="material-symbols-outlined text-[18px]">east</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-level-1 flex flex-col hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-secondary-container/30 text-on-secondary-container rounded-full font-label-md text-[12px]">
+                            Lawn Care
+                        </div>
+<div class="flex items-center text-primary text-sm font-semibold">
+<span class="material-symbols-outlined text-[18px] text-[#F59E0B]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1">4.9</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-2">
+<h3 class="font-headline-md text-[20px] text-on-surface">Campus Mowers</h3>
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center" title="Verified Student">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">
+                        Reliable weekly mowing and edging services managed by State University agriculture students.
+                    </p>
+<div class="flex justify-end border-t border-outline-variant/30 pt-4 mt-auto">
+<button class="bg-primary text-on-primary font-label-md text-label-md h-[40px] px-6 rounded-lg shadow-sm hover:bg-surface-tint transition-colors">
+                            Book Now
+                        </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-level-1 flex flex-col hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-secondary-container/30 text-on-secondary-container rounded-full font-label-md text-[12px]">
+                            Tutoring
+                        </div>
+<div class="flex items-center text-primary text-sm font-semibold">
+<span class="material-symbols-outlined text-[18px] text-[#F59E0B]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1">5.0</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-2">
+<h3 class="font-headline-md text-[20px] text-on-surface">Math Wizards</h3>
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center" title="Verified Student">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">
+                        One-on-one calculus and physics tutoring from senior engineering majors. Virtual or in-person.
+                    </p>
+<div class="flex justify-end border-t border-outline-variant/30 pt-4 mt-auto">
+<button class="bg-primary text-on-primary font-label-md text-label-md h-[40px] px-6 rounded-lg shadow-sm hover:bg-surface-tint transition-colors">
+                            Book Now
+                        </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-level-1 flex flex-col hover:-translate-y-1 transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-secondary-container/30 text-on-secondary-container rounded-full font-label-md text-[12px]">
+                            Design
+                        </div>
+<div class="flex items-center text-primary text-sm font-semibold">
+<span class="material-symbols-outlined text-[18px] text-[#F59E0B]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1">4.8</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-2">
+<h3 class="font-headline-md text-[20px] text-on-surface">Pixel Perfect Graphics</h3>
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center" title="Verified Student">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">
+                        Affordable logo design and social media kits created by graphic design students building their portfolios.
+                    </p>
+<div class="flex justify-end border-t border-outline-variant/30 pt-4 mt-auto">
+<button class="bg-primary text-on-primary font-label-md text-label-md h-[40px] px-6 rounded-lg shadow-sm hover:bg-surface-tint transition-colors">
+                            Book Now
+                        </button>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-center md:hidden">
+<button class="flex items-center gap-2 text-primary font-label-md text-label-md px-4 py-2 rounded-lg bg-surface-container-lowest shadow-sm">
+                    View All <span class="material-symbols-outlined text-[18px]">east</span>
+</button>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="max-w-3xl mx-auto px-6 py-lg">
+<div class="bg-surface-container-lowest rounded-2xl p-8 md:p-12 shadow-level-1 border border-outline-variant/20">
+<div class="text-center mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Get in Touch</h2>
+<p class="font-body-md text-body-md text-tertiary">Have questions about the platform or need help finding a service?</p>
+</div>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary ml-1">First Name</label>
+<input class="bg-surface-container-low border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-[1rem] w-full px-4 py-3 font-body-md text-on-surface transition-all placeholder:text-outline" placeholder="Jane" type="text"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary ml-1">Last Name</label>
+<input class="bg-surface-container-low border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-[1rem] w-full px-4 py-3 font-body-md text-on-surface transition-all placeholder:text-outline" placeholder="Doe" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary ml-1">Email Address</label>
+<input class="bg-surface-container-low border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-[1rem] w-full px-4 py-3 font-body-md text-on-surface transition-all placeholder:text-outline" placeholder="jane@example.com" type="email"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary ml-1">Message</label>
+<textarea class="bg-surface-container-low border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-[1rem] w-full px-4 py-3 font-body-md text-on-surface transition-all resize-none placeholder:text-outline" placeholder="How can we help you?" rows="4"></textarea>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md h-[56px] rounded-lg shadow-level-1 hover:shadow-level-2 transition-shadow duration-300 mt-4 flex items-center justify-center gap-2" type="button">
+                        Send Message <span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 bg-slate-50 dark:bg-slate-950 font-['Spline_Sans'] text-xs text-slate-500 border-t border-slate-200 dark:border-slate-800 flat">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 max-w-7xl mx-auto">
+<!-- Brand Column -->
+<div class="flex flex-col gap-4">
+<span class="font-bold text-slate-900 dark:text-white text-lg">Local Link</span>
+<p class="text-slate-500 max-w-xs">
+                    © 2024 Local Link. Empowering Student Entrepreneurs.
+                </p>
+</div>
+<!-- Links Column 1 -->
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Platform</h4>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">About Us</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Pricing</a>
+</div>
+<!-- Links Column 2 -->
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Trust</h4>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Verification Process</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+</div>
+<!-- Empty/Social Column placeholder to complete 4 cols -->
+<div class="flex flex-col gap-3">
+<h4 class="font-bold text-slate-900 dark:text-white mb-1">Connect</h4>
+<div class="flex gap-4">
+<a aria-label="Facebook" class="text-slate-400 hover:text-blue-600 transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">public</span>
+</a>
+<a aria-label="Twitter" class="text-slate-400 hover:text-blue-600 transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">share</span>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  // Update nav based on login state
+  const user = api.getUser();
+  const navBtns = document.querySelectorAll('a, button');
+  navBtns.forEach(el => {
+    const text = el.textContent.trim();
+    if (text === 'Log In' || text === 'Sign In') {
+      el.href = '/login_signup/code.html';
+    }
+    if (text === 'Get Started' || text === 'Join Now' || text === 'Start Exploring') {
+      el.href = user ? api.redirectByRole.toString().includes('admin') ? '/admin_control_center/code.html' : '/explore_student_businesses/code.html' : '/login_signup/code.html';
+    }
+    if (text === 'Explore Businesses' || text === 'Browse Businesses') {
+      el.href = '/explore_student_businesses/code.html';
+    }
+    if (user && (text === 'Log In' || text === 'Sign In')) {
+      el.textContent = `Hi, ${user.name.split(' ')[0]}`;
+      el.href = user.role === 'business' ? '/business_dashboard/code.html' : user.role === 'admin' ? '/admin_control_center/code.html' : '/explore_student_businesses/code.html';
+    }
+  });
+</script>
+</body></html>

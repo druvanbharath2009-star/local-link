@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login / Sign Up - Local Link</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#f7f9fb",
+                      "tertiary-container": "#5e6580",
+                      "on-surface-variant": "#434656",
+                      "on-primary-container": "#dfe3ff",
+                      "primary-fixed": "#dde1ff",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#001452",
+                      "on-tertiary-container": "#dfe3ff",
+                      "tertiary": "#464d67",
+                      "inverse-surface": "#2d3133",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#dce1ff",
+                      "surface-dim": "#d8dadc",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#007261",
+                      "tertiary-fixed-dim": "#bfc5e4",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-tint": "#004ced",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#141a32",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f7f9fb",
+                      "primary-container": "#0052ff",
+                      "surface-container": "#eceef0",
+                      "primary": "#003ec7",
+                      "outline-variant": "#c3c5d9",
+                      "primary-fixed-dim": "#b7c4ff",
+                      "on-tertiary-fixed-variant": "#3f465f",
+                      "secondary": "#006b5b",
+                      "error": "#ba1a1a",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#0038b6",
+                      "secondary-container": "#26fedc",
+                      "on-background": "#191c1e",
+                      "on-secondary-fixed-variant": "#005144",
+                      "secondary-fixed": "#26fedc",
+                      "outline": "#737688",
+                      "secondary-fixed-dim": "#00dfc1",
+                      "surface-variant": "#e0e3e5",
+                      "on-surface": "#191c1e",
+                      "on-secondary-fixed": "#00201a",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container-high": "#e6e8ea",
+                      "inverse-primary": "#b7c4ff",
+                      "background": "#f7f9fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "40px",
+                      "gutter": "20px",
+                      "margin": "24px",
+                      "base": "8px",
+                      "xs": "4px",
+                      "xl": "64px",
+                      "sm": "12px",
+                      "md": "24px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-xl": [
+                              "Spline Sans"
+                      ],
+                      "headline-lg": [
+                              "Spline Sans"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Spline Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="h-full flex items-center justify-center p-md bg-background text-on-background">
+<!-- Main Container -->
+<main class="w-full max-w-6xl bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,82,255,0.12)] overflow-hidden flex flex-col md:flex-row relative z-10">
+<!-- Left Side: Interactive Forms -->
+<section class="w-full md:w-1/2 p-lg md:p-xl flex flex-col justify-center relative">
+<!-- Brand / Logo Area -->
+<div class="absolute top-md left-md lg:top-lg lg:left-lg flex items-center gap-base">
+<span class="material-symbols-outlined text-primary text-[32px]">link</span>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">Local Link</span>
+</div>
+<!-- Tab Navigation for Customer vs Business -->
+<div class="mt-xl md:mt-0 mb-lg">
+<h1 class="font-headline-lg text-headline-lg mb-sm">Welcome Back</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Log in to continue exploring or managing your venture.</p>
+<div class="flex p-xs bg-surface-container rounded-lg w-full max-w-sm" role="tablist" id="tablist">
+<button id="tab-customer" aria-selected="true" class="flex-1 py-sm font-label-md text-label-md text-on-surface-variant bg-surface-container-lowest rounded shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all" role="tab">
+                        Customer
+                    </button>
+<button id="tab-business" aria-selected="false" class="flex-1 py-sm font-label-md text-label-md text-outline hover:text-on-surface transition-all" role="tab">
+                        Business
+                    </button>
+</div>
+</div>
+<!-- Error message -->
+<div id="auth-error" class="hidden bg-error-container text-error rounded-lg px-md py-sm font-body-md text-sm max-w-md"></div>
+<!-- Login Form -->
+<form id="login-form" class="space-y-margin max-w-md w-full">
+<input type="hidden" id="selected-role" value="customer"/>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full pl-[44px] pr-sm py-sm bg-surface-container-low border border-transparent rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md outline-none" id="email" placeholder="you@example.com" type="email" required/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface" for="password">Password</label>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-[44px] pr-sm py-sm bg-surface-container-low border border-transparent rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md outline-none" id="password" placeholder="••••••••" type="password" required/>
+</div>
+</div>
+<button id="login-btn" class="w-full h-[48px] bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-[0_4px_12px_rgba(0,82,255,0.2)] hover:bg-primary/90 transition-colors flex items-center justify-center gap-sm" type="submit">
+                    Log In
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+<!-- Signup Form (hidden by default) -->
+<form id="signup-form" class="space-y-margin max-w-md w-full hidden">
+<input type="hidden" id="signup-role" value="customer"/>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">person</span>
+<input class="w-full pl-[44px] pr-sm py-sm bg-surface-container-low border border-transparent rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md outline-none" id="signup-name" placeholder="Your name" type="text" required/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full pl-[44px] pr-sm py-sm bg-surface-container-low border border-transparent rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md outline-none" id="signup-email" placeholder="you@example.com" type="email" required/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface">Phone (optional)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">phone</span>
+<input class="w-full pl-[44px] pr-sm py-sm bg-surface-container-low border border-transparent rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md outline-none" id="signup-phone" placeholder="(555) 000-0000" type="tel"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-[44px] pr-sm py-sm bg-surface-container-low border border-transparent rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-body-md text-body-md outline-none" id="signup-password" placeholder="••••••••" type="password" required/>
+</div>
+</div>
+<button id="signup-btn" class="w-full h-[48px] bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-[0_4px_12px_rgba(0,82,255,0.2)] hover:bg-primary/90 transition-colors flex items-center justify-center gap-sm" type="submit">
+                    Create Account
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+<p class="mt-lg font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+  <span id="toggle-text">Don't have an account?</span>
+  <a id="toggle-link" class="text-primary font-label-md text-label-md hover:underline cursor-pointer ml-1">Sign up here</a>
+</p>
+</section>
+<!-- Right Side: Visual Context -->
+<section class="hidden md:flex w-1/2 relative bg-primary-container overflow-hidden">
+<!-- Dynamic Background Image based on active tab intent -->
+<img alt="Local community collaboration" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40" data-alt="A vibrant, modern university campus scene with diverse young adults collaborating and shopping at a local pop-up market. The lighting is bright and energetic, reflecting a youthful, professional atmosphere. Deep electric blue and mint green accents subtly highlight the environment, conveying a sense of entrepreneurial spirit and community connection within a modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqfIN9ht5q1Ze4Cj301wtHKLq5dwH54YOeEWyy52E7lfOn5qjC-QaGW2noXOIp6PqJ_SoCrfRVxZ-bdv49HDDFgH9XJEB583AbcLP0vndtANHheU4EIw7_tNTlkqCfXDroPkkHdsWlvNKz6rHn6Ad7jT8Nery4QwHfmX0Qw7kjz4TSKXJKtteHTQv6rwKjIdTQTbbn_kC4aCiMAJpioJB1o5-FRoRTpQkDKjsMXi_iZ_soLEml5N8qAlrBUkZCcmbhQcef9mhQXQ"/>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-secondary/80"></div>
+<!-- Content Overlay -->
+<div class="relative z-10 p-xl flex flex-col justify-between h-full text-on-primary">
+<div class="space-y-sm">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container shadow-lg mb-md">
+<span class="material-symbols-outlined text-[24px]">favorite</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl leading-tight">Support Local Talent</h2>
+<p class="font-body-lg text-body-lg text-on-primary/90 max-w-sm mt-md">
+                        Discover amazing products and services crafted by driven student entrepreneurs in your community.
+                    </p>
+</div>
+<!-- Bento-style visual element -->
+<div class="grid grid-cols-2 gap-sm mt-xl">
+<div class="bg-surface-container-lowest/10 backdrop-blur-md p-md rounded-xl border border-white/20">
+<span class="material-symbols-outlined text-[32px] text-secondary-container mb-xs">verified</span>
+<div class="font-headline-md text-headline-md">100%</div>
+<div class="font-label-md text-label-md text-on-primary/80">Verified Students</div>
+</div>
+<div class="bg-surface-container-lowest/10 backdrop-blur-md p-md rounded-xl border border-white/20">
+<span class="material-symbols-outlined text-[32px] text-secondary-container mb-xs">storefront</span>
+<div class="font-headline-md text-headline-md">Local</div>
+<div class="font-label-md text-label-md text-on-primary/80">Community Impact</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  const tabCustomer = document.getElementById('tab-customer');
+  const tabBusiness = document.getElementById('tab-business');
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const toggleLink = document.getElementById('toggle-link');
+  const toggleText = document.getElementById('toggle-text');
+  const authError = document.getElementById('auth-error');
+  let isSignup = false;
+
+  function setTab(role) {
+    document.getElementById('selected-role').value = role;
+    document.getElementById('signup-role').value = role;
+    const isCustomer = role === 'customer';
+    tabCustomer.setAttribute('aria-selected', isCustomer);
+    tabBusiness.setAttribute('aria-selected', !isCustomer);
+    tabCustomer.className = `flex-1 py-sm font-label-md text-label-md transition-all rounded ${isCustomer ? 'text-on-surface-variant bg-surface-container-lowest shadow-[0_2px_8px_rgba(0,0,0,0.05)]' : 'text-outline hover:text-on-surface'}`;
+    tabBusiness.className = `flex-1 py-sm font-label-md text-label-md transition-all rounded ${!isCustomer ? 'text-on-surface-variant bg-surface-container-lowest shadow-[0_2px_8px_rgba(0,0,0,0.05)]' : 'text-outline hover:text-on-surface'}`;
+  }
+
+  tabCustomer.addEventListener('click', () => setTab('customer'));
+  tabBusiness.addEventListener('click', () => setTab('business'));
+
+  toggleLink.addEventListener('click', () => {
+    isSignup = !isSignup;
+    loginForm.classList.toggle('hidden', isSignup);
+    signupForm.classList.toggle('hidden', !isSignup);
+    toggleLink.textContent = isSignup ? 'Log in here' : 'Sign up here';
+    toggleText.textContent = isSignup ? 'Already have an account?' : "Don't have an account?";
+    authError.classList.add('hidden');
+  });
+
+  function showError(msg) {
+    authError.textContent = msg;
+    authError.classList.remove('hidden');
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    authError.classList.add('hidden');
+    const btn = document.getElementById('login-btn');
+    showLoading(btn, 'Logging in...');
+    try {
+      const data = await api.post('/auth/login', {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+      });
+      api.setAuth(data.token, data.user);
+      api.redirectByRole(data.user.role);
+    } catch (err) {
+      showError(err.message);
+      hideLoading(btn);
+    }
+  });
+
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    authError.classList.add('hidden');
+    const btn = document.getElementById('signup-btn');
+    showLoading(btn, 'Creating account...');
+    try {
+      const data = await api.post('/auth/signup', {
+        email: document.getElementById('signup-email').value,
+        password: document.getElementById('signup-password').value,
+        name: document.getElementById('signup-name').value,
+        phone: document.getElementById('signup-phone').value,
+        role: document.getElementById('signup-role').value,
+      });
+      api.setAuth(data.token, data.user);
+      api.redirectByRole(data.user.role);
+    } catch (err) {
+      showError(err.message);
+      hideLoading(btn);
+    }
+  });
+
+  // If already logged in, redirect
+  if (api.isLoggedIn()) api.redirectByRole(api.getUser()?.role);
+</script>
+</body></html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lead Manager - Local Link</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Spline+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Tailwind CSS & Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f7f9fb",
+                    "tertiary-container": "#5e6580",
+                    "on-surface-variant": "#434656",
+                    "on-primary-container": "#dfe3ff",
+                    "primary-fixed": "#dde1ff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#001452",
+                    "on-tertiary-container": "#dfe3ff",
+                    "tertiary": "#464d67",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#dce1ff",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#007261",
+                    "tertiary-fixed-dim": "#bfc5e4",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-tint": "#004ced",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#141a32",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#f7f9fb",
+                    "primary-container": "#0052ff",
+                    "surface-container": "#eceef0",
+                    "primary": "#003ec7",
+                    "outline-variant": "#c3c5d9",
+                    "primary-fixed-dim": "#b7c4ff",
+                    "on-tertiary-fixed-variant": "#3f465f",
+                    "secondary": "#006b5b",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#0038b6",
+                    "secondary-container": "#26fedc",
+                    "on-background": "#191c1e",
+                    "on-secondary-fixed-variant": "#005144",
+                    "secondary-fixed": "#26fedc",
+                    "outline": "#737688",
+                    "secondary-fixed-dim": "#00dfc1",
+                    "surface-variant": "#e0e3e5",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed": "#00201a",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-high": "#e6e8ea",
+                    "inverse-primary": "#b7c4ff",
+                    "background": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px",
+                    "card": "1.5rem"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "gutter": "20px",
+                    "margin": "24px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "xl": "64px",
+                    "sm": "12px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Spline Sans"],
+                    "headline-lg": ["Spline Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Spline Sans"],
+                    "body-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                    "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                    "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                    "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                    "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased">
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden lg:flex flex-col h-full py-6 bg-slate-50 dark:bg-slate-950 font-['Spline_Sans'] text-sm h-screen w-64 border-r border-slate-200 dark:border-slate-800 flat no shadows sticky top-0 shrink-0 z-40 transition-all duration-300 ease-in-out">
+<div class="text-lg font-black text-blue-600 dark:text-blue-400 px-4 mb-2">Local Link</div>
+<div class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-8">Student Entrepreneur</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mx-2 px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mx-2 px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span>Business Profile</span>
+</a>
+<!-- Active Tab -->
+<a class="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg mx-2 px-4 py-2 font-semibold hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span>Lead Manager</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mx-2 px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">category</span>
+<span>Topic Hub</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mx-2 px-4 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 w-full flex flex-col gap-4">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md min-h-[48px] rounded-lg shadow-[0_4px_12px_rgba(0,62,199,0.3)] hover:shadow-[0_6px_16px_rgba(0,62,199,0.4)] transition-all">
+                Upgrade Plan
+            </button>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mx-2 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar (Visible on Desktop/Tablet) -->
+<header class="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-blue-600 dark:text-blue-400 font-['Spline_Sans'] antialiased docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,82,255,0.12)] lg:hidden">
+<div class="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400">Local Link</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-margin bg-surface pb-24 lg:pb-8">
+<div class="max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Lead Manager</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Review and connect with potential customers in your area.</p>
+</div>
+<div class="bg-primary/10 rounded-lg p-4 flex items-center gap-4">
+<div class="flex-1">
+<div class="font-label-md text-label-md text-primary mb-1">Free Leads Remaining</div>
+<div class="font-headline-md text-headline-md text-on-surface">5 / 5</div>
+</div>
+<div class="h-8 w-px bg-primary/20"></div>
+<span class="material-symbols-outlined text-primary text-3xl">volunteer_activism</span>
+</div>
+</div>
+<!-- Bento Grid for Leads -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Free Lead Card 1 -->
+<div class="bg-surface-container-lowest rounded-card shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col relative overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+<div class="flex justify-between items-start mb-5">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">draw</span> Design
+                            </span>
+<span class="bg-primary text-on-primary font-label-md text-label-md px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Free
+                            </span>
+</div>
+<div class="flex items-center gap-4 mb-5">
+<img class="w-14 h-14 rounded-full object-cover shadow-sm border-2 border-surface" data-alt="A professional headshot of a young woman with a warm smile, wearing a casual grey sweater against a soft, bright, slightly blurred background. The lighting is high-key and natural, creating a friendly, approachable, and modern aesthetic suitable for a professional networking platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ-jWKsYnJijIAAY7UkL4eldDOKPbigS1emx_m95D5-214QZos4QiTRK-OSGtTJbeHcEk_MgBPOgJiDnV8KLn67bDdXsQEPDkHhb20c2WVYxgsI4AoRfpwjXlECN_hd4Z_nd2NOV2ThTLy9GXH6_CymjdXYyT0PjY9tuKXy-JqVOWMiPE2N5HHgXhje2Y0vp7HBLyeNaIiJWJ2oon8Y62wZxv5HDsQTvMbjEvMojU1amsIyZ-XWWTj-YWz00-OLfvM2nUKVBVjrA"/>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-1">
+                                     Sarah Jenkins
+                                     <span class="material-symbols-outlined text-primary text-[18px]" title="Verified User">verified</span>
+</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Looking for a logo redesign for my bakery.</p>
+</div>
+</div>
+<div class="space-y-3 mb-6 flex-1 bg-surface p-4 rounded-xl border border-surface-container-highest">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</div>
+<a class="hover:text-primary transition-colors" href="mailto:sarah.j@example.com">sarah.j@example.com</a>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</div>
+<a class="hover:text-primary transition-colors" href="tel:+15551234567">(555) 123-4567</a>
+</div>
+</div>
+<button class="w-full min-h-[48px] bg-white border-2 border-outline-variant text-on-surface font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-low hover:border-outline transition-all group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">manage_accounts</span> Manage Lead
+                        </button>
+</div>
+<!-- Free Lead Card 2 -->
+<div class="bg-surface-container-lowest rounded-card shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col relative overflow-hidden transition-transform hover:-translate-y-1 duration-300">
+<div class="flex justify-between items-start mb-5">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">code</span> Development
+                            </span>
+<span class="bg-primary text-on-primary font-label-md text-label-md px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Free
+                            </span>
+</div>
+<div class="flex items-center gap-4 mb-5">
+<img class="w-14 h-14 rounded-full object-cover shadow-sm border-2 border-surface" data-alt="A portrait of a confident young man with short dark hair and a neat beard, looking directly at the camera. The background is a slightly desaturated urban setting, providing a modern, clean, and energetic professional look suited for a business dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpklDCM95vj2_qz-RP33LEgd0AcB_ZNCapt5d_jC0bfMRzsnyAKFhGEAiM3cs2FLH8ADO49eckcD6Pr_NEEhJY-6VmGjQ09Aqsr7DrxHJ250WrlC7j_6ioD7B6bmsvyEDd4TH_jVfh2faUL9o7WqYVwUX7OycbY46WQgPViX5F_j6PPBx9ze9fwpHPHHL_HfkfOV0l6ODt9D_iDUXCCiBOOCpYW_-3GkbN41KMx0LLnjQBXBOS0uiPZO2bvu0GKvHYszY_UzULVQ"/>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">David Chen</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Needs a landing page for local event.</p>
+</div>
+</div>
+<div class="space-y-3 mb-6 flex-1 bg-surface p-4 rounded-xl border border-surface-container-highest">
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</div>
+<a class="hover:text-primary transition-colors" href="mailto:d.chen88@example.com">d.chen88@example.com</a>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</div>
+<a class="hover:text-primary transition-colors" href="tel:+15559876543">(555) 987-6543</a>
+</div>
+</div>
+<button class="w-full min-h-[48px] bg-white border-2 border-outline-variant text-on-surface font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-low hover:border-outline transition-all group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">manage_accounts</span> Manage Lead
+                        </button>
+</div>
+<!-- Paid Lead Card 1 (Locked) -->
+<div class="bg-surface-container-lowest rounded-card shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col relative overflow-hidden ring-1 ring-outline-variant/30">
+<div class="flex justify-between items-start mb-5">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">menu_book</span> Tutoring
+                            </span>
+<span class="bg-surface-variant text-on-surface-variant font-label-md text-label-md px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock</span> Premium
+                            </span>
+</div>
+<div class="flex items-center gap-4 mb-5">
+<div class="w-14 h-14 rounded-full bg-surface-container-highest flex items-center justify-center border-2 border-surface">
+<span class="material-symbols-outlined text-outline text-3xl">person</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Elena M.</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Looking for high school math tutor.</p>
+</div>
+</div>
+<!-- Blurred Contact Info -->
+<div class="space-y-3 mb-6 flex-1 bg-surface p-4 rounded-xl border border-surface-container-highest relative group select-none">
+<div class="absolute inset-0 z-10 flex items-center justify-center bg-white/40 backdrop-blur-[2px] rounded-xl">
+<span class="bg-white/80 text-on-surface-variant font-label-md text-label-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span> Hidden Details
+                                 </span>
+</div>
+<div class="flex items-center gap-3 text-outline font-body-md text-body-md opacity-50 blur-[3px]">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</div>
+                                 elena.m***@example.com
+                             </div>
+<div class="flex items-center gap-3 text-outline font-body-md text-body-md opacity-50 blur-[3px]">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</div>
+                                 (555) ***-****
+                             </div>
+</div>
+<button class="w-full min-h-[48px] bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(0,62,199,0.3)] hover:shadow-[0_6px_16px_rgba(0,62,199,0.4)] hover:-translate-y-0.5 transition-all">
+<span class="material-symbols-outlined">lock_open</span> Unlock Lead - $1.99
+                        </button>
+</div>
+<!-- Paid Lead Card 2 (Locked) -->
+<div class="bg-surface-container-lowest rounded-card shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col relative overflow-hidden ring-1 ring-outline-variant/30">
+<div class="flex justify-between items-start mb-5">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">campaign</span> Marketing
+                            </span>
+<span class="bg-surface-variant text-on-surface-variant font-label-md text-label-md px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock</span> Premium
+                            </span>
+</div>
+<div class="flex items-center gap-4 mb-5">
+<div class="w-14 h-14 rounded-full bg-surface-container-highest flex items-center justify-center border-2 border-surface">
+<span class="material-symbols-outlined text-outline text-3xl">person</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-1">
+                                     Marcus T.
+                                     <span class="material-symbols-outlined text-primary text-[18px]" title="Verified User">verified</span>
+</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Needs help managing social media ads.</p>
+</div>
+</div>
+<!-- Blurred Contact Info -->
+<div class="space-y-3 mb-6 flex-1 bg-surface p-4 rounded-xl border border-surface-container-highest relative group select-none">
+<div class="absolute inset-0 z-10 flex items-center justify-center bg-white/40 backdrop-blur-[2px] rounded-xl">
+<span class="bg-white/80 text-on-surface-variant font-label-md text-label-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span> Hidden Details
+                                 </span>
+</div>
+<div class="flex items-center gap-3 text-outline font-body-md text-body-md opacity-50 blur-[3px]">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</div>
+                                 marcus***@example.com
+                             </div>
+<div class="flex items-center gap-3 text-outline font-body-md text-body-md opacity-50 blur-[3px]">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</div>
+                                 (555) ***-****
+                             </div>
+</div>
+<button class="w-full min-h-[48px] bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(0,62,199,0.3)] hover:shadow-[0_6px_16px_rgba(0,62,199,0.4)] hover:-translate-y-0.5 transition-all">
+<span class="material-symbols-outlined">lock_open</span> Unlock Lead - $1.99
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 z-50 rounded-t-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] text-[10px] font-medium font-['Spline_Sans'] tap-highlight-transparent">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">explore</span>
+<span>Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">favorite</span>
+<span>My Interest</span>
+</a>
+<!-- Active Nav Item -->
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 scale-110 transition-transform active:bg-slate-50 dark:active:bg-slate-800 rounded-lg p-2" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span>Leads</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 active:bg-slate-50 dark:active:bg-slate-800 rounded-lg p-2 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">person</span>
+<span>Profile</span>
+</a>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  if (!api.requireAuth('business')) {}
+
+  function leadCard(lead, index, freeLimit) {
+    const isFree = index < freeLimit;
+    const isUnlocked = lead.unlocked;
+    return `<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col relative overflow-hidden transition-transform hover:-translate-y-1 duration-300 border border-surface-variant">
+      ${!isUnlocked ? `<div class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[2px] rounded-xl">
+        <button onclick="unlockLead(${lead.id})" class="bg-primary text-on-primary px-6 py-3 rounded-xl font-label-md shadow-md hover:bg-primary/90 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">lock_open</span>
+          ${isFree ? 'Unlock Free' : 'Unlock $1.99'}
+        </button>
+      </div>` : ''}
+      <div class="flex justify-between items-start mb-4">
+        <span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-3 py-1.5 rounded-full inline-flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">person</span> Interest
+        </span>
+        <span class="font-label-md text-label-md px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm ${isUnlocked ? 'bg-secondary text-on-secondary' : isFree ? 'bg-primary text-on-primary' : 'bg-outline-variant text-on-surface-variant'}">
+          ${isUnlocked ? '✓ Unlocked' : isFree ? 'Free' : '$1.99'}
+        </span>
+      </div>
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary text-3xl">person</span>
+        </div>
+        <div>
+          <h3 class="font-headline-md text-on-surface">${lead.customer_name}</h3>
+          <p class="font-body-md text-on-surface-variant text-sm">${new Date(lead.created_at).toLocaleDateString()}</p>
+        </div>
+      </div>
+      ${isUnlocked ? `<div class="space-y-2 mb-4 bg-surface p-4 rounded-xl border border-surface-variant">
+        <div class="flex items-center gap-3 text-on-surface-variant font-body-md text-sm">
+          <span class="material-symbols-outlined text-[18px]">mail</span>
+          <a href="mailto:${lead.customer_email}" class="hover:text-primary">${lead.customer_email}</a>
+        </div>
+        ${lead.customer_phone ? `<div class="flex items-center gap-3 text-on-surface-variant text-sm">
+          <span class="material-symbols-outlined text-[18px]">call</span>
+          <a href="tel:${lead.customer_phone}" class="hover:text-primary">${lead.customer_phone}</a>
+        </div>` : ''}
+        ${lead.message ? `<p class="text-on-surface-variant text-sm mt-2 italic">"${lead.message}"</p>` : ''}
+      </div>` : `<p class="text-on-surface-variant text-sm mb-4 ${!isUnlocked ? 'blur-[3px]' : ''}">Contact details locked.</p>`}
+    </div>`;
+  }
+
+  async function unlockLead(leadId) {
+    try {
+      await api.post(`/businesses/me/leads/${leadId}/unlock`, {});
+      showToast('Lead unlocked!');
+      loadLeads();
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  async function loadLeads() {
+    try {
+      const data = await api.get('/businesses/me/leads');
+      const grid = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3');
+      if (!grid) return;
+
+      const freeRemaining = 5 - data.free_leads_used;
+      const freeEl = document.querySelector('.font-label-md.text-primary.mb-1');
+      if (freeEl) freeEl.nextElementSibling && (freeEl.nextElementSibling.textContent = freeRemaining);
+
+      if (!data.leads.length) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-on-surface-variant">No leads yet. Share your business profile to get started!</div>';
+        return;
+      }
+      grid.innerHTML = data.leads.map((l, i) => leadCard(l, i, data.free_leads_limit)).join('');
+    } catch (err) {
+      console.error('Failed to load leads:', err);
+    }
+  }
+
+  loadLeads();
+</script>
+</body></html>

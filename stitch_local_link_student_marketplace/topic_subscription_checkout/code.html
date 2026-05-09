@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Local Link</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#434656",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#bfc5e4",
+                      "on-secondary-fixed-variant": "#005144",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#dfe3ff",
+                      "on-background": "#191c1e",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#3f465f",
+                      "on-secondary-fixed": "#00201a",
+                      "background": "#f7f9fb",
+                      "primary-fixed-dim": "#b7c4ff",
+                      "on-surface": "#191c1e",
+                      "primary-fixed": "#dde1ff",
+                      "surface": "#f7f9fb",
+                      "secondary-container": "#26fedc",
+                      "on-secondary-container": "#007261",
+                      "surface-container": "#eceef0",
+                      "primary": "#003ec7",
+                      "inverse-surface": "#2d3133",
+                      "tertiary": "#464d67",
+                      "on-primary-fixed-variant": "#0038b6",
+                      "surface-container-high": "#e6e8ea",
+                      "surface-bright": "#f7f9fb",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#b7c4ff",
+                      "secondary": "#006b5b",
+                      "on-primary-fixed": "#001452",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#0052ff",
+                      "surface-tint": "#004ced",
+                      "tertiary-container": "#5e6580",
+                      "on-primary-container": "#dfe3ff",
+                      "tertiary-fixed": "#dce1ff",
+                      "surface-variant": "#e0e3e5",
+                      "secondary-fixed-dim": "#00dfc1",
+                      "secondary-fixed": "#26fedc",
+                      "surface-container-highest": "#e0e3e5",
+                      "inverse-on-surface": "#eff1f3",
+                      "outline-variant": "#c3c5d9",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#d8dadc",
+                      "on-tertiary-fixed": "#141a32",
+                      "outline": "#737688"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "64px",
+                      "base": "8px",
+                      "sm": "12px",
+                      "gutter": "20px",
+                      "lg": "40px",
+                      "xs": "4px",
+                      "md": "24px",
+                      "margin": "24px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Spline Sans"],
+                      "label-md": ["Plus Jakarta Sans"],
+                      "headline-xl": ["Spline Sans"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Spline Sans"],
+                      "body-md": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Custom input styles to override default form plugin behavior */
+        .modern-input {
+            width: 100%;
+            background-color: theme('colors.surface-container');
+            border-color: transparent;
+            border-radius: theme('borderRadius.xl');
+            min-height: 48px;
+            padding-left: theme('spacing.md');
+            padding-right: theme('spacing.md');
+            color: theme('colors.on-surface');
+            transition-property: all;
+            transition-duration: 200ms;
+        }
+        .modern-input:focus {
+            outline: none;
+            border-color: theme('colors.primary');
+            box-shadow: 0 0 0 1px theme('colors.primary');
+            background-color: theme('colors.surface-container-lowest');
+        }
+        .modern-input::placeholder {
+            color: theme('colors.outline');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-sans antialiased">
+<!-- Minimal Transactional Header (Nav Suppressed) -->
+<header class="w-full py-md px-lg flex items-center justify-between max-w-7xl mx-auto border-b border-surface-variant">
+<div class="font-headline-md text-headline-md text-primary tracking-tight">Local Link</div>
+<a class="flex items-center gap-base text-on-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform" data-icon="arrow_back">arrow_back</span>
+<span class="font-label-md text-label-md">Cancel Checkout</span>
+</a>
+</header>
+<!-- Main Content -->
+<main class="flex-grow max-w-7xl mx-auto w-full px-lg py-xl grid grid-cols-1 lg:grid-cols-12 gap-xl relative z-10">
+<!-- Left Column: Summary & Selection -->
+<section class="lg:col-span-5 flex flex-col gap-lg">
+<div class="flex flex-col gap-base">
+<span class="font-label-md text-label-md text-primary uppercase tracking-wider">Subscription</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Secure Your Area</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    You are configuring a lead generation subscription for <strong class="text-on-surface font-semibold">Residential Plumbing</strong> in <strong class="text-on-surface font-semibold">Austin, TX</strong>.
+                </p>
+</div>
+<!-- Pricing Plans (Radio Cards) -->
+<fieldset class="flex flex-col gap-md mt-sm">
+<legend class="sr-only">Select a subscription plan</legend>
+<!-- Starter Plan -->
+<label class="relative flex flex-col p-md rounded-xl border border-outline-variant bg-surface-container-lowest cursor-pointer hover:border-primary transition-colors">
+<input class="peer sr-only" name="plan" type="radio" value="starter"/>
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center transition-colors">
+<div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface">Starter Topic</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface">$14.99<span class="font-body-md text-body-md text-on-surface-variant">/mo</span></span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pl-8">Standard lead delivery for a single zip code coverage.</p>
+</label>
+<!-- Growth Bundle (Selected by default) -->
+<label class="relative flex flex-col p-md rounded-xl border-2 border-primary bg-surface-container-lowest shadow-[0_4px_20px_rgba(0,82,255,0.08)] cursor-pointer overflow-hidden group">
+<!-- Most Popular Tag -->
+<div class="absolute top-0 right-0 bg-secondary-container text-on-secondary-container font-label-md text-[11px] uppercase tracking-wider py-1 px-3 rounded-bl-xl font-bold">
+                        Recommended
+                    </div>
+<input checked="" class="peer sr-only" name="plan" type="radio" value="growth"/>
+<div class="flex justify-between items-start mb-sm mt-1">
+<div class="flex items-center gap-sm">
+<div class="w-5 h-5 rounded-full border-2 border-primary bg-primary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-white"></div>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface">Growth Bundle</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface mt-1">$39.99<span class="font-body-md text-body-md text-on-surface-variant">/mo</span></span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pl-8 mb-md">Expand your reach instantly. Includes 3 adjacent geographic topics.</p>
+<!-- Feature List inline -->
+<ul class="flex flex-col gap-sm pl-8">
+<li class="flex items-center gap-sm font-body-md text-body-md text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Priority Lead Delivery
+                        </li>
+<li class="flex items-center gap-sm font-body-md text-body-md text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Advanced Competitor Analytics
+                        </li>
+<li class="flex items-center gap-sm font-body-md text-body-md text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Premium Profile Badge
+                        </li>
+</ul>
+</label>
+</fieldset>
+<!-- Trust Indicators -->
+<div class="mt-auto pt-lg border-t border-surface-variant flex gap-md items-center">
+<span class="material-symbols-outlined text-outline text-[32px]" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+                    Guaranteed secure checkout. Cancel your subscription anytime from your management dashboard.
+                </p>
+</div>
+</section>
+<!-- Right Column: Payment Form -->
+<section class="lg:col-span-7">
+<div class="bg-surface-container-lowest rounded-[24px] p-lg shadow-[0_4px_24px_rgba(25,28,30,0.06)] border border-surface-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Payment Details</h2>
+<!-- Express Checkout -->
+<div class="flex flex-col sm:flex-row gap-md mb-lg">
+<button class="flex-1 min-h-[48px] rounded-xl border border-outline-variant bg-surface flex items-center justify-center gap-sm hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-on-surface" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-label-md text-on-surface">Pay with Wallet</span>
+</button>
+<button class="flex-1 min-h-[48px] rounded-xl border border-outline-variant bg-surface flex items-center justify-center gap-sm hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-on-surface" data-icon="credit_card">credit_card</span>
+<span class="font-label-md text-label-md text-on-surface">Express Pay</span>
+</button>
+</div>
+<div class="relative flex py-4 items-center mb-lg">
+<div class="flex-grow border-t border-surface-variant"></div>
+<span class="flex-shrink-0 mx-4 font-body-md text-body-md text-outline">or pay with card</span>
+<div class="flex-grow border-t border-surface-variant"></div>
+</div>
+<!-- Manual Form -->
+<form action="#" class="flex flex-col gap-md" method="POST">
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface" for="email">Email Address</label>
+<input class="modern-input font-body-md text-body-md" id="email" name="email" placeholder="student@university.edu" required="" type="email"/>
+</div>
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface" for="cardName">Name on Card</label>
+<input class="modern-input font-body-md text-body-md" id="cardName" name="cardName" placeholder="Jane Doe" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-base relative">
+<label class="font-label-md text-label-md text-on-surface" for="cardNumber">Card Information</label>
+<div class="relative">
+<input class="modern-input font-body-md text-body-md pl-[44px]" id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" required="" type="text"/>
+<span class="material-symbols-outlined absolute left-sm top-[12px] text-outline" data-icon="credit_card">credit_card</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface" for="expiry">Expiry Date</label>
+<input class="modern-input font-body-md text-body-md" id="expiry" name="expiry" placeholder="MM / YY" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface" for="cvc">CVC</label>
+<div class="relative">
+<input class="modern-input font-body-md text-body-md pr-[40px]" id="cvc" name="cvc" placeholder="123" required="" type="text"/>
+<span class="material-symbols-outlined absolute right-sm top-[12px] text-outline text-[20px]" data-icon="help">help</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-base mt-sm">
+<label class="font-label-md text-label-md text-on-surface" for="zipCode">Billing ZIP / Postal Code</label>
+<input class="modern-input font-body-md text-body-md w-full md:w-1/2" id="zipCode" name="zipCode" placeholder="ZIP Code" required="" type="text"/>
+</div>
+<!-- Summary Block inside form -->
+<div class="bg-surface rounded-xl p-md mt-lg flex flex-col gap-sm">
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Subtotal</span>
+<span>$39.99</span>
+</div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Taxes</span>
+<span>Calculated at next step</span>
+</div>
+<div class="flex justify-between font-headline-md text-headline-md text-on-surface pt-sm border-t border-surface-variant mt-sm">
+<span>Total due today</span>
+<span>$39.99</span>
+</div>
+</div>
+<button class="w-full mt-md bg-primary-container text-on-primary-container font-label-md text-label-md min-h-[56px] rounded-xl flex items-center justify-center gap-sm shadow-[0_4px_12px_rgba(0,82,255,0.2)] hover:bg-primary transition-colors hover:text-white" type="submit">
+<span>Subscribe &amp; Pay</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<p class="font-body-md text-body-md text-on-surface-variant text-center text-xs mt-sm">
+                        By confirming your subscription, you allow Local Link to charge your card for this payment and future payments in accordance with their terms.
+                    </p>
+</form>
+</div>
+</section>
+</main>
+</body></html>

@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:3000/api/topics)",
+      "Bash(curl -s http://localhost:3000/api/auth/login -X POST -H \"Content-Type: application/json\" -d '{\"email\":\"admin@locallink.com\",\"password\":\"admin123\"}')",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s http://localhost:3000/api/auth/signup -X POST -H \"Content-Type: application/json\" -d '{\"email\":\"student@test.com\",\"password\":\"test123\",\"name\":\"Alex Tech\",\"phone\":\"555-0100\",\"role\":\"business\"}')",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/login_signup/code.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/explore_student_businesses/code.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/business_dashboard/code.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/admin_control_center/code.html)",
+      "Bash(curl -s http://localhost:3000/api/auth/login -X POST -H \"Content-Type: application/json\" -d '{\"email\":\"student@test.com\",\"password\":\"test123\"}')",
+      "Bash(curl -s http://localhost:3000/api/customers/interest -X POST -H \"Content-Type: application/json\" -d '{\"business_id\":1,\"customer_name\":\"Jane Smith\",\"customer_email\":\"jane@example.com\",\"customer_phone\":\"555-1234\",\"message\":\"I need a landing page for my bakery.\"}')",
+      "Bash(chmod +x *)",
+      "Bash(node -e ' *)",
+      "Bash(npm uninstall *)",
+      "Bash(python3 *)"
+    ]
+  }
+}

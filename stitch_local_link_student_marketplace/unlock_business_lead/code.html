@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Unlock Lead - Local Link</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Spline+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Tailwind CSS with Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#434656",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#bfc5e4",
+                        "on-secondary-fixed-variant": "#005144",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#dfe3ff",
+                        "on-background": "#191c1e",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#3f465f",
+                        "on-secondary-fixed": "#00201a",
+                        "background": "#f7f9fb",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "on-surface": "#191c1e",
+                        "primary-fixed": "#dde1ff",
+                        "surface": "#f7f9fb",
+                        "secondary-container": "#26fedc",
+                        "on-secondary-container": "#007261",
+                        "surface-container": "#eceef0",
+                        "primary": "#003ec7",
+                        "inverse-surface": "#2d3133",
+                        "tertiary": "#464d67",
+                        "on-primary-fixed-variant": "#0038b6",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#b7c4ff",
+                        "secondary": "#006b5b",
+                        "on-primary-fixed": "#001452",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#0052ff",
+                        "surface-tint": "#004ced",
+                        "tertiary-container": "#5e6580",
+                        "on-primary-container": "#dfe3ff",
+                        "tertiary-fixed": "#dce1ff",
+                        "surface-variant": "#e0e3e5",
+                        "secondary-fixed-dim": "#00dfc1",
+                        "secondary-fixed": "#26fedc",
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline-variant": "#c3c5d9",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8dadc",
+                        "on-tertiary-fixed": "#141a32",
+                        "outline": "#737688"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Spline Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Spline Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Spline Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md antialiased">
+<!-- Contextual Header (Main Nav Suppressed due to Transactional/Detail intent) -->
+<header class="bg-surface-container-lowest border-b border-surface-variant sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-gutter h-xl flex items-center justify-between">
+<button class="flex items-center gap-xs text-primary hover:text-on-primary-fixed-variant transition-colors group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-label-md text-label-md">Back to Lead Manager</span>
+</button>
+<div class="font-headline-md text-headline-md text-primary tracking-tight">
+                Local Link
+            </div>
+<div class="w-[120px]"></div> <!-- Spacer for balance -->
+</div>
+</header>
+<main class="flex-grow py-xl px-gutter">
+<div class="max-w-6xl mx-auto">
+<!-- Page Title Area -->
+<div class="mb-lg">
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-xs">Unlock Lead Details</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                    Review the project requirements below. Unlock this lead to access direct contact information and send your proposal.
+                </p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-md items-start">
+<!-- Left Pane: Lead Information (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-md">
+<!-- Main Lead Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden flex flex-col relative">
+<!-- Decorative Header Image -->
+<div class="h-32 w-full bg-surface-container relative">
+<img alt="Decorative header background" class="w-full h-full object-cover opacity-80" data-alt="A vibrant, abstract digital background representing energetic student entrepreneurship. The composition features smooth, flowing geometric waves in modern corporate tones of electric blue and mint green against a pristine white background. The lighting is bright and high-key, creating a clean, professional, and youthful aesthetic suitable for a high-end web application header. The mood is optimistic, structured, and forward-looking." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqDZuXEUDZ-X-r9IOanHL7wqa7w4W3aaoA8nN9zDeOU9gFVUgVuK6f6vib9tX4clTlsP9fBjlVf5qIr4NukK33LekI0uttRHJFw-I6n88KTxF7IAYN7-AKh970frO_tBl_41_y7avXKeoxjlojVcvL7kfuMkS0j-kOZQIz95F7tgbR_YSOX1-12kuKPPnPvy7GTo10Ub1GkD8dgnx3_ZNClP5t5w-po4OheAnkgqlbUJdpfFsV2SIgn4ebRVnUySGiZ4433vvomQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest to-transparent"></div>
+</div>
+<div class="p-lg -mt-md relative z-10">
+<!-- Tags and Meta -->
+<div class="flex flex-wrap items-center gap-sm mb-md">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-sm py-xs rounded-full inline-flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">brush</span>
+                                    Graphic Design
+                                </span>
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+                                    Posted 2 hours ago
+                                </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Complete Branding Package for Local Cafe Opening</h2>
+<!-- Detailed Description -->
+<div class="space-y-sm mb-xl">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-opacity-80">Project Description</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                    We are opening a new artisanal coffee shop near the campus library and need a fresh, modern brand identity. The project includes logo design, color palette selection, typography guidelines, and basic templates for social media and physical menus. 
+                                </p>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                    Looking for a student designer who understands the local college demographic and can deliver a clean, energetic aesthetic. Timeline is roughly 3 weeks.
+                                </p>
+</div>
+<hr class="border-surface-variant mb-xl"/>
+<!-- Locked Contact Information Section (Glassmorphism effect) -->
+<div class="relative rounded-xl border border-outline-variant bg-surface-container overflow-hidden">
+<!-- Blurred Underlay -->
+<div class="p-lg filter blur-md opacity-40 select-none pointer-events-none flex flex-col gap-md">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed-dim"></div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface bg-surface-variant h-8 w-48 rounded mb-xs"></div>
+<div class="font-body-md text-body-md text-on-surface-variant bg-surface-variant h-5 w-32 rounded"></div>
+</div>
+</div>
+<div class="space-y-sm mt-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">mail</span>
+<div class="bg-surface-variant h-6 w-64 rounded"></div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">call</span>
+<div class="bg-surface-variant h-6 w-40 rounded"></div>
+</div>
+</div>
+</div>
+<!-- Overlay Lock UI -->
+<div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-container-lowest/60 backdrop-blur-[2px]">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-lg flex flex-col items-center text-center max-w-[300px] transform hover:scale-105 transition-transform duration-300">
+<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined" style="font-size: 28px;">lock</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Contact Details Locked</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Unlock this lead to view phone, email, and exact location.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Checkout / Unlock Action (4 cols) -->
+<div class="lg:col-span-4">
+<div class="bg-surface-container-lowest rounded-xl shadow-lg border border-primary/20 p-lg sticky top-[100px] flex flex-col gap-lg relative overflow-hidden">
+<!-- Subtle background glow -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+<!-- Header & Quota -->
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Unlock Lead</h3>
+<div class="bg-surface rounded-lg p-sm border border-surface-variant">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Free Leads Available</span>
+<span class="font-label-md text-label-md text-on-surface">0 / 5</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-0 rounded-full"></div>
+</div>
+<p class="font-body-md text-[13px] text-error mt-sm flex items-start gap-xs">
+<span class="material-symbols-outlined text-[16px] mt-[2px]">info</span>
+                                    You have used all free leads for this billing cycle.
+                                </p>
+</div>
+</div>
+<!-- Price -->
+<div class="flex items-baseline gap-xs">
+<span class="font-headline-xl text-headline-xl text-primary">$1.99</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/ lead</span>
+</div>
+<hr class="border-surface-variant"/>
+<!-- Payment Selection -->
+<div class="space-y-sm">
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">Payment Method</h4>
+<!-- Selected Card -->
+<label class="flex items-center justify-between p-sm rounded-lg border-2 border-primary bg-primary-fixed/10 cursor-pointer transition-colors">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Visa •••• 4242</span>
+<span class="font-body-md text-[12px] text-on-surface-variant">Expires 12/25</span>
+</div>
+</div>
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+</div>
+<input checked="" class="hidden" name="payment" type="radio"/>
+</label>
+<!-- Unselected Option -->
+<label class="flex items-center justify-between p-sm rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer transition-colors group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">account_balance_wallet</span>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface">Apple Pay</span>
+</div>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant group-hover:border-outline"></div>
+<input class="hidden" name="payment" type="radio"/>
+</label>
+<button class="font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                Add new payment method
+                            </button>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm hover:bg-on-primary-fixed-variant transition-all duration-200 shadow-md shadow-primary/20 active:scale-[0.98] mt-sm">
+<span class="material-symbols-outlined">key</span>
+                            Unlock for $1.99
+                        </button>
+<p class="text-center font-body-md text-[12px] text-on-surface-variant flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                            Secure encrypted payment
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
