@@ -1,2 +1,7 @@
 [build]
   publish = "stitch_local_link_student_marketplace"
+
+[[redirects]]
+  from = "/"
+  to = "/local_link_homepage/code.html"
+  status = 302
