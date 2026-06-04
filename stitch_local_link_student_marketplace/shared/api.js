@@ -505,28 +505,47 @@ const api = {
 // ── Nav auto-wiring (runs on every page) ──────────────────
 // api.js is always loaded at the bottom of <body>, so DOM is already ready.
 (function _wireNav() {
+  const u = api.getUser();
+  const role = u?.role;
+
+  // Extract nav label text, ignoring the leading material icon span
+  function navLabel(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('.material-symbols-outlined').forEach(s => s.remove());
+    return clone.textContent.trim();
+  }
+
   const NAV_MAP = {
-    'Marketplace':    '/explore_student_businesses/code.html',
-    'My Leads':       '/lead_manager/code.html',
-    'Subscriptions':  '/topic_marketplace/code.html',
-    'Admin':          '/admin_control_center/code.html',
-    'Explore':        '/explore_student_businesses/code.html',
-    'My Interest':    '/customer_dashboard_activity/code.html',
-    'Leads':          '/lead_manager/code.html',
-    'Profile':        '/profile_editor/code.html',
+    // Top nav
+    'Marketplace':      '/explore_student_businesses/code.html',
+    'My Leads':         '/lead_manager/code.html',
+    'Subscriptions':    '/topic_marketplace/code.html',
+    'Admin':            '/admin_control_center/code.html',
+    // Mobile bottom nav (consumer)
+    'Explore':          '/explore_student_businesses/code.html',
+    'My Interest':      '/customer_dashboard_activity/code.html',
+    'Leads':            '/lead_manager/code.html',
+    'Profile':          '/profile_editor/code.html',
+    // Sidebar (business & admin)
+    'Business Profile': '/profile_editor/code.html',
+    'Lead Manager':     '/lead_manager/code.html',
+    'Users':            '/admin_user_management/code.html',
+    'Settings':         '/profile_editor/code.html',
+    'Help Center':      '/explore_student_businesses/code.html',
+    // Role-dependent sidebar entries
+    'Dashboard': role === 'admin' ? '/admin_control_center/code.html' : '/business_dashboard/code.html',
+    'Topic Hub':  role === 'admin' ? '/admin_topic_management/code.html'  : '/topic_marketplace/code.html',
   };
 
   // Fix all placeholder nav links
   document.querySelectorAll('a[href="#"]').forEach(el => {
-    const text = el.textContent.trim();
+    const text = navLabel(el);
     if (NAV_MAP[text]) el.href = NAV_MAP[text];
   });
 
   // Hide role-restricted nav links based on the current user's role
-  const u = api.getUser();
-  const role = u?.role;
   document.querySelectorAll('nav a, header nav a, aside nav a').forEach(link => {
-    const txt = link.textContent.trim();
+    const txt = navLabel(link);
     if ((txt === 'My Leads' || txt === 'Subscriptions') && role !== 'business') {
       link.style.display = 'none';
     }
