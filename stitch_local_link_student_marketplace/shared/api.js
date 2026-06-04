@@ -32,7 +32,7 @@ const api = {
   requireAuth: (role) => {
     const user = api.getUser();
     if (!user) { window.location.href = '/login_signup/code.html'; return false; }
-    if (role && user.role !== role) { alert('Access denied.'); history.back(); return false; }
+    if (role && user.role !== role) { api.redirectByRole(user.role); return false; }
     return true;
   },
 
@@ -522,14 +522,68 @@ const api = {
     if (NAV_MAP[text]) el.href = NAV_MAP[text];
   });
 
-  // Wire account_circle button on every page → login or dashboard
+  // Hide role-restricted nav links based on the current user's role
+  const u = api.getUser();
+  const role = u?.role;
+  document.querySelectorAll('nav a, header nav a, aside nav a').forEach(link => {
+    const txt = link.textContent.trim();
+    if ((txt === 'My Leads' || txt === 'Subscriptions') && role !== 'business') {
+      link.style.display = 'none';
+    }
+    if (txt === 'Admin' && role !== 'admin') {
+      link.style.display = 'none';
+    }
+  });
+
+  // Wire sidebar/nav Logout links that haven't been wired by page-level scripts
+  document.querySelectorAll('a[href="#"]').forEach(el => {
+    const icon = el.querySelector('.material-symbols-outlined');
+    if (icon && icon.textContent.trim() === 'logout') {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        api.clearAuth();
+        window.location.href = '/login_signup/code.html';
+      });
+    }
+  });
+
+  // Wire account_circle button → dropdown with Dashboard + Log Out
   document.querySelectorAll('button').forEach(btn => {
     const icon = btn.querySelector('.material-symbols-outlined');
     if (icon && icon.textContent.trim() === 'account_circle') {
-      btn.onclick = () => {
-        const u = api.getUser();
-        if (u) api.redirectByRole(u.role);
-        else window.location.href = '/login_signup/code.html';
+      btn.style.position = 'relative';
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const user = api.getUser();
+        if (!user) { window.location.href = '/login_signup/code.html'; return; }
+
+        const existing = document.getElementById('_ll_acct_menu');
+        if (existing) { existing.remove(); return; }
+
+        const menu = document.createElement('div');
+        menu.id = '_ll_acct_menu';
+        menu.style.cssText = [
+          'position:absolute', 'right:0', 'top:calc(100% + 8px)',
+          'background:#fff', 'border:1px solid #e2e8f0', 'border-radius:12px',
+          'box-shadow:0 8px 24px rgba(0,0,0,0.12)', 'z-index:1000',
+          'min-width:180px', 'overflow:hidden', 'font-family:inherit'
+        ].join(';');
+        menu.innerHTML = `
+          <div style="padding:10px 16px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;">${user.name || user.email}</div>
+          <button id="_ll_dash_btn" style="width:100%;text-align:left;padding:10px 16px;font-size:14px;color:#334155;display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
+            <span class="material-symbols-outlined" style="font-size:16px;">dashboard</span> Dashboard
+          </button>
+          <button id="_ll_logout_btn" style="width:100%;text-align:left;padding:10px 16px;font-size:14px;color:#dc2626;display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;border-top:1px solid #f1f5f9;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">
+            <span class="material-symbols-outlined" style="font-size:16px;">logout</span> Log Out
+          </button>
+        `;
+        btn.appendChild(menu);
+
+        menu.querySelector('#_ll_dash_btn').addEventListener('click', () => { menu.remove(); api.redirectByRole(user.role); });
+        menu.querySelector('#_ll_logout_btn').addEventListener('click', () => { api.clearAuth(); window.location.href = '/login_signup/code.html'; });
+
+        const close = (ev) => { if (!btn.contains(ev.target)) { menu.remove(); document.removeEventListener('click', close); } };
+        setTimeout(() => document.addEventListener('click', close), 0);
       };
     }
   });
