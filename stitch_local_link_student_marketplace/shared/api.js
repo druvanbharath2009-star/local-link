@@ -503,23 +503,37 @@ const api = {
 };
 
 // ── Nav auto-wiring (runs on every page) ──────────────────
-document.addEventListener('DOMContentLoaded', () => {
+// api.js is always loaded at the bottom of <body>, so DOM is already ready.
+(function _wireNav() {
   const NAV_MAP = {
     'Marketplace':    '/explore_student_businesses/code.html',
     'My Leads':       '/lead_manager/code.html',
     'Subscriptions':  '/topic_marketplace/code.html',
     'Admin':          '/admin_control_center/code.html',
-    // Mobile bottom nav
     'Explore':        '/explore_student_businesses/code.html',
     'My Interest':    '/customer_dashboard_activity/code.html',
     'Leads':          '/lead_manager/code.html',
     'Profile':        '/profile_editor/code.html',
   };
+
+  // Fix all placeholder nav links
   document.querySelectorAll('a[href="#"]').forEach(el => {
     const text = el.textContent.trim();
     if (NAV_MAP[text]) el.href = NAV_MAP[text];
   });
-});
+
+  // Wire account_circle button on every page → login or dashboard
+  document.querySelectorAll('button').forEach(btn => {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon && icon.textContent.trim() === 'account_circle') {
+      btn.onclick = () => {
+        const u = api.getUser();
+        if (u) api.redirectByRole(u.role);
+        else window.location.href = '/login_signup/code.html';
+      };
+    }
+  });
+})();
 
 // ── UI helpers (unchanged) ─────────────────────────────────
 
