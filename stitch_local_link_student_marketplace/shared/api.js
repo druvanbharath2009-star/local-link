@@ -502,6 +502,25 @@ const api = {
   },
 };
 
+// ── Nav auto-wiring (runs on every page) ──────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const NAV_MAP = {
+    'Marketplace':    '/explore_student_businesses/code.html',
+    'My Leads':       '/lead_manager/code.html',
+    'Subscriptions':  '/topic_marketplace/code.html',
+    'Admin':          '/admin_control_center/code.html',
+    // Mobile bottom nav
+    'Explore':        '/explore_student_businesses/code.html',
+    'My Interest':    '/customer_dashboard_activity/code.html',
+    'Leads':          '/lead_manager/code.html',
+    'Profile':        '/profile_editor/code.html',
+  };
+  document.querySelectorAll('a[href="#"]').forEach(el => {
+    const text = el.textContent.trim();
+    if (NAV_MAP[text]) el.href = NAV_MAP[text];
+  });
+});
+
 // ── UI helpers (unchanged) ─────────────────────────────────
 
 function showToast(msg, type = 'success') {
