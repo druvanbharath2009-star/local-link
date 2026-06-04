@@ -174,16 +174,16 @@
                     Local Link
                 </div>
 <nav class="hidden md:flex items-center gap-6">
-<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="/explore_student_businesses/code.html">
                         Marketplace
                     </a>
-<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="/lead_manager/code.html">
                         My Leads
                     </a>
-<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="/topic_marketplace/code.html">
                         Subscriptions
                     </a>
-<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="#">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-300 transition-colors active:scale-95 duration-200" href="/admin_control_center/code.html">
                         Admin
                     </a>
 </nav>
@@ -448,23 +448,31 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/shared/api.js"></script>
 <script>
-  // Update nav based on login state
   const user = api.getUser();
-  const navBtns = document.querySelectorAll('a, button');
-  navBtns.forEach(el => {
-    const text = el.textContent.trim();
-    if (text === 'Log In' || text === 'Sign In') {
-      el.href = '/login_signup/code.html';
+
+  // Wire up CTA buttons with onclick since <button> ignores .href
+  document.querySelectorAll('button').forEach(btn => {
+    const text = btn.textContent.trim();
+    if (text.startsWith('Explore Marketplace')) {
+      btn.onclick = () => window.location.href = '/explore_student_businesses/code.html';
+    } else if (text.startsWith('List Your Business')) {
+      btn.onclick = () => window.location.href = user ? '/business_dashboard/code.html' : '/login_signup/code.html';
+    } else if (text.startsWith('View All')) {
+      btn.onclick = () => window.location.href = '/explore_student_businesses/code.html';
+    } else if (text.startsWith('Book Now')) {
+      btn.onclick = () => window.location.href = '/explore_student_businesses/code.html';
+    } else if (text.startsWith('View Pricing Plans')) {
+      btn.onclick = () => window.location.href = '/topic_marketplace/code.html';
     }
-    if (text === 'Get Started' || text === 'Join Now' || text === 'Start Exploring') {
-      el.href = user ? api.redirectByRole.toString().includes('admin') ? '/admin_control_center/code.html' : '/explore_student_businesses/code.html' : '/login_signup/code.html';
-    }
-    if (text === 'Explore Businesses' || text === 'Browse Businesses') {
-      el.href = '/explore_student_businesses/code.html';
-    }
-    if (user && (text === 'Log In' || text === 'Sign In')) {
-      el.textContent = `Hi, ${user.name.split(' ')[0]}`;
-      el.href = user.role === 'business' ? '/business_dashboard/code.html' : user.role === 'admin' ? '/admin_control_center/code.html' : '/explore_student_businesses/code.html';
+  });
+
+  // Account icon: link to dashboard or login
+  document.querySelectorAll('button').forEach(btn => {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon && icon.textContent.trim() === 'account_circle') {
+      btn.onclick = () => window.location.href = user
+        ? (user.role === 'business' ? '/business_dashboard/code.html' : user.role === 'admin' ? '/admin_control_center/code.html' : '/explore_student_businesses/code.html')
+        : '/login_signup/code.html';
     }
   });
 </script>
