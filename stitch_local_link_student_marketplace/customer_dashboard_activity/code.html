@@ -164,9 +164,9 @@
 <div class="md:col-span-2 bg-surface-container-lowest p-md rounded-2xl shadow-[0_4px_20px_rgba(0,82,255,0.05)] space-y-md">
 <div class="flex justify-between items-center border-b border-surface-variant pb-sm">
 <h2 class="font-headline-md text-headline-md text-on-surface">Interest Forms</h2>
-<button class="text-primary font-label-md text-label-md hover:text-primary-container transition-colors">View All</button>
+<button id="view-all-btn" class="text-primary font-label-md text-label-md hover:text-primary-container transition-colors">View All</button>
 </div>
-<div class="space-y-sm">
+<div class="space-y-sm" id="interest-list">
 <!-- Form Card 1 -->
 <div class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant cursor-pointer group">
 <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
@@ -272,4 +272,84 @@
 </div>
 </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  if (api.requireAuth()) {
+    const user = api.getUser();
+    const nameEl = document.querySelector('h1');
+    if (nameEl && user) nameEl.textContent = user.name || user.email;
+
+    let allItems = [];
+    let expanded = false;
+
+    function statusBadge(unlocked) {
+      return unlocked
+        ? '<div class="shrink-0 text-secondary-fixed-dim bg-secondary-fixed-dim/10 px-xs py-[2px] rounded text-[12px] font-label-md uppercase tracking-wider">Viewed</div>'
+        : '<div class="shrink-0 text-outline bg-surface-variant px-xs py-[2px] rounded text-[12px] font-label-md uppercase tracking-wider">Pending</div>';
+    }
+
+    function itemCard(f) {
+      const date = f.created_at ? new Date(f.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+      const msg = (f.message || 'Interest form submitted.').replace(/</g, '&lt;');
+      return `
+        <div class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant cursor-pointer group">
+          <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined filled">storefront</span>
+          </div>
+          <div class="flex-grow">
+            <div class="flex justify-between items-start">
+              <h3 class="font-label-md text-label-md text-on-surface">${(f.business_name || 'Business').replace(/</g, '&lt;')}</h3>
+              <span class="font-body-md text-[12px] text-outline">${date}</span>
+            </div>
+            <p class="font-body-md text-[14px] text-on-surface-variant line-clamp-1">${msg}</p>
+          </div>
+          ${statusBadge(f.unlocked)}
+        </div>`;
+    }
+
+    function renderList() {
+      const list = document.getElementById('interest-list');
+      const viewAll = document.getElementById('view-all-btn');
+      if (!allItems.length) {
+        list.innerHTML = `<p class="font-body-md text-[14px] text-on-surface-variant py-md text-center">No interest forms yet. <a href="/explore_student_businesses/code.html" class="text-primary hover:underline">Explore businesses</a> to get started.</p>`;
+        viewAll.style.display = 'none';
+        return;
+      }
+      const shown = expanded ? allItems : allItems.slice(0, 5);
+      list.innerHTML = shown.map(itemCard).join('');
+      viewAll.style.display = allItems.length > 5 ? '' : 'none';
+      viewAll.textContent = expanded ? 'Show Less' : 'View All';
+    }
+
+    async function loadActivity() {
+      try {
+        allItems = await api.get('/customers/me/activity');
+        renderList();
+      } catch (err) {
+        document.getElementById('interest-list').innerHTML =
+          `<p class="font-body-md text-[14px] text-error py-md text-center">Could not load your activity.</p>`;
+      }
+    }
+
+    document.getElementById('view-all-btn').addEventListener('click', () => { expanded = !expanded; renderList(); });
+
+    // Wire the remaining action buttons / chips to sensible destinations.
+    document.querySelectorAll('button').forEach(btn => {
+      const text = btn.textContent.trim();
+      if (text.startsWith('Edit Profile') || text.startsWith('Account Settings')) {
+        btn.addEventListener('click', () => showToast('Customer profile settings are coming soon.'));
+      } else if (text.startsWith('Add')) {
+        btn.addEventListener('click', () => window.location.href = '/topic_marketplace/code.html');
+      } else if (text.startsWith('Report an Issue')) {
+        btn.addEventListener('click', () => window.location.href = '/customer_interest_forms/code.html');
+      }
+    });
+    document.querySelectorAll('span.rounded-full.cursor-pointer').forEach(chip => {
+      chip.addEventListener('click', () => window.location.href = '/topic_marketplace/code.html');
+    });
+
+    loadActivity();
+  }
+</script>
 </body></html>

@@ -537,10 +537,43 @@ const api = {
     'Topic Hub':  role === 'admin' ? '/admin_topic_management/code.html'  : '/topic_marketplace/code.html',
   };
 
+  // Footer / informational links → real destinations where one exists,
+  // otherwise a friendly toast so nothing is a dead click.
+  const FOOTER_MAP = {
+    'Pricing':              '/topic_marketplace/code.html',
+    'Verification Process': '/business_verification_flow/code.html',
+    'Help Center':          '/explore_student_businesses/code.html',
+    'Contact Us':           '/local_link_homepage/code.html',
+  };
+
   // Fix all placeholder nav links
   document.querySelectorAll('a[href="#"]').forEach(el => {
     const text = navLabel(el);
-    if (NAV_MAP[text]) el.href = NAV_MAP[text];
+    if (NAV_MAP[text]) { el.href = NAV_MAP[text]; return; }
+    if (FOOTER_MAP[text]) { el.href = FOOTER_MAP[text]; return; }
+    // Informational footer / social links with no dedicated page yet.
+    const INFO = ['About Us', 'Privacy Policy', 'Terms of Service'];
+    const aria = el.getAttribute('aria-label');
+    if (INFO.includes(text) || aria === 'Facebook' || aria === 'Twitter') {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast(`${aria || text} page is coming soon.`, 'success');
+      });
+    }
+  });
+
+  // Mobile bottom-nav items are sometimes <button>s instead of <a>s, so the
+  // link wiring above misses them. Wire any nav-labelled button that isn't an
+  // account/notification/logout control (those are handled separately below).
+  document.querySelectorAll('nav button').forEach(btn => {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    const iconName = icon ? icon.textContent.trim() : '';
+    if (['account_circle', 'notifications', 'logout'].includes(iconName)) return;
+    const text = navLabel(btn);
+    const dest = NAV_MAP[text];
+    if (dest && !btn.onclick) {
+      btn.addEventListener('click', () => window.location.href = dest);
+    }
   });
 
   // Hide role-restricted nav links based on the current user's role
@@ -604,6 +637,41 @@ const api = {
         const close = (ev) => { if (!btn.contains(ev.target)) { menu.remove(); document.removeEventListener('click', close); } };
         setTimeout(() => document.addEventListener('click', close), 0);
       };
+    }
+  });
+
+  // Wire notification bell → dropdown. No notifications backend yet, so show
+  // an empty-state panel instead of a dead click.
+  document.querySelectorAll('button').forEach(btn => {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon && icon.textContent.trim() === 'notifications') {
+      btn.style.position = 'relative';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const existing = document.getElementById('_ll_notif_menu');
+        if (existing) { existing.remove(); return; }
+
+        const menu = document.createElement('div');
+        menu.id = '_ll_notif_menu';
+        menu.style.cssText = [
+          'position:absolute', 'right:0', 'top:calc(100% + 8px)',
+          'background:#fff', 'border:1px solid #e2e8f0', 'border-radius:12px',
+          'box-shadow:0 8px 24px rgba(0,0,0,0.12)', 'z-index:1000',
+          'width:260px', 'overflow:hidden', 'font-family:inherit', 'cursor:default'
+        ].join(';');
+        menu.innerHTML = `
+          <div style="padding:12px 16px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:600;color:#334155;">Notifications</div>
+          <div style="padding:28px 16px;text-align:center;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <span class="material-symbols-outlined" style="font-size:32px;color:#cbd5e1;">notifications_off</span>
+            You're all caught up — no new notifications.
+          </div>
+        `;
+        menu.addEventListener('click', (ev) => ev.stopPropagation());
+        btn.appendChild(menu);
+
+        const close = (ev) => { if (!btn.contains(ev.target)) { menu.remove(); document.removeEventListener('click', close); } };
+        setTimeout(() => document.addEventListener('click', close), 0);
+      });
     }
   });
 })();

@@ -248,36 +248,16 @@
 <div class="mb-margin">
 <label class="font-label-md text-label-md text-on-surface-variant block mb-xs">Add New Topic</label>
 <div class="flex gap-xs">
-<input class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="e.g. Graphic Design" type="text"/>
-<button class="bg-primary text-on-primary rounded-lg px-4 flex items-center justify-center shadow-sm hover:bg-primary-container transition-colors">
+<input id="new-topic-input" class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="e.g. Graphic Design" type="text"/>
+<button id="add-topic-mini-btn" class="bg-primary text-on-primary rounded-lg px-4 flex items-center justify-center shadow-sm hover:bg-primary-container transition-colors">
 <span class="material-symbols-outlined text-[20px]">add</span>
 </button>
 </div>
 </div>
 <div class="flex-1 overflow-y-auto">
 <h4 class="font-label-md text-label-md text-on-surface-variant mb-sm">Active Topics</h4>
-<div class="flex flex-wrap gap-xs">
-<!-- Topic Tags -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors cursor-default">
-                            Tutoring
-                            <button class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
-</div>
-<div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors cursor-default">
-                            Web Development
-                            <button class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
-</div>
-<div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors cursor-default">
-                            Photography
-                            <button class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
-</div>
-<div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors cursor-default">
-                            Local Delivery
-                            <button class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
-</div>
-<div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors cursor-default">
-                            Event Planning
-                            <button class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
-</div>
+<div id="active-topics" class="flex flex-wrap gap-xs">
+<!-- Topic tags loaded dynamically -->
 </div>
 </div>
 </div>
@@ -401,7 +381,58 @@
     }
   });
 
+  // ── Topic Hub mini-widget (create / list / delete topics) ──
+  async function loadTopicTags() {
+    try {
+      const topics = await api.get('/topics');
+      const wrap = document.getElementById('active-topics');
+      wrap.innerHTML = topics.length ? topics.map(t => `
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors">
+          ${(t.name || '').replace(/</g, '&lt;')}
+          <button onclick="removeTopic('${t.id}', '${(t.name || '').replace(/'/g, "\\'")}')" class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
+        </div>`).join('') : '<p class="text-[13px] text-on-surface-variant">No topics yet.</p>';
+    } catch (err) { console.error(err); }
+  }
+
+  async function addTopic() {
+    const input = document.getElementById('new-topic-input');
+    const name = input.value.trim();
+    if (!name) { showToast('Enter a topic name', 'error'); return; }
+    try {
+      await api.post('/topics', { name });
+      input.value = '';
+      showToast(`Topic "${name}" added`);
+      loadTopicTags();
+    } catch (err) { showToast(err.message, 'error'); }
+  }
+
+  async function removeTopic(id, name) {
+    if (!confirm(`Delete topic "${name}"?`)) return;
+    try {
+      await api.delete(`/topics/${id}`);
+      showToast('Topic deleted');
+      loadTopicTags();
+    } catch (err) { showToast(err.message, 'error'); }
+  }
+  window.removeTopic = removeTopic;
+
+  document.getElementById('add-topic-mini-btn')?.addEventListener('click', addTopic);
+  document.getElementById('new-topic-input')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTopic(); });
+
+  // ── Route the remaining dashboard buttons ──
+  document.querySelectorAll('button').forEach(btn => {
+    const text = btn.textContent.trim();
+    if (text.startsWith('View All') || text.startsWith('Review Ticket')) {
+      btn.addEventListener('click', () => window.location.href = '/verification_complaints/code.html');
+    } else if (text === 'Filter') {
+      btn.addEventListener('click', () => showToast('Complaint filtering is coming soon.'));
+    } else if (text.startsWith('Upgrade Plan')) {
+      btn.addEventListener('click', () => showToast('You are on the Admin plan — no upgrade needed.'));
+    }
+  });
+
   loadStats();
   loadVerificationQueue();
+  loadTopicTags();
 </script>
 </body></html>

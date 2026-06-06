@@ -462,6 +462,14 @@
     } catch {}
   }
 
+  // Header / section shortcut buttons.
+  document.querySelectorAll('button').forEach(btn => {
+    const t = btn.textContent.trim();
+    if (t.startsWith('Profile Editor')) btn.addEventListener('click', () => window.location.href = '/profile_editor/code.html');
+    else if (t.startsWith('Lead Manager')) btn.addEventListener('click', () => window.location.href = '/lead_manager/code.html');
+    else if (t.startsWith('Manage')) btn.addEventListener('click', () => window.location.href = '/topic_marketplace/code.html');
+  });
+
   loadDashboard();
 </script>
 </body></html>

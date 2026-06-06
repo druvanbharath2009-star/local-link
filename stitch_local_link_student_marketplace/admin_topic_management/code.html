@@ -270,9 +270,9 @@
 <div class="flex justify-between items-center bg-surface-lowest p-4 rounded-xl shadow-level-1">
 <div class="relative w-full max-w-md">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:bg-surface-lowest transition-all" placeholder="Search topics..." type="text"/>
+<input id="topic-search" class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:bg-surface-lowest transition-all" placeholder="Search topics..." type="text"/>
 </div>
-<button class="text-on-surface-variant hover:text-primary p-2 rounded-lg hover:bg-surface-container transition-colors">
+<button id="topic-filter-btn" class="text-on-surface-variant hover:text-primary p-2 rounded-lg hover:bg-surface-container transition-colors">
 <span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
 </button>
 </div>
@@ -407,14 +407,27 @@
     } catch (err) { showToast(err.message, 'error'); }
   }
 
+  let allTopics = [];
+
+  function renderTopics() {
+    const grid = document.getElementById('topics-grid');
+    const q = (document.getElementById('topic-search')?.value || '').toLowerCase();
+    const list = q
+      ? allTopics.filter(t => `${t.name || ''} ${t.description || ''}`.toLowerCase().includes(q))
+      : allTopics;
+    grid.innerHTML = list.length ? list.map(topicCard).join('') :
+      `<div class="col-span-2 text-center py-8 text-on-surface-variant">${allTopics.length ? 'No topics match your search.' : 'No topics yet. Add one!'}</div>`;
+  }
+
   async function loadTopics() {
     try {
-      const topics = await api.get('/topics');
-      const grid = document.getElementById('topics-grid');
-      grid.innerHTML = topics.length ? topics.map(topicCard).join('') :
-        '<div class="col-span-2 text-center py-8 text-on-surface-variant">No topics yet. Add one!</div>';
+      allTopics = await api.get('/topics');
+      renderTopics();
     } catch {}
   }
+
+  document.getElementById('topic-search')?.addEventListener('input', renderTopics);
+  document.getElementById('topic-filter-btn')?.addEventListener('click', () => document.getElementById('topic-search')?.focus());
 
   document.getElementById('add-topic-form').addEventListener('submit', async (e) => {
     e.preventDefault();

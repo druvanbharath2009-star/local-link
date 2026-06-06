@@ -248,9 +248,9 @@
 <div class="w-full md:w-auto flex flex-col sm:flex-row gap-sm">
 <div class="relative w-full sm:w-64">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg pl-10 pr-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary transition-shadow font-body-md text-body-md outline-none" placeholder="Search designers..." type="text"/>
+<input id="biz-search" class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg pl-10 pr-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary transition-shadow font-body-md text-body-md outline-none" placeholder="Search designers..." type="text"/>
 </div>
-<div class="flex gap-xs overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+<div id="cat-chips" class="flex gap-xs overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
 <button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-colors">All</button>
 <button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors">Logo Design</button>
 <button class="whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors">Social Media</button>
@@ -259,7 +259,7 @@
 </div>
 </div>
 <!-- Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<div id="biz-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
 <!-- Card 1 -->
 <div class="bg-surface-container-lowest rounded-[1.5rem] p-md shadow-[0_4px_20px_rgba(0,20,82,0.08)] hover:shadow-[0_8px_30px_rgba(0,76,237,0.15)] transition-all duration-300 border border-surface-variant flex flex-col gap-md">
 <div class="flex items-start justify-between">
@@ -358,7 +358,7 @@
 </div>
 </section>
 <!-- How it Works -->
-<section class="w-full bg-surface-bright py-xl border-t border-surface-variant mt-auto">
+<section id="how-it-works" class="w-full bg-surface-bright py-xl border-t border-surface-variant mt-auto">
 <div class="max-w-7xl mx-auto px-6 text-center">
 <h2 class="font-headline-lg text-headline-lg text-on-background mb-lg">How It Works</h2>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-4xl mx-auto">
@@ -428,4 +428,148 @@
 </div>
 </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  const user = api.getUser();
+  let allBiz = [];
+  let activeChip = 'All';
+
+  function esc(s) { return (s || '').replace(/</g, '&lt;'); }
+
+  function bizCard(b) {
+    const initials = (b.business_name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const avatar = b.image_url
+      ? `<img alt="${esc(b.business_name)}" class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-lowest shadow-sm" src="${esc(b.image_url)}"/>`
+      : `<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-md border-2 border-surface-container-lowest shadow-sm">${initials}</div>`;
+    const verified = b.verified
+      ? `<span class="inline-flex items-center justify-center w-5 h-5 bg-primary rounded-full text-on-primary" title="Verified"><span class="material-symbols-outlined text-[14px]">check</span></span>`
+      : '';
+    return `
+      <div class="bg-surface-container-lowest rounded-[1.5rem] p-md shadow-[0_4px_20px_rgba(0,20,82,0.08)] hover:shadow-[0_8px_30px_rgba(0,76,237,0.15)] transition-all duration-300 border border-surface-variant flex flex-col gap-md">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-sm">
+            ${avatar}
+            <div>
+              <h3 class="font-headline-md text-[18px] text-on-background flex items-center gap-1">${esc(b.business_name)} ${verified}</h3>
+              <p class="font-body-md text-sm text-on-surface-variant">by ${esc(b.owner_name) || 'Student'}</p>
+            </div>
+          </div>
+          ${b.category ? `<span class="inline-flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-sm font-label-md text-on-surface">${esc(b.category)}</span>` : ''}
+        </div>
+        <p class="font-body-md text-on-surface-variant text-sm flex-grow">${esc(b.mission) || 'A local student-run business.'}</p>
+        <div class="pt-sm border-t border-surface-variant flex justify-between items-center">
+          <span class="font-label-md text-sm text-on-surface">${b.price ? '$' + esc(String(b.price)) : ''}</span>
+          <button onclick="openInterest(${b.id}, '${esc(b.business_name).replace(/'/g, "\\'")}')" class="bg-primary text-on-primary font-label-md text-label-md px-sm py-2 rounded-lg hover:bg-primary-container transition-colors min-h-[40px] flex items-center justify-center">
+            Send Interest
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function render() {
+    const grid = document.getElementById('biz-grid');
+    const search = (document.getElementById('biz-search').value || '').toLowerCase();
+    let list = allBiz;
+    if (activeChip !== 'All') {
+      const term = activeChip.toLowerCase();
+      list = list.filter(b => `${b.category || ''} ${b.business_name || ''} ${b.mission || ''}`.toLowerCase().includes(term));
+    }
+    if (search) list = list.filter(b => `${b.business_name || ''} ${b.mission || ''} ${b.category || ''}`.toLowerCase().includes(search));
+    grid.innerHTML = list.length
+      ? list.map(bizCard).join('')
+      : '<div class="col-span-full text-center text-on-surface-variant py-12">No businesses found.</div>';
+  }
+
+  async function loadBiz() {
+    try {
+      allBiz = await api.get('/businesses');
+      render();
+    } catch {
+      document.getElementById('biz-grid').innerHTML = '<div class="col-span-full text-center text-error py-12">Failed to load businesses.</div>';
+    }
+  }
+
+  // Category chips
+  const chips = document.getElementById('cat-chips');
+  chips.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    activeChip = btn.textContent.trim();
+    chips.querySelectorAll('button').forEach(b => {
+      const on = b === btn;
+      b.className = on
+        ? 'whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-colors'
+        : 'whitespace-nowrap px-4 py-2 rounded-full border border-outline-variant text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors';
+    });
+    render();
+  });
+
+  let searchT;
+  document.getElementById('biz-search').addEventListener('input', () => {
+    clearTimeout(searchT);
+    searchT = setTimeout(render, 300);
+  });
+
+  // Hero + nav buttons
+  document.querySelectorAll('button').forEach(b => {
+    const t = b.textContent.trim();
+    if (t === 'Join Topic') b.addEventListener('click', () => window.location.href = '/topic_marketplace/code.html');
+    else if (t === 'Learn More') b.addEventListener('click', () => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' }));
+    else if (t === 'Explore') b.addEventListener('click', () => window.location.href = '/explore_student_businesses/code.html');
+    else if (t === 'My Interest') b.addEventListener('click', () => window.location.href = '/customer_dashboard_activity/code.html');
+    else if (t === 'Leads') b.addEventListener('click', () => window.location.href = '/lead_manager/code.html');
+    else if (t === 'Profile') b.addEventListener('click', () => window.location.href = '/profile_editor/code.html');
+  });
+
+  function openInterest(bizId, bizName) {
+    const existing = document.getElementById('_si_modal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = '_si_modal';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4';
+    modal.innerHTML = `
+      <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+        <h3 class="text-on-surface mb-1" style="font-size:24px;font-weight:600;">Send Interest</h3>
+        <p class="text-sm text-on-surface-variant mb-6">Reaching out to: ${esc(bizName)}</p>
+        <div class="flex flex-col gap-4">
+          <input id="_si_name" type="text" placeholder="Your name" value="${esc(user?.name) || ''}" class="w-full px-4 py-3 rounded-lg outline-none font-body-md" style="background:#f2f4f6;"/>
+          <input id="_si_email" type="email" placeholder="Your email" value="${esc(user?.email) || ''}" class="w-full px-4 py-3 rounded-lg outline-none font-body-md" style="background:#f2f4f6;"/>
+          <input id="_si_phone" type="tel" placeholder="Phone (optional)" value="${esc(user?.phone) || ''}" class="w-full px-4 py-3 rounded-lg outline-none font-body-md" style="background:#f2f4f6;"/>
+          <textarea id="_si_msg" placeholder="What are you looking for? (optional)" rows="3" class="w-full px-4 py-3 rounded-lg outline-none font-body-md resize-none" style="background:#f2f4f6;"></textarea>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button id="_si_cancel" class="flex-1 h-12 border border-outline-variant text-on-surface font-label-md rounded-lg hover:bg-surface-container-low transition-colors">Cancel</button>
+          <button id="_si_submit" class="flex-1 h-12 bg-primary text-on-primary font-label-md rounded-lg shadow-md hover:bg-primary/90 transition-colors">Submit</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.getElementById('_si_cancel').onclick = () => modal.remove();
+    document.getElementById('_si_submit').onclick = async () => {
+      const name = document.getElementById('_si_name').value.trim();
+      const email = document.getElementById('_si_email').value.trim();
+      if (!name || !email) { showToast('Name and email are required', 'error'); return; }
+      const btn = document.getElementById('_si_submit');
+      showLoading(btn, 'Sending...');
+      try {
+        await api.post('/customers/interest', {
+          business_id: bizId,
+          customer_name: name,
+          customer_email: email,
+          customer_phone: document.getElementById('_si_phone').value.trim() || null,
+          message: document.getElementById('_si_msg').value.trim() || null,
+        });
+        modal.remove();
+        showToast('Interest form sent successfully!');
+      } catch (err) {
+        hideLoading(btn);
+        showToast(err.message, 'error');
+      }
+    };
+  }
+  window.openInterest = openInterest;
+
+  loadBiz();
+</script>
 </body></html>

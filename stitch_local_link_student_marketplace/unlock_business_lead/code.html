@@ -113,7 +113,7 @@
 <!-- Contextual Header (Main Nav Suppressed due to Transactional/Detail intent) -->
 <header class="bg-surface-container-lowest border-b border-surface-variant sticky top-0 z-50">
 <div class="max-w-7xl mx-auto px-gutter h-xl flex items-center justify-between">
-<button class="flex items-center gap-xs text-primary hover:text-on-primary-fixed-variant transition-colors group">
+<button id="back-btn" class="flex items-center gap-xs text-primary hover:text-on-primary-fixed-variant transition-colors group">
 <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
 <span class="font-label-md text-label-md">Back to Lead Manager</span>
 </button>
@@ -155,20 +155,17 @@
                                     Posted 2 hours ago
                                 </span>
 </div>
-<h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Complete Branding Package for Local Cafe Opening</h2>
+<h2 id="lead-title" class="font-headline-lg text-headline-lg text-on-surface mb-md">Lead Details</h2>
 <!-- Detailed Description -->
 <div class="space-y-sm mb-xl">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-opacity-80">Project Description</h3>
-<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                                    We are opening a new artisanal coffee shop near the campus library and need a fresh, modern brand identity. The project includes logo design, color palette selection, typography guidelines, and basic templates for social media and physical menus. 
-                                </p>
-<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                                    Looking for a student designer who understands the local college demographic and can deliver a clean, energetic aesthetic. Timeline is roughly 3 weeks.
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-opacity-80">Customer Message</h3>
+<p id="lead-desc" class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                    Loading lead…
                                 </p>
 </div>
 <hr class="border-surface-variant mb-xl"/>
 <!-- Locked Contact Information Section (Glassmorphism effect) -->
-<div class="relative rounded-xl border border-outline-variant bg-surface-container overflow-hidden">
+<div id="locked-section" class="relative rounded-xl border border-outline-variant bg-surface-container overflow-hidden">
 <!-- Blurred Underlay -->
 <div class="p-lg filter blur-md opacity-40 select-none pointer-events-none flex flex-col gap-md">
 <div class="flex items-center gap-md">
@@ -214,20 +211,20 @@
 <div class="bg-surface rounded-lg p-sm border border-surface-variant">
 <div class="flex justify-between items-center mb-xs">
 <span class="font-label-md text-label-md text-on-surface-variant">Free Leads Available</span>
-<span class="font-label-md text-label-md text-on-surface">0 / 5</span>
+<span id="quota-text" class="font-label-md text-label-md text-on-surface">– / 5</span>
 </div>
 <div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-primary w-0 rounded-full"></div>
+<div id="quota-bar" class="h-full bg-primary w-0 rounded-full transition-all"></div>
 </div>
-<p class="font-body-md text-[13px] text-error mt-sm flex items-start gap-xs">
+<p id="quota-note" class="font-body-md text-[13px] text-on-surface-variant mt-sm flex items-start gap-xs">
 <span class="material-symbols-outlined text-[16px] mt-[2px]">info</span>
-                                    You have used all free leads for this billing cycle.
+                                    Loading your lead quota…
                                 </p>
 </div>
 </div>
 <!-- Price -->
 <div class="flex items-baseline gap-xs">
-<span class="font-headline-xl text-headline-xl text-primary">$1.99</span>
+<span id="lead-price" class="font-headline-xl text-headline-xl text-primary">$1.99</span>
 <span class="font-body-md text-body-md text-on-surface-variant">/ lead</span>
 </div>
 <hr class="border-surface-variant"/>
@@ -263,9 +260,9 @@
                             </button>
 </div>
 <!-- Action Button -->
-<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm hover:bg-on-primary-fixed-variant transition-all duration-200 shadow-md shadow-primary/20 active:scale-[0.98] mt-sm">
+<button id="unlock-btn" class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm hover:bg-on-primary-fixed-variant transition-all duration-200 shadow-md shadow-primary/20 active:scale-[0.98] mt-sm">
 <span class="material-symbols-outlined">key</span>
-                            Unlock for $1.99
+                            Unlock Lead
                         </button>
 <p class="text-center font-body-md text-[12px] text-on-surface-variant flex items-center justify-center gap-xs">
 <span class="material-symbols-outlined text-[14px]">lock</span>
@@ -276,4 +273,104 @@
 </div>
 </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/shared/api.js"></script>
+<script>
+  if (api.requireAuth('business')) {
+    const params = new URLSearchParams(location.search);
+    const leadId = params.get('lead');
+    let current = null;
+
+    document.getElementById('back-btn').addEventListener('click', () => {
+      window.location.href = '/lead_manager/code.html';
+    });
+
+    function esc(s) { return (s || '').replace(/</g, '&lt;'); }
+
+    function renderQuota(used) {
+      const remaining = Math.max(0, 5 - used);
+      document.getElementById('quota-text').textContent = `${remaining} / 5`;
+      document.getElementById('quota-bar').style.width = `${(remaining / 5) * 100}%`;
+      const note = document.getElementById('quota-note');
+      const free = used < 5;
+      document.getElementById('lead-price').textContent = free ? 'Free' : '$1.99';
+      note.className = `font-body-md text-[13px] mt-sm flex items-start gap-xs ${free ? 'text-on-surface-variant' : 'text-error'}`;
+      note.innerHTML = `<span class="material-symbols-outlined text-[16px] mt-[2px]">info</span> ${
+        free ? `You have ${remaining} free lead${remaining === 1 ? '' : 's'} left this cycle.`
+             : 'You have used all free leads — this unlock costs $1.99.'}`;
+      const btn = document.getElementById('unlock-btn');
+      if (!btn.disabled) btn.lastChild.textContent = free ? ' Unlock for Free' : ' Unlock for $1.99';
+    }
+
+    function revealContact(lead) {
+      const section = document.getElementById('locked-section');
+      section.className = 'relative rounded-xl border border-secondary bg-surface-container-lowest overflow-hidden';
+      section.innerHTML = `
+        <div class="p-lg flex flex-col gap-md">
+          <div class="flex items-center gap-md">
+            <div class="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-[32px]">person</span>
+            </div>
+            <div>
+              <div class="font-headline-md text-headline-md text-on-surface">${esc(lead.customer_name)}</div>
+              <div class="font-body-md text-body-md text-secondary">Unlocked</div>
+            </div>
+          </div>
+          <div class="space-y-sm mt-sm">
+            <div class="flex items-center gap-sm"><span class="material-symbols-outlined text-outline">mail</span>
+              <a class="font-body-md text-body-md text-primary hover:underline" href="mailto:${esc(lead.customer_email)}">${esc(lead.customer_email) || '—'}</a></div>
+            <div class="flex items-center gap-sm"><span class="material-symbols-outlined text-outline">call</span>
+              <span class="font-body-md text-body-md text-on-surface">${esc(lead.customer_phone) || 'Not provided'}</span></div>
+          </div>
+        </div>`;
+      const btn = document.getElementById('unlock-btn');
+      btn.disabled = true;
+      btn.classList.add('opacity-60', 'cursor-default');
+      btn.innerHTML = '<span class="material-symbols-outlined">check</span> Lead Unlocked';
+    }
+
+    async function load() {
+      try {
+        const { leads, free_leads_used } = await api.get('/businesses/me/leads');
+        renderQuota(free_leads_used);
+        current = leadId ? leads.find(l => String(l.id) === String(leadId)) : leads.find(l => !l.unlocked) || leads[0];
+        if (!current) {
+          document.getElementById('lead-title').textContent = 'No leads yet';
+          document.getElementById('lead-desc').textContent = 'You have no interest forms to unlock right now.';
+          document.getElementById('unlock-btn').disabled = true;
+          return;
+        }
+        document.getElementById('lead-title').textContent = `Interest from ${current.customer_name}`;
+        document.getElementById('lead-desc').textContent = current.message || 'No message provided.';
+        if (current.unlocked) revealContact(current);
+      } catch (err) {
+        showToast(err.message || 'Could not load lead', 'error');
+      }
+    }
+
+    document.getElementById('unlock-btn').addEventListener('click', async () => {
+      if (!current || current.unlocked) return;
+      const btn = document.getElementById('unlock-btn');
+      showLoading(btn, 'Unlocking...');
+      try {
+        const res = await api.post(`/businesses/me/leads/${current.id}/unlock`, {});
+        showToast(res.message || 'Lead unlocked');
+        current = { ...current, ...res.lead, unlocked: true };
+        revealContact(current);
+      } catch (err) {
+        hideLoading(btn);
+        showToast(err.message || 'Unlock failed', 'error');
+      }
+    });
+
+    // "Add new payment method" has no billing backend yet.
+    document.querySelectorAll('button').forEach(b => {
+      if (b.textContent.trim().startsWith('Add new payment method')) {
+        b.addEventListener('click', () => showToast('Payment method management is coming soon.'));
+      }
+    });
+
+    load();
+  }
+</script>
 </body></html>

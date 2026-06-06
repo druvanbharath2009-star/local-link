@@ -382,7 +382,7 @@
 <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Get in Touch</h2>
 <p class="font-body-md text-body-md text-tertiary">Have questions about the platform or need help finding a service?</p>
 </div>
-<form class="space-y-6">
+<form id="contact-form" class="space-y-6">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="flex flex-col gap-1">
 <label class="font-label-md text-label-md text-primary ml-1">First Name</label>
@@ -463,17 +463,20 @@
       btn.onclick = () => window.location.href = '/explore_student_businesses/code.html';
     } else if (text.startsWith('View Pricing Plans')) {
       btn.onclick = () => window.location.href = '/topic_marketplace/code.html';
+    } else if (text.startsWith('Send Message')) {
+      btn.onclick = () => {
+        const form = document.getElementById('contact-form');
+        const email = form.querySelector('input[type="email"]');
+        const msg = form.querySelector('textarea');
+        if (!email.value.trim() || !msg.value.trim()) {
+          showToast('Please add your email and a message.', 'error');
+          return;
+        }
+        form.reset();
+        showToast("Thanks! We'll get back to you soon.");
+      };
     }
   });
 
-  // Account icon: link to dashboard or login
-  document.querySelectorAll('button').forEach(btn => {
-    const icon = btn.querySelector('.material-symbols-outlined');
-    if (icon && icon.textContent.trim() === 'account_circle') {
-      btn.onclick = () => window.location.href = user
-        ? (user.role === 'business' ? '/business_dashboard/code.html' : user.role === 'admin' ? '/admin_control_center/code.html' : '/explore_student_businesses/code.html')
-        : '/login_signup/code.html';
-    }
-  });
 </script>
 </body></html>

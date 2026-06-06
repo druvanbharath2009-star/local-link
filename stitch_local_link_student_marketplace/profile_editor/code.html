@@ -346,7 +346,7 @@
       const catSel = document.getElementById('bizCategory');
       if (biz.category) catSel.value = biz.category;
       if (biz.image_url) {
-        document.getElementById('image-preview').style.backgroundImage = `url(http://localhost:3000${biz.image_url})`;
+        document.getElementById('image-preview').style.backgroundImage = `url(${biz.image_url})`;
       }
     } catch {}
   }
@@ -384,6 +384,20 @@
       errEl.classList.remove('hidden');
     } finally {
       hideLoading(btn);
+    }
+  });
+
+  // Wire the remaining buttons: mobile menu, Upgrade Plan, preview card.
+  document.querySelectorAll('button').forEach(btn => {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    const iconName = icon ? icon.textContent.trim() : '';
+    const text = btn.textContent.trim();
+    if (iconName === 'menu') {
+      btn.addEventListener('click', () => document.querySelector('aside')?.classList.toggle('hidden'));
+    } else if (text.startsWith('Upgrade Plan')) {
+      btn.addEventListener('click', () => showToast('Plan management is coming soon.'));
+    } else if (text.startsWith('View Profile')) {
+      btn.addEventListener('click', () => showToast('This is a preview of your marketplace card.'));
     }
   });
 

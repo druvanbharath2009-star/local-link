@@ -138,11 +138,11 @@
 <p class="font-body-md text-body-md text-on-surface-variant mt-2">Oversee and manage Local Link accounts.</p>
 </div>
 <div class="flex gap-4 w-full md:w-auto">
-<button class="flex items-center justify-center gap-2 h-12 px-6 bg-surface-container border border-outline-variant text-on-surface rounded-lg hover:bg-surface-variant transition-colors shadow-sm w-full md:w-auto">
+<button id="export-btn" class="flex items-center justify-center gap-2 h-12 px-6 bg-surface-container border border-outline-variant text-on-surface rounded-lg hover:bg-surface-variant transition-colors shadow-sm w-full md:w-auto">
 <span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
 <span class="font-label-md text-label-md">Export Data</span>
 </button>
-<button class="flex items-center justify-center gap-2 h-12 px-6 bg-primary text-on-primary rounded-lg hover:bg-primary-container transition-colors shadow-[0_4px_20px_rgba(0,62,199,0.2)] w-full md:w-auto">
+<button id="add-user-btn" class="flex items-center justify-center gap-2 h-12 px-6 bg-primary text-on-primary rounded-lg hover:bg-primary-container transition-colors shadow-[0_4px_20px_rgba(0,62,199,0.2)] w-full md:w-auto">
 <span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
 <span class="font-label-md text-label-md">Add User</span>
 </button>
@@ -201,17 +201,17 @@
 <input id="user-search" class="w-full pl-12 pr-4 h-12 bg-surface-container border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg font-body-md text-on-surface placeholder:text-outline-variant transition-all" placeholder="Search by name, email, or ID..." type="text"/>
 </div>
 <div class="flex gap-2">
-<select class="h-12 px-4 bg-surface-container border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg font-label-md text-on-surface cursor-pointer outline-none appearance-none pr-10 relative">
+<select id="role-filter" class="h-12 px-4 bg-surface-container border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg font-label-md text-on-surface cursor-pointer outline-none appearance-none pr-10 relative">
 <option value="">Role: All</option>
 <option value="customer">Customer</option>
 <option value="business">Business</option>
 </select>
-<select class="h-12 px-4 bg-surface-container border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg font-label-md text-on-surface cursor-pointer outline-none appearance-none pr-10 relative">
+<select id="status-filter" class="h-12 px-4 bg-surface-container border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg font-label-md text-on-surface cursor-pointer outline-none appearance-none pr-10 relative">
 <option value="">Status: All</option>
 <option value="active">Active</option>
 <option value="suspended">Suspended</option>
 </select>
-<button class="h-12 w-12 flex items-center justify-center bg-surface-container text-on-surface rounded-lg hover:bg-surface-variant transition-colors shrink-0">
+<button id="filter-btn" class="h-12 w-12 flex items-center justify-center bg-surface-container text-on-surface rounded-lg hover:bg-surface-variant transition-colors shrink-0">
 <span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
 </button>
 </div>
@@ -353,10 +353,10 @@
 </div>
 <!-- Pagination -->
 <div class="flex items-center justify-between p-4 border-t border-surface-variant bg-surface-container/30">
-<p class="font-body-md text-[14px] text-on-surface-variant">Showing <span class="font-label-md text-on-surface">1</span> to <span class="font-label-md text-on-surface">3</span> of <span class="font-label-md text-on-surface">5,340</span> results</p>
+<p class="font-body-md text-[14px] text-on-surface-variant">Showing <span id="page-from" class="font-label-md text-on-surface">0</span> to <span id="page-to" class="font-label-md text-on-surface">0</span> of <span id="page-total" class="font-label-md text-on-surface">0</span> results</p>
 <div class="flex gap-2">
-<button class="px-3 py-1.5 rounded-md border border-outline-variant text-on-surface disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-variant transition-colors font-label-md text-[14px]" disabled="">Previous</button>
-<button class="px-3 py-1.5 rounded-md border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors font-label-md text-[14px]">Next</button>
+<button id="prev-btn" class="px-3 py-1.5 rounded-md border border-outline-variant text-on-surface disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-variant transition-colors font-label-md text-[14px]" disabled="">Previous</button>
+<button id="next-btn" class="px-3 py-1.5 rounded-md border border-outline-variant text-on-surface disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-variant transition-colors font-label-md text-[14px]">Next</button>
 </div>
 </div>
 </div>
@@ -425,30 +425,80 @@
     } catch (err) { showToast(err.message, 'error'); }
   }
 
-  async function loadUsers(search = '') {
+  const PAGE_SIZE = 10;
+  let currentUsers = [];   // after filtering
+  let page = 1;
+
+  function renderPage() {
+    const tbody = document.getElementById('users-tbody');
+    const total = currentUsers.length;
+    const maxPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (page > maxPage) page = maxPage;
+    const start = (page - 1) * PAGE_SIZE;
+    const slice = currentUsers.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = slice.length ? slice.map(userRow).join('') :
+      '<tr><td colspan="5" class="text-center py-8 text-on-surface-variant">No users found.</td></tr>';
+
+    document.getElementById('page-from').textContent = total ? start + 1 : 0;
+    document.getElementById('page-to').textContent = start + slice.length;
+    document.getElementById('page-total').textContent = total;
+    document.getElementById('prev-btn').disabled = page <= 1;
+    document.getElementById('next-btn').disabled = page >= maxPage;
+  }
+
+  async function loadUsers() {
     try {
-      const url = `/admin/users${search ? `?search=${encodeURIComponent(search)}` : ''}`;
-      const users = await api.get(url);
-      const tbody = document.getElementById('users-tbody');
-      tbody.innerHTML = users.length ? users.map(userRow).join('') :
-        '<tr><td colspan="5" class="text-center py-8 text-on-surface-variant">No users found.</td></tr>';
+      const search = document.getElementById('user-search').value.trim();
+      const role = document.getElementById('role-filter').value;
+      const status = document.getElementById('status-filter').value;
+      let url = '/admin/users';
+      const qs = [];
+      if (search) qs.push(`search=${encodeURIComponent(search)}`);
+      if (role) qs.push(`role=${encodeURIComponent(role)}`);
+      if (qs.length) url += `?${qs.join('&')}`;
+      let users = await api.get(url);
+      // No suspension backend yet, so every account is treated as active.
+      if (status === 'suspended') users = [];
+      currentUsers = users;
+      page = 1;
+      renderPage();
     } catch (err) {
       console.error(err);
     }
   }
 
   let searchTimeout;
-  document.getElementById('user-search')?.addEventListener('input', (e) => {
+  document.getElementById('user-search')?.addEventListener('input', () => {
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => loadUsers(e.target.value), 400);
+    searchTimeout = setTimeout(loadUsers, 400);
+  });
+  document.getElementById('role-filter')?.addEventListener('change', loadUsers);
+  document.getElementById('status-filter')?.addEventListener('change', loadUsers);
+  document.getElementById('filter-btn')?.addEventListener('click', loadUsers);
+
+  document.getElementById('prev-btn')?.addEventListener('click', () => { if (page > 1) { page--; renderPage(); } });
+  document.getElementById('next-btn')?.addEventListener('click', () => { page++; renderPage(); });
+
+  // Export the currently filtered users as a CSV download.
+  document.getElementById('export-btn')?.addEventListener('click', () => {
+    if (!currentUsers.length) { showToast('No users to export', 'error'); return; }
+    const header = ['Name', 'Email', 'Role', 'Joined'];
+    const rows = currentUsers.map(u => [u.name, u.email, u.role, new Date(u.created_at).toLocaleDateString()]);
+    const csv = [header, ...rows]
+      .map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `local-link-users-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(`Exported ${currentUsers.length} user(s)`);
   });
 
-  // Role filter buttons
-  document.querySelectorAll('[role="tab"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const role = btn.textContent.trim().toLowerCase();
-      loadUsers(role === 'all' ? '' : role);
-    });
+  // New accounts are created through the standard sign-up flow.
+  document.getElementById('add-user-btn')?.addEventListener('click', () => {
+    window.location.href = '/login_signup/code.html';
   });
 
   loadUsers();

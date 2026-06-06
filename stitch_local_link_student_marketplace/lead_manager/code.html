@@ -417,7 +417,8 @@
           <a href="tel:${lead.customer_phone}" class="hover:text-primary">${lead.customer_phone}</a>
         </div>` : ''}
         ${lead.message ? `<p class="text-on-surface-variant text-sm mt-2 italic">"${lead.message}"</p>` : ''}
-      </div>` : `<p class="text-on-surface-variant text-sm mb-4 ${!isUnlocked ? 'blur-[3px]' : ''}">Contact details locked.</p>`}
+      </div>
+      <a href="/unlock_business_lead/code.html?lead=${lead.id}" class="text-primary text-sm font-label-md hover:underline inline-flex items-center gap-1">View details <span class="material-symbols-outlined text-[16px]">arrow_forward</span></a>` : `<p class="text-on-surface-variant text-sm mb-4 ${!isUnlocked ? 'blur-[3px]' : ''}">Contact details locked.</p>`}
     </div>`;
   }
 
@@ -450,6 +451,13 @@
       console.error('Failed to load leads:', err);
     }
   }
+
+  // Sidebar "Upgrade Plan" → subscription plans.
+  document.querySelectorAll('button').forEach(btn => {
+    if (btn.textContent.trim().startsWith('Upgrade Plan')) {
+      btn.addEventListener('click', () => window.location.href = '/topic_marketplace/code.html');
+    }
+  });
 
   loadLeads();
 </script>
