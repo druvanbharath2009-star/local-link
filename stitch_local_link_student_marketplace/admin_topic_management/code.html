@@ -227,11 +227,10 @@
 <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
 <span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
 </div>
-<span class="bg-secondary-container/20 text-secondary font-label-md text-label-md px-3 py-1 rounded-full">+12%</span>
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant mb-1">Total Active Topics</p>
-<p class="font-headline-lg text-headline-lg text-on-surface">42</p>
+<p id="stat-topics" class="font-headline-lg text-headline-lg text-on-surface">—</p>
 </div>
 </div>
 <!-- Stat Card 2 -->
@@ -242,9 +241,8 @@
 </div>
 </div>
 <div>
-<p class="font-label-md text-label-md text-on-surface-variant mb-1">Most Popular</p>
-<p class="font-headline-md text-headline-md text-on-surface">Web Development</p>
-<p class="font-body-md text-body-md text-outline mt-1">156 Businesses</p>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Verified Businesses</p>
+<p id="stat-verified" class="font-headline-lg text-headline-lg text-on-surface">—</p>
 </div>
 </div>
 <!-- Stat Card 3 -->
@@ -255,11 +253,10 @@
 <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white">
 <span class="material-symbols-outlined" data-icon="payments">payments</span>
 </div>
-<span class="bg-white/20 text-white font-label-md text-label-md px-3 py-1 rounded-full">+8.4%</span>
 </div>
 <div class="relative z-10">
-<p class="font-label-md text-label-md text-primary-fixed-dim mb-1">Total Subscriptions Revenue</p>
-<p class="font-headline-lg text-headline-lg">$14,250<span class="font-body-md text-body-md text-primary-fixed-dim">/mo</span></p>
+<p class="font-label-md text-label-md text-primary-fixed-dim mb-1">Total Revenue</p>
+<p id="stat-revenue" class="font-headline-lg text-headline-lg">—</p>
 </div>
 </div>
 </section>
@@ -279,54 +276,6 @@
 <!-- Topic Cards Grid -->
 <div id="topics-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <div class="col-span-2 text-center py-8 text-on-surface-variant">Loading topics...</div>
-<div class="bg-surface-lowest rounded-[1.5rem] p-6 shadow-level-1 hover:shadow-level-2 transition-shadow group border border-transparent hover:border-primary/20">
-<div class="flex justify-between items-start mb-4">
-<span class="bg-secondary-container/30 text-secondary font-label-md text-label-md px-3 py-1 rounded-full flex items-center gap-1">
-                                Tech
-                            </span>
-<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-<button class="text-outline hover:text-error"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-</div>
-</div>
-<h3 class="font-headline-md text-headline-md text-on-surface mb-2 flex items-center gap-2">
-                            Web Development
-                            <div aria-label="Verified Topic" class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm">
-<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
-</div>
-</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-2">Custom website creation, e-commerce solutions, and web application development services.</p>
-<div class="flex justify-between items-center pt-4 border-t border-outline-variant/50">
-<div class="flex items-center gap-2 text-primary">
-<span class="material-symbols-outlined text-[20px]" data-icon="storefront">storefront</span>
-<span class="font-label-md text-label-md">156 Businesses</span>
-</div>
-<span class="font-label-md text-label-md text-outline">High Demand</span>
-</div>
-</div>
-<!-- Card 2 -->
-<div class="bg-surface-lowest rounded-[1.5rem] p-6 shadow-level-1 hover:shadow-level-2 transition-shadow group border border-transparent hover:border-primary/20">
-<div class="flex justify-between items-start mb-4">
-<span class="bg-primary-container/20 text-primary font-label-md text-label-md px-3 py-1 rounded-full flex items-center gap-1">
-                                Creative
-                            </span>
-<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
-<button class="text-outline hover:text-error"><span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span></button>
-</div>
-</div>
-<h3 class="font-headline-md text-headline-md text-on-surface mb-2 flex items-center gap-2">
-                            Graphic Design
-                        </h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-2">Branding, logo design, digital illustration, and print material creation.</p>
-<div class="flex justify-between items-center pt-4 border-t border-outline-variant/50">
-<div class="flex items-center gap-2 text-primary">
-<span class="material-symbols-outlined text-[20px]" data-icon="storefront">storefront</span>
-<span class="font-label-md text-label-md">89 Businesses</span>
-</div>
-<span class="font-label-md text-label-md text-outline">Steady</span>
-</div>
-</div>
 </div>
 </section>
 <!-- Right Column: Add/Edit Form -->
@@ -452,6 +401,19 @@
     }
   });
 
+  async function loadStats() {
+    try {
+      const s = await api.get('/admin/stats');
+      const t = document.getElementById('stat-topics');
+      if (t) t.textContent = s.active_topics;
+      const v = document.getElementById('stat-verified');
+      if (v) v.textContent = s.verified_businesses;
+      const r = document.getElementById('stat-revenue');
+      if (r) r.textContent = '$' + (s.total_revenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } catch (err) { console.error('stats failed', err); }
+  }
+
   loadTopics();
+  loadStats();
 </script>
 </body></html>

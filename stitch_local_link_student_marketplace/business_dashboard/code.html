@@ -276,26 +276,26 @@
                         Lead Performance
                     </h3>
 <div class="flex items-end gap-4 mb-8">
-<div class="font-headline-xl text-[56px] text-on-surface leading-none">124</div>
-<div class="font-body-md text-body-md text-on-surface-variant pb-2">Total Leads (30d)</div>
+<div id="stat-total" class="font-headline-xl text-[56px] text-on-surface leading-none">—</div>
+<div class="font-body-md text-body-md text-on-surface-variant pb-2">Total Leads</div>
 </div>
 <div class="space-y-4 mt-auto">
 <div class="flex flex-col gap-1.5">
 <div class="flex justify-between font-label-md text-label-md text-on-surface">
-<span>Free Inbound</span>
-<span>82</span>
+<span>Free leads used</span>
+<span id="stat-free">0 / 5</span>
 </div>
 <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-secondary-container rounded-full" style="width: 66%;"></div>
+<div class="h-full bg-secondary-container rounded-full" style="width: 0%;"></div>
 </div>
 </div>
 <div class="flex flex-col gap-1.5">
 <div class="flex justify-between font-label-md text-label-md text-on-surface">
-<span>Paid/Premium</span>
-<span>42</span>
+<span>Leads unlocked</span>
+<span id="stat-unlocked">0</span>
 </div>
 <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-primary rounded-full" style="width: 34%;"></div>
+<div class="h-full bg-primary rounded-full" style="width: 0%;"></div>
 </div>
 </div>
 </div>
@@ -310,33 +310,7 @@
 <button class="text-primary font-label-md text-label-md hover:underline">Manage</button>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-<!-- Topic Tag 1 -->
-<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition cursor-pointer">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-[16px]" data-icon="code">code</span>
-</div>
-<span class="font-label-md text-label-md text-on-surface">Web Development</span>
-</div>
-<span class="text-xs font-semibold text-secondary px-2 py-1 bg-secondary-fixed/20 rounded-md">Active</span>
-</div>
-<!-- Topic Tag 2 -->
-<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition cursor-pointer">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-[16px]" data-icon="edit_note">edit_note</span>
-</div>
-<span class="font-label-md text-label-md text-on-surface">Content Creation</span>
-</div>
-<span class="text-xs font-semibold text-secondary px-2 py-1 bg-secondary-fixed/20 rounded-md">Active</span>
-</div>
-<!-- Topic Tag 3 -->
-<div class="flex items-center justify-between p-4 rounded-xl border border-dashed border-outline-variant hover:bg-surface-container-low transition cursor-pointer text-center justify-center">
-<span class="font-label-md text-label-md text-primary flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
-                                Subscribe to more
-                            </span>
-</div>
+<div class="col-span-3 text-center py-4 text-on-surface-variant">Loading topic subscriptions…</div>
 </div>
 </div>
 </div>
@@ -398,14 +372,23 @@
         }
       }
 
-      // Update lead numbers
-      const totalEl = document.querySelector('.font-headline-xl.text-\\[56px\\]');
-      const freeEl = document.querySelector('[data-icon="monitoring"]')?.closest('div')?.querySelector('span:last-child');
-      if (totalEl) totalEl.textContent = leadsData.leads.length;
-      const freePct = Math.min((leadsData.free_leads_used / 5) * 100, 100);
+      // Update lead numbers with real data
+      const totalLeads = leadsData.leads.length;
+      const freeUsed = leadsData.free_leads_used;
+      const unlockedCount = leadsData.leads.filter(l => l.unlocked).length;
+
+      const totalEl = document.getElementById('stat-total');
+      if (totalEl) totalEl.textContent = totalLeads;
+
+      const freeStatEl = document.getElementById('stat-free');
+      if (freeStatEl) freeStatEl.textContent = `${freeUsed} / 5`;
       const freeBar = document.querySelector('.h-full.bg-secondary-container');
-      if (freeBar) freeBar.style.width = freePct + '%';
-      const freeUsedEl = document.querySelectorAll('.font-justify-between span:last-child');
+      if (freeBar) freeBar.style.width = Math.min((freeUsed / 5) * 100, 100) + '%';
+
+      const unlockedEl = document.getElementById('stat-unlocked');
+      if (unlockedEl) unlockedEl.textContent = unlockedCount;
+      const unlockedBar = document.querySelector('.h-full.bg-primary.rounded-full');
+      if (unlockedBar) unlockedBar.style.width = (totalLeads ? (unlockedCount / totalLeads) * 100 : 0) + '%';
 
       // Update name in header
       const header = document.querySelector('h2.font-headline-lg');

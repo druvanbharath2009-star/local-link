@@ -68,6 +68,7 @@ const api = {
 
     // Topics (before /businesses to catch /topics/me/subscriptions)
     if (pathname === '/topics/me/subscriptions')                        return api._getMySubscriptions();
+    if (pathname === '/topics/me/leads' && method === 'GET')            return api._getMyTopicLeads();
     if (pathname === '/topics/subscribe' && method === 'POST')          return api._subscribe(body);
     const tLeads = pathname.match(/^\/topics\/(\w+)\/leads$/);
     if (tLeads  && method === 'GET')                                    return api._getTopicLeads(tLeads[1]);
@@ -95,6 +96,9 @@ const api = {
     if (pathname === '/customers/interest'    && method === 'POST')     return api._submitInterest(body);
     if (pathname === '/customers/complaint'   && method === 'POST')     return api._submitComplaint(body);
     if (pathname === '/customers/me/activity' && method === 'GET')      return api._getCustomerActivity();
+
+    // Notifications
+    if (pathname === '/notifications'         && method === 'GET')      return api._getNotifications();
 
     // Admin
     if (pathname === '/admin/stats'           && method === 'GET')      return api._adminStats();
@@ -356,6 +360,23 @@ const api = {
     return { message: `Subscribed to ${topic_ids.length} topic(s) for $${amount}` };
   },
 
+  // All submissions across every topic this business is actively subscribed to.
+  async _getMyTopicLeads() {
+    const user = api.getUser();
+    if (!user) return [];
+    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
+    if (!biz) return [];
+    const { data: subs } = await _sb.from('topic_subscriptions')
+      .select('topic_id, topics(name, icon)').eq('business_id', biz.id).eq('active', 1);
+    if (!subs || !subs.length) return [];
+    const topicIds = subs.map(s => s.topic_id);
+    const meta = Object.fromEntries(subs.map(s => [s.topic_id, s.topics]));
+    const { data: subm, error } = await _sb.from('topic_submissions')
+      .select('*').in('topic_id', topicIds).order('created_at', { ascending: false });
+    api._throw(error);
+    return (subm || []).map(s => ({ ...s, topic_name: meta[s.topic_id]?.name, topic_icon: meta[s.topic_id]?.icon }));
+  },
+
   async _getMySubscriptions() {
     const user = api.getUser();
     const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
@@ -404,6 +425,80 @@ const api = {
       .order('created_at', { ascending: false });
     api._throw(error);
     return data.map(f => ({ ...f, business_name: f.businesses?.business_name }));
+  },
+
+  // ── Notifications ──────────────────────────────────────────
+  // A business is notified when (a) a customer sends them a lead, or
+  // (b) a customer submits info into a topic the business is subscribed to.
+  // Built on top of the existing leads + topic submissions — no extra table.
+
+  async _getNotifications() {
+    const user = api.getUser();
+    if (!user || user.role !== 'business') return [];
+
+    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
+    if (!biz) return [];
+
+    // (a) Direct leads (interest forms sent to this business)
+    const { data: leads } = await _sb.from('interest_forms')
+      .select('id, customer_name, message, created_at, unlocked')
+      .eq('business_id', biz.id)
+      .order('created_at', { ascending: false })
+      .limit(25);
+
+    const leadNotifs = (leads || []).map(l => ({
+      id: `lead-${l.id}`,
+      type: 'lead',
+      created_at: l.created_at,
+      icon: 'person_add',
+      title: `New lead from ${l.customer_name}`,
+      body: l.message ? `"${String(l.message).slice(0, 70)}"` : 'Sent you an interest form.',
+      href: '/lead_manager/code.html',
+    }));
+
+    // (b) Submissions into topics this business is actively subscribed to
+    const { data: subs } = await _sb.from('topic_subscriptions')
+      .select('topic_id, topics(name)')
+      .eq('business_id', biz.id)
+      .eq('active', 1);
+
+    let topicNotifs = [];
+    if (subs && subs.length) {
+      const topicIds = subs.map(s => s.topic_id);
+      const topicNames = Object.fromEntries(subs.map(s => [s.topic_id, s.topics?.name]));
+      const { data: submissions } = await _sb.from('topic_submissions')
+        .select('id, customer_name, topic_id, message, created_at')
+        .in('topic_id', topicIds)
+        .order('created_at', { ascending: false })
+        .limit(25);
+
+      topicNotifs = (submissions || []).map(s => ({
+        id: `topic-${s.id}`,
+        type: 'topic',
+        created_at: s.created_at,
+        icon: 'category',
+        title: `New interest in ${topicNames[s.topic_id] || 'a subscribed topic'}`,
+        body: `${s.customer_name} submitted${s.message ? `: "${String(s.message).slice(0, 60)}"` : ' a request.'}`,
+        href: '/lead_manager/code.html',
+      }));
+    }
+
+    return [...leadNotifs, ...topicNotifs]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 30);
+  },
+
+  // Read-state for the notification bell (stored locally per browser).
+  _notifSeenAt() {
+    return localStorage.getItem('ll_notif_seen') || '1970-01-01T00:00:00Z';
+  },
+  _markNotifsSeen(notifs) {
+    if (notifs && notifs.length) {
+      const newest = notifs.reduce((m, n) => (n.created_at > m ? n.created_at : m), this._notifSeenAt());
+      localStorage.setItem('ll_notif_seen', newest);
+    } else {
+      localStorage.setItem('ll_notif_seen', new Date().toISOString());
+    }
   },
 
   // ── Admin ───────────────────────────────────────────────────
@@ -640,40 +735,97 @@ const api = {
     }
   });
 
-  // Wire notification bell → dropdown. No notifications backend yet, so show
-  // an empty-state panel instead of a dead click.
+  // Wire notification bell → dropdown backed by real data.
+  // Businesses see leads sent to them + submissions to topics they subscribe to.
+  function _timeAgo(iso) {
+    const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 60) return 'just now';
+    const m = Math.floor(s / 60); if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60); if (h < 24) return `${h}h ago`;
+    const d = Math.floor(h / 24); if (d < 7) return `${d}d ago`;
+    return new Date(iso).toLocaleDateString();
+  }
+
+  const _notifBells = [];
   document.querySelectorAll('button').forEach(btn => {
     const icon = btn.querySelector('.material-symbols-outlined');
-    if (icon && icon.textContent.trim() === 'notifications') {
-      btn.style.position = 'relative';
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const existing = document.getElementById('_ll_notif_menu');
-        if (existing) { existing.remove(); return; }
+    if (!(icon && icon.textContent.trim() === 'notifications')) return;
+    _notifBells.push(btn);
+    btn.style.position = 'relative';
 
-        const menu = document.createElement('div');
-        menu.id = '_ll_notif_menu';
-        menu.style.cssText = [
-          'position:absolute', 'right:0', 'top:calc(100% + 8px)',
-          'background:#fff', 'border:1px solid #e2e8f0', 'border-radius:12px',
-          'box-shadow:0 8px 24px rgba(0,0,0,0.12)', 'z-index:1000',
-          'width:260px', 'overflow:hidden', 'font-family:inherit', 'cursor:default'
-        ].join(';');
-        menu.innerHTML = `
-          <div style="padding:12px 16px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:600;color:#334155;">Notifications</div>
-          <div style="padding:28px 16px;text-align:center;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const existing = document.getElementById('_ll_notif_menu');
+      if (existing) { existing.remove(); return; }
+
+      const menu = document.createElement('div');
+      menu.id = '_ll_notif_menu';
+      menu.style.cssText = [
+        'position:absolute', 'right:0', 'top:calc(100% + 8px)',
+        'background:#fff', 'border:1px solid #e2e8f0', 'border-radius:12px',
+        'box-shadow:0 8px 24px rgba(0,0,0,0.12)', 'z-index:1000',
+        'width:300px', 'max-height:420px', 'overflow-y:auto', 'font-family:inherit', 'cursor:default'
+      ].join(';');
+      menu.innerHTML = `
+        <div style="padding:12px 16px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:600;color:#334155;">Notifications</div>
+        <div style="padding:28px 16px;text-align:center;color:#94a3b8;font-size:13px;">Loading…</div>`;
+      menu.addEventListener('click', (ev) => ev.stopPropagation());
+      btn.appendChild(menu);
+
+      const close = (ev) => { if (!btn.contains(ev.target)) { menu.remove(); document.removeEventListener('click', close); } };
+      setTimeout(() => document.addEventListener('click', close), 0);
+
+      let notifs = [];
+      try { notifs = await api.get('/notifications'); }
+      catch (err) { console.error('notifications failed', err); }
+
+      const seenAt = api._notifSeenAt();
+      const body = notifs.length
+        ? notifs.map(n => {
+            const unread = n.created_at > seenAt;
+            return `<a href="${n.href}" style="display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid #f8fafc;text-decoration:none;${unread ? 'background:#f0f6ff;' : ''}">
+              <span class="material-symbols-outlined" style="font-size:20px;color:#003ec7;flex-shrink:0;">${n.icon}</span>
+              <span style="min-width:0;">
+                <span style="display:block;font-size:13px;font-weight:600;color:#1e293b;">${n.title}</span>
+                <span style="display:block;font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.body}</span>
+                <span style="display:block;font-size:11px;color:#94a3b8;margin-top:2px;">${_timeAgo(n.created_at)}</span>
+              </span>
+            </a>`;
+          }).join('')
+        : `<div style="padding:28px 16px;text-align:center;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px;">
             <span class="material-symbols-outlined" style="font-size:32px;color:#cbd5e1;">notifications_off</span>
             You're all caught up — no new notifications.
-          </div>
-        `;
-        menu.addEventListener('click', (ev) => ev.stopPropagation());
-        btn.appendChild(menu);
+          </div>`;
+      menu.innerHTML = `<div style="padding:12px 16px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:600;color:#334155;position:sticky;top:0;background:#fff;">Notifications</div>${body}`;
 
-        const close = (ev) => { if (!btn.contains(ev.target)) { menu.remove(); document.removeEventListener('click', close); } };
-        setTimeout(() => document.addEventListener('click', close), 0);
-      });
-    }
+      // Opening the panel marks everything as seen → clears the badge.
+      api._markNotifsSeen(notifs);
+      document.querySelectorAll('.ll-notif-badge').forEach(d => d.remove());
+    });
   });
+
+  // Background unread check → show a red dot on the bell(s) when there's
+  // something new since the user last opened the panel.
+  if (_notifBells.length && role === 'business') {
+    api.get('/notifications').then(notifs => {
+      const seenAt = api._notifSeenAt();
+      const unread = (notifs || []).filter(n => n.created_at > seenAt).length;
+      if (!unread) return;
+      _notifBells.forEach(btn => {
+        if (btn.querySelector('.ll-notif-badge')) return;
+        const dot = document.createElement('span');
+        dot.className = 'll-notif-badge';
+        dot.textContent = unread > 9 ? '9+' : String(unread);
+        dot.style.cssText = [
+          'position:absolute', 'top:-2px', 'right:-2px', 'min-width:16px', 'height:16px',
+          'padding:0 4px', 'background:#ba1a1a', 'color:#fff', 'font-size:10px',
+          'font-weight:700', 'line-height:16px', 'text-align:center', 'border-radius:999px',
+          'box-shadow:0 0 0 2px #fff'
+        ].join(';');
+        btn.appendChild(dot);
+      });
+    }).catch(() => {});
+  }
 })();
 
 // ── UI helpers (unchanged) ─────────────────────────────────

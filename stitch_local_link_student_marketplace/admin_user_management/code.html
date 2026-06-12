@@ -155,11 +155,10 @@
 <div class="p-3 bg-primary/10 rounded-lg text-primary">
 <span class="material-symbols-outlined" data-icon="group_add">group_add</span>
 </div>
-<span class="bg-secondary-fixed-dim/20 text-on-secondary-container px-2 py-1 rounded-full font-label-md text-[12px]">+14%</span>
 </div>
 <div>
 <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">New Signups (7d)</h3>
-<p class="font-headline-lg text-headline-lg text-on-surface mt-1">1,248</p>
+<p id="stat-signups" class="font-headline-lg text-headline-lg text-on-surface mt-1">—</p>
 </div>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,20,82,0.08)] flex flex-col gap-4 border border-surface-variant">
@@ -171,7 +170,7 @@
 </div>
 <div>
 <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Business Accounts</h3>
-<p class="font-headline-lg text-headline-lg text-on-surface mt-1">4,092</p>
+<p id="stat-biz" class="font-headline-lg text-headline-lg text-on-surface mt-1">—</p>
 </div>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,20,82,0.08)] flex flex-col gap-4 border border-surface-variant relative overflow-hidden">
@@ -185,11 +184,11 @@
 <div class="relative z-10">
 <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Biz vs Customer</h3>
 <div class="flex items-end gap-2 mt-1">
-<p class="font-headline-lg text-headline-lg text-on-surface">1 : 4.5</p>
+<p id="stat-ratio" class="font-headline-lg text-headline-lg text-on-surface">—</p>
 </div>
 <div class="w-full h-2 bg-surface-variant rounded-full mt-4 overflow-hidden flex">
-<div class="h-full bg-secondary w-[18%]"></div>
-<div class="h-full bg-primary w-[82%]"></div>
+<div id="ratio-bar-biz" class="h-full bg-secondary" style="width:0%"></div>
+<div id="ratio-bar-cust" class="h-full bg-primary" style="width:0%"></div>
 </div>
 </div>
 </div>
@@ -230,124 +229,7 @@
 </tr>
 </thead>
 <tbody id="users-tbody" class="divide-y divide-surface-variant">
-<!-- Rows dynamically loaded -->
-<tr class="hover:bg-surface-container-low transition-colors group">
-<td class="p-4">
-<div class="flex items-center gap-3">
-<img alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-surface" data-alt="A professional headshot of a young female entrepreneur looking confident in a bright, modern office setting with natural light and a clean white background. High resolution, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6lpAI8PNES0lxMaUgNWu1gK8sz1nA5HdZfZLMG1BKqGkZrpyXC_guc3B57G-Yq-mUWV_V5LUteCKdFdM_aoRXEqlZpVXyCH0WFjOssFAbQUdYlb3Lpj1QSMpD9Qizk5vctgRX4SoS9i8RXZ_6A-rw3MYq-nnz52gskQFyMIyllnBWmxy3BPt8u4gHd5124ySIXVrcmpXD--Sbk0ZStLs6gVhIOl6u2QGW9LrBn6g16RnpbqiBK2md8ZWdILg9zhuxYQ9bNOkGEQ"/>
-<div>
-<div class="font-label-md text-label-md text-on-surface flex items-center gap-1">
-                                            Sarah's Tutoring
-                                            <div class="w-4 h-4 bg-primary rounded-full flex items-center justify-center" title="Verified">
-<span class="material-symbols-outlined text-[10px] text-white font-bold" data-icon="check">check</span>
-</div>
-</div>
-<div class="font-body-md text-[14px] text-on-surface-variant">sarah.j@example.com</div>
-</div>
-</div>
-</td>
-<td class="p-4">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary/10 text-secondary font-label-md text-[12px]">
-<span class="material-symbols-outlined text-[14px]" data-icon="storefront">storefront</span>
-                                    Business
-                                </span>
-</td>
-<td class="p-4">
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-secondary"></div>
-<span class="font-body-md text-body-md text-on-surface">Active</span>
-</div>
-</td>
-<td class="p-4 font-body-md text-body-md text-on-surface-variant">Oct 24, 2023</td>
-<td class="p-4">
-<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="View Profile">
-<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Reset Password">
-<span class="material-symbols-outlined text-[20px]" data-icon="lock_reset">lock_reset</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-colors" title="Suspend Account">
-<span class="material-symbols-outlined text-[20px]" data-icon="block">block</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 2: Customer User -->
-<tr class="hover:bg-surface-container-low transition-colors group">
-<td class="p-4">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-md text-[16px]">
-                                        MJ
-                                    </div>
-<div>
-<div class="font-label-md text-label-md text-on-surface">Marcus Johnson</div>
-<div class="font-body-md text-[14px] text-on-surface-variant">m.johnson99@email.com</div>
-</div>
-</div>
-</td>
-<td class="p-4">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-variant text-on-surface-variant font-label-md text-[12px]">
-<span class="material-symbols-outlined text-[14px]" data-icon="person">person</span>
-                                    Customer
-                                </span>
-</td>
-<td class="p-4">
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-secondary"></div>
-<span class="font-body-md text-body-md text-on-surface">Active</span>
-</div>
-</td>
-<td class="p-4 font-body-md text-body-md text-on-surface-variant">Nov 02, 2023</td>
-<td class="p-4">
-<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="View Profile">
-<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Reset Password">
-<span class="material-symbols-outlined text-[20px]" data-icon="lock_reset">lock_reset</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-colors" title="Suspend Account">
-<span class="material-symbols-outlined text-[20px]" data-icon="block">block</span>
-</button>
-</div>
-</td>
-</tr>
-<!-- Row 3: Suspended User -->
-<tr class="hover:bg-surface-container-low transition-colors group opacity-75">
-<td class="p-4">
-<div class="flex items-center gap-3">
-<img alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-surface grayscale" data-alt="A black and white generic profile picture showing a person looking away. The lighting is slightly dark, creating a somber, unavailable mood indicative of a suspended account." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSdDO9acYlpbBXKx6Sdqtnv-PPQSdrwECKTdGqP8E08S3zXYytsHuk0W12j8pV0j1X2l6vtcN1dR-o3NUB2mrtxgWAspIxFzpaP3Lqky6amoH77Gm_pkujVJwAxdbRQJmsJiNJosa6zHjNJjdRwaLsAEZ-UnT_YASdYA_AGEM1yMDFFStV-dZ3dlE74u3QcVz2tbUnP0N3Apzt-hWQ99_WBcrCN64ZprcEAwOlrbpFHbCQbJDUm2eL2-6WgiHcEOk9tDpJm_SY4w"/>
-<div>
-<div class="font-label-md text-label-md text-on-surface">Tech Repairs LLC</div>
-<div class="font-body-md text-[14px] text-on-surface-variant">contact@techrepairs.net</div>
-</div>
-</div>
-</td>
-<td class="p-4">
-<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary/10 text-secondary font-label-md text-[12px]">
-<span class="material-symbols-outlined text-[14px]" data-icon="storefront">storefront</span>
-                                    Business
-                                </span>
-</td>
-<td class="p-4">
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-error"></div>
-<span class="font-body-md text-body-md text-error">Suspended</span>
-</div>
-</td>
-<td class="p-4 font-body-md text-body-md text-on-surface-variant">Aug 15, 2023</td>
-<td class="p-4">
-<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="View Profile">
-<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Restore Account">
-<span class="material-symbols-outlined text-[20px]" data-icon="settings_backup_restore">settings_backup_restore</span>
-</button>
-</div>
-</td>
-</tr>
+<tr><td colspan="5" class="text-center py-8 text-on-surface-variant">Loading users…</td></tr>
 </tbody>
 </table>
 </div>
@@ -468,6 +350,30 @@
     }
   }
 
+  // Real metrics computed from the full (unfiltered) user list.
+  async function loadStats() {
+    try {
+      const users = await api.get('/admin/users');
+      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const signups = users.filter(u => new Date(u.created_at).getTime() >= weekAgo).length;
+      const biz = users.filter(u => u.role === 'business').length;
+      const cust = users.filter(u => u.role === 'customer').length;
+
+      const signupsEl = document.getElementById('stat-signups');
+      if (signupsEl) signupsEl.textContent = signups.toLocaleString();
+      const bizEl = document.getElementById('stat-biz');
+      if (bizEl) bizEl.textContent = biz.toLocaleString();
+
+      const ratioEl = document.getElementById('stat-ratio');
+      if (ratioEl) ratioEl.textContent = biz ? `1 : ${(cust / biz).toFixed(1)}` : `${cust} : 0`;
+      const totalBC = biz + cust;
+      const bizBar = document.getElementById('ratio-bar-biz');
+      const custBar = document.getElementById('ratio-bar-cust');
+      if (bizBar) bizBar.style.width = (totalBC ? (biz / totalBC) * 100 : 0) + '%';
+      if (custBar) custBar.style.width = (totalBC ? (cust / totalBC) * 100 : 0) + '%';
+    } catch (err) { console.error('stats failed', err); }
+  }
+
   let searchTimeout;
   document.getElementById('user-search')?.addEventListener('input', () => {
     clearTimeout(searchTimeout);
@@ -502,5 +408,6 @@
   });
 
   loadUsers();
+  loadStats();
 </script>
 </body></html>

@@ -17,7 +17,18 @@
       "Bash(chmod +x *)",
       "Bash(node -e ' *)",
       "Bash(npm uninstall *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(awk '/<script/{p=1} p' __TRACKED_VAR__/code.html)",
+      "Bash(grep -c '<script' __TRACKED_VAR__/code.html)",
+      "Bash(awk '/<script>/{p=1} p' __TRACKED_VAR__/code.html)",
+      "Bash(node --check shared/api.js)",
+      "Bash(grep -c '</script>' __TRACKED_VAR__/code.html)",
+      "Bash(grep -n 'id=\"stat-\\\\|font-headline-xl\\\\|font-headline-lg\\\\|>1,\\\\|>2,\\\\|>[0-9][0-9][0-9]<\\\\|\\\\$[0-9]\\\\|Revenue\\\\|Complaints\\\\|getElementById' admin_control_center/code.html)",
+      "Bash(grep -inE \"summary|selected|order|total|\\\\\\\\\\\\$[0-9]\" topic_subscription_checkout/code.html)",
+      "Bash(git commit -q -m ' *)"
     ]
   }
 }
