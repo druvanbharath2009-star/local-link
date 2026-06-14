@@ -180,15 +180,15 @@
 <div class="px-margin py-lg max-w-7xl mx-auto w-full pb-32 lg:pb-lg">
 <!-- Hero Section -->
 <div class="mb-lg flex flex-col gap-base">
-<h1 class="font-headline-xl text-headline-xl text-on-surface">Expand Your Reach</h1>
-<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+<h1 id="th-title" class="font-headline-xl text-headline-xl text-on-surface">Expand Your Reach</h1>
+<p id="th-subtitle" class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
                     Subscribe to specialized service categories and start receiving verified, high-intent local leads directly to your dashboard. Choose the plan that fits your ambition.
                 </p>
 </div>
 <!-- Main Layout: Pricing Left, Grid Right (Bento style) -->
 <div class="flex flex-col lg:flex-row gap-gutter">
-<!-- Pricing Column -->
-<div class="w-full lg:w-1/3 flex flex-col gap-gutter shrink-0">
+<!-- Pricing Column (businesses only) -->
+<div id="pricing-column" class="w-full lg:w-1/3 flex flex-col gap-gutter shrink-0">
 <!-- Single Plan -->
 <div class="bg-surface-container-lowest rounded-[1.5rem] p-margin shadow-level-1 flex flex-col gap-margin border border-surface-container-highest">
 <div>
@@ -298,6 +298,17 @@
     if (nameEl) nameEl.textContent = user.name || user.email;
     const avEl = document.getElementById('sidebar-avatar');
     if (avEl) avEl.textContent = (user.name || user.email || '?').trim().charAt(0).toUpperCase();
+  }
+
+  // Customers (and logged-out visitors) use this page to submit interest into a
+  // topic — they don't subscribe — so hide the business pricing plans and show
+  // customer-oriented copy.
+  if (!isBusiness) {
+    document.getElementById('pricing-column')?.classList.add('hidden');
+    const title = document.getElementById('th-title');
+    if (title) title.textContent = 'Find Local Help by Topic';
+    const sub = document.getElementById('th-subtitle');
+    if (sub) sub.textContent = 'Pick a category and share what you need. Student businesses subscribed to that topic will see your request and reach out to you directly.';
   }
   let selectedTopics = new Set();
   let mySubscriptions = new Set();

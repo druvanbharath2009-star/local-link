@@ -674,8 +674,24 @@ const api = {
   // Hide role-restricted nav links based on the current user's role
   document.querySelectorAll('nav a, header nav a, aside nav a').forEach(link => {
     const txt = navLabel(link);
-    if ((txt === 'My Leads' || txt === 'Subscriptions') && role !== 'business') {
+    // "My Leads" is a business-only inbox.
+    if (txt === 'My Leads' && role !== 'business') {
       link.style.display = 'none';
+    }
+    // "Subscriptions" is the Topic Hub. Businesses subscribe to topics; customers
+    // (and logged-out visitors) use the same page to submit interest into a topic,
+    // so keep it visible for them but relabel it "Topics". Admins manage topics
+    // elsewhere, so hide it for them.
+    if (txt === 'Subscriptions') {
+      if (role === 'admin') {
+        link.style.display = 'none';
+      } else if (role !== 'business') {
+        [...link.childNodes].forEach(n => {
+          if (n.nodeType === 3 && n.textContent.trim() === 'Subscriptions') {
+            n.textContent = n.textContent.replace('Subscriptions', 'Topics');
+          }
+        });
+      }
     }
     if (txt === 'Admin' && role !== 'admin') {
       link.style.display = 'none';
