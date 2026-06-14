@@ -317,12 +317,14 @@ const api = {
 
   async _submitTopic(topicId, { customer_name, customer_email, customer_phone, message }) {
     if (!customer_name || !customer_email) throw new Error('Name and email are required');
-    const { data, error } = await _sb.from('topic_submissions').insert({
+    // Same as interest forms: the submitter can't read the row back under RLS
+    // (only subscribed businesses / admin can), so insert without a returning select.
+    const { error } = await _sb.from('topic_submissions').insert({
       topic_id: topicId, customer_name, customer_email,
       customer_phone: customer_phone || null, message: message || null
-    }).select().single();
+    });
     api._throw(error);
-    return { message: 'Submitted successfully', id: data.id };
+    return { message: 'Submitted successfully' };
   },
 
   async _getTopicLeads(topicId) {
@@ -393,29 +395,27 @@ const api = {
     if (!business_id || !customer_name || !customer_email) {
       throw new Error('business_id, customer_name, and customer_email are required');
     }
-    const { data: biz } = await _sb.from('businesses').select('id, free_leads_used').eq('id', business_id).single();
-    if (!biz) throw new Error('Business not found');
-
-    const autoUnlock = biz.free_leads_used < 5 ? 1 : 0;
-    const { data, error } = await _sb.from('interest_forms').insert({
+    // A customer (or anonymous visitor) is not the business owner, so they cannot
+    // read the lead back or touch the businesses row under RLS. We only do the
+    // INSERT (allowed by the "Anyone submits interest" policy) and skip the
+    // returning select. Free-lead accounting happens later when the OWNER unlocks.
+    const { error } = await _sb.from('interest_forms').insert({
       business_id, customer_name, customer_email,
-      customer_phone: customer_phone || null, message: message || null, unlocked: autoUnlock
-    }).select().single();
+      customer_phone: customer_phone || null, message: message || null, unlocked: 0
+    });
     api._throw(error);
-
-    if (autoUnlock) {
-      await _sb.from('businesses').update({ free_leads_used: biz.free_leads_used + 1 }).eq('id', business_id);
-    }
-    return { message: 'Interest form submitted successfully', id: data.id };
+    return { message: 'Interest form submitted successfully' };
   },
 
   async _submitComplaint({ customer_id, business_id, subject, description }) {
     if (!subject || !description) throw new Error('subject and description are required');
-    const { data, error } = await _sb.from('complaints').insert({
+    // Customers can't read complaints back (admin-only SELECT policy), so don't
+    // request the inserted row — that would trip RLS even though the insert is fine.
+    const { error } = await _sb.from('complaints').insert({
       customer_id: customer_id || null, business_id: business_id || null, subject, description
-    }).select().single();
+    });
     api._throw(error);
-    return { message: 'Complaint submitted', id: data.id };
+    return { message: 'Complaint submitted' };
   },
 
   async _getCustomerActivity() {
@@ -689,8 +689,18 @@ const api = {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         api.clearAuth();
-        window.location.href = '/login_signup/code.html';
+        window.location.href = '/local_link_homepage/code.html';
       });
+    }
+  });
+
+  // Make the "Local Link" wordmark/logo navigate home on every page.
+  // Matches any element whose visible text is exactly "Local Link" (skips the
+  // footer copyright line, which contains more text).
+  document.querySelectorAll('header *, aside *, nav *, h1, h2').forEach(el => {
+    if (el.children.length === 0 && el.textContent.trim() === 'Local Link') {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => window.location.href = '/local_link_homepage/code.html');
     }
   });
 
@@ -727,7 +737,7 @@ const api = {
         btn.appendChild(menu);
 
         menu.querySelector('#_ll_dash_btn').addEventListener('click', () => { menu.remove(); api.redirectByRole(user.role); });
-        menu.querySelector('#_ll_logout_btn').addEventListener('click', () => { api.clearAuth(); window.location.href = '/login_signup/code.html'; });
+        menu.querySelector('#_ll_logout_btn').addEventListener('click', () => { api.clearAuth(); window.location.href = '/local_link_homepage/code.html'; });
 
         const close = (ev) => { if (!btn.contains(ev.target)) { menu.remove(); document.removeEventListener('click', close); } };
         setTimeout(() => document.addEventListener('click', close), 0);

@@ -147,12 +147,11 @@
 <!-- Tags and Meta -->
 <div class="flex flex-wrap items-center gap-sm mb-md">
 <span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-sm py-xs rounded-full inline-flex items-center gap-xs">
-<span class="material-symbols-outlined text-[16px]">brush</span>
-                                    Graphic Design
+<span class="material-symbols-outlined text-[16px]">person</span>
+                                    Customer Interest
                                 </span>
-<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span id="lead-posted" class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
 <span class="material-symbols-outlined text-[18px]">schedule</span>
-                                    Posted 2 hours ago
                                 </span>
 </div>
 <h2 id="lead-title" class="font-headline-lg text-headline-lg text-on-surface mb-md">Lead Details</h2>
@@ -228,36 +227,14 @@
 <span class="font-body-md text-body-md text-on-surface-variant">/ lead</span>
 </div>
 <hr class="border-surface-variant"/>
-<!-- Payment Selection -->
-<div class="space-y-sm">
-<h4 class="font-label-md text-label-md text-on-surface mb-xs">Payment Method</h4>
-<!-- Selected Card -->
-<label class="flex items-center justify-between p-sm rounded-lg border-2 border-primary bg-primary-fixed/10 cursor-pointer transition-colors">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-primary">credit_card</span>
-<div class="flex flex-col">
-<span class="font-label-md text-label-md text-on-surface">Visa •••• 4242</span>
-<span class="font-body-md text-[12px] text-on-surface-variant">Expires 12/25</span>
+<!-- Charge summary -->
+<div id="charge-note" class="space-y-sm">
+<div class="flex items-start gap-sm p-sm rounded-lg bg-surface border border-surface-variant">
+<span class="material-symbols-outlined text-primary mt-[2px]">info</span>
+<p class="font-body-md text-sm text-on-surface-variant">
+                                    Unlocking reveals this customer's email and phone. Your first 5 leads are free; after that each unlock is $1.99.
+                                </p>
 </div>
-</div>
-<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
-<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
-</div>
-<input checked="" class="hidden" name="payment" type="radio"/>
-</label>
-<!-- Unselected Option -->
-<label class="flex items-center justify-between p-sm rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer transition-colors group">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">account_balance_wallet</span>
-<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface">Apple Pay</span>
-</div>
-<div class="w-5 h-5 rounded-full border-2 border-outline-variant group-hover:border-outline"></div>
-<input class="hidden" name="payment" type="radio"/>
-</label>
-<button class="font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant flex items-center gap-xs mt-xs">
-<span class="material-symbols-outlined text-[18px]">add</span>
-                                Add new payment method
-                            </button>
 </div>
 <!-- Action Button -->
 <button id="unlock-btn" class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm hover:bg-on-primary-fixed-variant transition-all duration-200 shadow-md shadow-primary/20 active:scale-[0.98] mt-sm">
@@ -342,6 +319,10 @@
         }
         document.getElementById('lead-title').textContent = `Interest from ${current.customer_name}`;
         document.getElementById('lead-desc').textContent = current.message || 'No message provided.';
+        const postedEl = document.getElementById('lead-posted');
+        if (postedEl && current.created_at) {
+          postedEl.innerHTML = `<span class="material-symbols-outlined text-[18px]">schedule</span> Received ${new Date(current.created_at).toLocaleDateString()}`;
+        }
         if (current.unlocked) revealContact(current);
       } catch (err) {
         showToast(err.message || 'Could not load lead', 'error');

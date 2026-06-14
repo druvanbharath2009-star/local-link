@@ -139,11 +139,9 @@
                 Upgrade Plan
             </button>
 <div class="flex items-center gap-3 px-2 mb-4">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
-<img alt="Business Owner Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoFXaxnSfc05p_XlA5d1T8mT1YqCg5xDsGiwGwrm3O8fv2rowO2Tusf6Y7Jwpw04lWgb_ZSICwdE6pCrDTQuuFhCYkqEw-sdfvI-oG4s5XWYDogvIZOBlqrG5--THgB2lCBIyXUCjcZ9O2T6l-X1K8V2jYm5h4yEvDR2rD-Zw9zoVce9cRU-EiKofs9hIDN-bB3SRxKaREpnshPip5Bp2NNNi-Vbem4cNmRdBS29QAOd_cnD2F9UOqWtg6Awsp2eOWKzkSsYRxaw"/>
-</div>
+<div id="sidebar-avatar" class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center font-headline-md overflow-hidden">?</div>
 <div>
-<div class="font-label-md text-label-md text-on-surface">Local Link</div>
+<div id="sidebar-name" class="font-label-md text-label-md text-on-surface">Account</div>
 <div class="font-body-md text-[12px] text-on-surface-variant">Student Entrepreneur</div>
 </div>
 </div>
@@ -293,6 +291,14 @@
 <script>
   const user = api.getUser();
   const isBusiness = user?.role === 'business';
+
+  // Populate the sidebar account widget with the real signed-in user.
+  if (user) {
+    const nameEl = document.getElementById('sidebar-name');
+    if (nameEl) nameEl.textContent = user.name || user.email;
+    const avEl = document.getElementById('sidebar-avatar');
+    if (avEl) avEl.textContent = (user.name || user.email || '?').trim().charAt(0).toUpperCase();
+  }
   let selectedTopics = new Set();
   let mySubscriptions = new Set();
 

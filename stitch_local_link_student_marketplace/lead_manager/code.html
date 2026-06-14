@@ -227,8 +227,7 @@
 <script>
   if (!api.requireAuth('business')) {}
 
-  function leadCard(lead, index, freeLimit) {
-    const isFree = index < freeLimit;
+  function leadCard(lead, isFree) {
     const isUnlocked = lead.unlocked;
     return `<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col relative overflow-hidden transition-transform hover:-translate-y-1 duration-300 border border-surface-variant">
       ${!isUnlocked ? `<div class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[2px] rounded-xl">
@@ -285,7 +284,8 @@
       const grid = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3');
       if (!grid) return;
 
-      const freeRemaining = 5 - data.free_leads_used;
+      // A locked lead unlocks for free while the business still has free leads left.
+      let freeRemaining = Math.max(0, (data.free_leads_limit ?? 5) - data.free_leads_used);
       const freeEl = document.querySelector('.font-label-md.text-primary.mb-1');
       if (freeEl) freeEl.nextElementSibling && (freeEl.nextElementSibling.textContent = freeRemaining);
 
@@ -293,7 +293,11 @@
         grid.innerHTML = '<div class="col-span-full text-center py-12 text-on-surface-variant">No leads yet. Share your business profile to get started!</div>';
         return;
       }
-      grid.innerHTML = data.leads.map((l, i) => leadCard(l, i, data.free_leads_limit)).join('');
+      grid.innerHTML = data.leads.map(l => {
+        const isFree = !l.unlocked && freeRemaining > 0;
+        if (isFree) freeRemaining--;
+        return leadCard(l, isFree);
+      }).join('');
     } catch (err) {
       console.error('Failed to load leads:', err);
     }

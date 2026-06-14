@@ -205,19 +205,19 @@
 <!-- Business Name -->
 <div class="space-y-sm">
 <label class="font-label-md text-label-md text-on-primary-fixed block" for="businessName">Business Name</label>
-<input class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" id="businessName" placeholder="Enter your business name" type="text" value="Vertex Design Studio"/>
+<input class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" id="businessName" placeholder="Enter your business name" type="text"/>
 </div>
 <!-- Mission Statement -->
 <div class="space-y-sm">
 <label class="font-label-md text-label-md text-on-primary-fixed block" for="missionStatement">Mission Statement</label>
-<textarea class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all resize-none" id="missionStatement" placeholder="What problem are you solving?" rows="4">Delivering high-end, responsive web solutions for local startups, bridging the gap between youthful creativity and reliable corporate execution.</textarea>
+<textarea class="w-full bg-surface-container border-transparent rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all resize-none" id="missionStatement" placeholder="What problem are you solving?" rows="4"></textarea>
 </div>
 <!-- Pricing Simple -->
 <div class="space-y-sm">
 <label class="font-label-md text-label-md text-on-primary-fixed block" for="startingPrice">Starting Price (Hourly or Project)</label>
 <div class="relative">
 <span class="absolute left-4 top-1/2 -translate-y-1/2 font-body-md text-outline">$</span>
-<input class="w-full bg-surface-container border-transparent rounded-xl pl-8 pr-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" id="startingPrice" placeholder="e.g. 50.00 / hr" type="text" value="50.00 / hr"/>
+<input class="w-full bg-surface-container border-transparent rounded-xl pl-8 pr-4 py-3 font-body-md text-body-md text-on-surface focus:border-transparent focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" id="startingPrice" placeholder="e.g. 50.00 / hr" type="text"/>
 </div>
 </div>
 <!-- Category -->
@@ -247,29 +247,29 @@
 <!-- Lead Card Component (Glassmorphism inspired, Level 1 Elevation) -->
 <div class="bg-surface-container-lowest rounded-[24px] shadow-ambient-1 overflow-hidden group border border-surface-variant transform transition-transform hover:scale-[1.02] duration-300">
 <!-- Card Header Image -->
-<div class="h-40 w-full relative">
-<img alt="Business Cover" class="w-full h-full object-cover" data-alt="A modern, brightly lit interior of a small, trendy local business, possibly a cafe or boutique. The aesthetic is clean and youthful with energetic pops of electric blue and mint green against a pristine white background. Natural sunlight streams in, emphasizing a polished, high-contrast professional yet welcoming atmosphere typical of a successful Gen-Z student enterprise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANl6iK2_uHhcpDjAuSfyHUDrRSWKDX-UczXpc6a-At7SlkwCnFWwSDkAYSFagxjLj1UOtj0-xhcYkn8aTdCSFPs7MSL_qIrnmNjDBgFry_nJip8naguZH8P-N6gjTJFXDqR3qvFad5LSGQbBEKLaWpX4R0Lv7b2Iq0IZXZRkhi5VBQE2Dhmv4tCRbEQWuDEQjAAK4FU4RrehZW0qZMAlfLbKJvKk72_Dpu5_36VHuwfBe197-ZUyX3heidlH7NmZrcjpRv-GZIgw"/>
+<div id="preview-image" class="h-40 w-full relative bg-surface-container bg-cover bg-center flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-4xl">image</span>
 <!-- Mint Green Category Tag -->
-<div class="absolute top-4 left-4 bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-md text-[11px] uppercase tracking-wider shadow-sm flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]" data-icon="code">code</span>
-                                    Web Design
-                                </div>
+<div id="preview-category" class="hidden absolute top-4 left-4 bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-md text-[11px] uppercase tracking-wider shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="category">category</span>
+<span id="preview-category-text"></span>
+</div>
 </div>
 <!-- Card Body -->
 <div class="p-margin">
 <!-- Title & Verified Badge -->
 <div class="flex items-center justify-between mb-sm">
 <div class="flex items-center gap-2">
-<h4 class="font-headline-md text-headline-md text-on-surface truncate max-w-[200px]">Vertex Design Studio</h4>
-<!-- Verified Badge -->
-<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm" title="Verified Student Business">
+<h4 id="preview-name" class="font-headline-md text-headline-md text-on-surface truncate max-w-[200px]">Your Business Name</h4>
+<!-- Verified Badge (only shown when actually verified) -->
+<div id="preview-verified" class="hidden w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm" title="Verified Student Business">
 <span class="material-symbols-outlined text-[14px] text-on-primary font-bold" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
 </div>
 </div>
 </div>
 <!-- Mission Snippet -->
-<p class="font-body-md text-body-md text-outline line-clamp-2 leading-relaxed mb-margin">
-                                    Delivering high-end, responsive web solutions for local startups, bridging the gap between youthful creativity and reliable corporate execution.
+<p id="preview-mission" class="font-body-md text-body-md text-outline line-clamp-2 leading-relaxed mb-margin">
+                                    Your mission statement will appear here.
                                 </p>
 <!-- Divider -->
 <div class="h-px w-full bg-surface-variant mb-margin"></div>
@@ -277,7 +277,7 @@
 <div class="flex items-center justify-between">
 <div>
 <p class="font-body-md text-[12px] text-outline uppercase tracking-wider mb-1">Starting At</p>
-<p class="font-headline-md text-[20px] text-primary font-bold">$50.00 <span class="text-sm font-normal text-outline">/ hr</span></p>
+<p id="preview-price" class="font-headline-md text-[20px] text-primary font-bold">—</p>
 </div>
 <button class="bg-surface-container text-on-surface font-label-md text-label-md px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary hover:text-on-primary transition-colors duration-300">
                                         View Profile
@@ -290,8 +290,8 @@
 <div class="bg-primary-fixed/30 rounded-xl p-4 flex gap-3 items-start border border-primary-fixed">
 <span class="material-symbols-outlined text-primary mt-0.5" data-icon="verified_user">verified_user</span>
 <div>
-<h5 class="font-label-md text-label-md text-on-primary-fixed">Verification Badge Active</h5>
-<p class="font-body-md text-sm text-on-surface-variant mt-1">Your business is verified. The blue checkmark establishes instant credibility with adult consumers.</p>
+<h5 id="preview-verify-title" class="font-label-md text-label-md text-on-primary-fixed">Get Verified</h5>
+<p id="preview-verify-note" class="font-body-md text-sm text-on-surface-variant mt-1">Pay the one-time $10 verification fee to earn a blue checkmark and build instant trust with customers.</p>
 </div>
 </div>
 </div>
@@ -337,6 +337,47 @@
     } catch {}
   }
 
+  let currentImageUrl = '';
+  let isVerified = false;
+
+  // Keep the marketplace preview card in sync with what's in the form.
+  function updatePreview() {
+    const name = document.getElementById('businessName').value.trim();
+    const mission = document.getElementById('missionStatement').value.trim();
+    const price = document.getElementById('startingPrice').value.trim();
+    const category = document.getElementById('bizCategory').value;
+
+    document.getElementById('preview-name').textContent = name || 'Your Business Name';
+    document.getElementById('preview-mission').textContent = mission || 'Your mission statement will appear here.';
+    document.getElementById('preview-price').innerHTML = price
+      ? (/^\d/.test(price) ? '$' : '') + price.replace(/</g, '&lt;')
+      : '—';
+
+    const catWrap = document.getElementById('preview-category');
+    if (category) {
+      document.getElementById('preview-category-text').textContent = category;
+      catWrap.classList.remove('hidden');
+    } else {
+      catWrap.classList.add('hidden');
+    }
+
+    const imgEl = document.getElementById('preview-image');
+    const placeholder = imgEl.querySelector('.material-symbols-outlined');
+    if (currentImageUrl) {
+      imgEl.style.backgroundImage = `url(${currentImageUrl})`;
+      if (placeholder) placeholder.style.display = 'none';
+    } else {
+      imgEl.style.backgroundImage = '';
+      if (placeholder) placeholder.style.display = '';
+    }
+
+    document.getElementById('preview-verified').classList.toggle('hidden', !isVerified);
+    document.getElementById('preview-verify-title').textContent = isVerified ? 'Verification Badge Active' : 'Get Verified';
+    document.getElementById('preview-verify-note').textContent = isVerified
+      ? 'Your business is verified. The blue checkmark establishes instant credibility with customers.'
+      : 'Pay the one-time $10 verification fee to earn a blue checkmark and build instant trust with customers.';
+  }
+
   async function loadProfile() {
     try {
       const biz = await api.get('/businesses/me');
@@ -345,11 +386,20 @@
       document.getElementById('startingPrice').value = biz.price || '';
       const catSel = document.getElementById('bizCategory');
       if (biz.category) catSel.value = biz.category;
+      isVerified = !!biz.verified;
       if (biz.image_url) {
+        currentImageUrl = biz.image_url;
         document.getElementById('image-preview').style.backgroundImage = `url(${biz.image_url})`;
       }
     } catch {}
+    updatePreview();
   }
+
+  // Live-update the preview as the owner edits.
+  ['businessName', 'missionStatement', 'startingPrice', 'bizCategory'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
+    document.getElementById(id).addEventListener('change', updatePreview);
+  });
 
   document.getElementById('imageFile').addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -357,6 +407,8 @@
       const reader = new FileReader();
       reader.onload = (ev) => {
         document.getElementById('image-preview').style.backgroundImage = `url(${ev.target.result})`;
+        currentImageUrl = ev.target.result;
+        updatePreview();
       };
       reader.readAsDataURL(file);
     }

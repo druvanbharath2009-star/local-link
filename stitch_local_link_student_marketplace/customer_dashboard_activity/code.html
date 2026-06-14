@@ -138,8 +138,7 @@
 <div class="max-w-4xl mx-auto space-y-lg">
 <!-- Header Section -->
 <div class="flex flex-col md:flex-row items-center md:items-start gap-md bg-surface-container-lowest p-md rounded-2xl shadow-[0_4px_20px_rgba(0,82,255,0.08)]">
-<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-[0_4px_20px_rgba(0,82,255,0.12)] shrink-0">
-<img alt="Customer Avatar" class="w-full h-full object-cover" data-alt="A bright, high-energy professional headshot of a young adult looking approachable and friendly. The lighting is soft and even, highlighting their features against a clean, vibrant electric blue background. The aesthetic is modern and fresh, matching a Gen-Z professional networking app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS1AhkaLCGYxW7ctueApCItLoMG_w__t0LhpzLs46Pum2g5wn692AgeO0ErHSrt7IsL-VXNETYRySY1Tu0fzPVvf31IOCkk55DcKI8e6reLsHOD0f29uraCkuoTiUVL-7urSvFPLEV-E6fpmA6ogaNANivWb1MpqlqAuMfqIq691pGvs92DcKo-mGYOn0HJHyjXz3rxNLD6SS0a8R9T20wubWJWOU6VB3g81HUn6xxMYDyUss5oNnXc-NkrHvbn-jxrDOH4yeHRQ"/>
+<div id="profile-avatar" class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-[0_4px_20px_rgba(0,82,255,0.12)] shrink-0 bg-primary-container text-primary flex items-center justify-center font-headline-lg text-headline-lg">
 </div>
 <div class="flex-grow text-center md:text-left space-y-base">
 <h1 class="font-headline-lg text-headline-lg text-on-surface">Your Profile</h1>
@@ -231,6 +230,8 @@
     if (nameEl && user) nameEl.textContent = user.name || user.email;
     const emailEl = document.getElementById('profile-email');
     if (emailEl && user) emailEl.innerHTML = `<span class="material-symbols-outlined text-outline">mail</span> ${user.email}`;
+    const avatarEl = document.getElementById('profile-avatar');
+    if (avatarEl && user) avatarEl.textContent = (user.name || user.email || '?').trim().charAt(0).toUpperCase();
 
     let allItems = [];
     let expanded = false;
