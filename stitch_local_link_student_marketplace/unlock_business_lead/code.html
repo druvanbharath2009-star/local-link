@@ -264,19 +264,28 @@
 
     function esc(s) { return (s || '').replace(/</g, '&lt;'); }
 
-    function renderQuota(used) {
+    function renderQuota(used, credits = 0) {
       const remaining = Math.max(0, 5 - used);
       document.getElementById('quota-text').textContent = `${remaining} / 5`;
       document.getElementById('quota-bar').style.width = `${(remaining / 5) * 100}%`;
       const note = document.getElementById('quota-note');
       const free = used < 5;
-      document.getElementById('lead-price').textContent = free ? 'Free' : '$1.99';
-      note.className = `font-body-md text-[13px] mt-sm flex items-start gap-xs ${free ? 'text-on-surface-variant' : 'text-error'}`;
+      const haveCredits = credits > 0;
+      document.getElementById('lead-price').textContent =
+        free ? 'Free' : (haveCredits ? '1 credit' : 'Buy credits');
+      const warn = !free && !haveCredits;
+      note.className = `font-body-md text-[13px] mt-sm flex items-start gap-xs ${warn ? 'text-error' : 'text-on-surface-variant'}`;
       note.innerHTML = `<span class="material-symbols-outlined text-[16px] mt-[2px]">info</span> ${
         free ? `You have ${remaining} free lead${remaining === 1 ? '' : 's'} left this cycle.`
-             : 'You have used all free leads — this unlock costs $1.99.'}`;
+             : haveCredits ? `Free leads used. You have ${credits} lead credit${credits === 1 ? '' : 's'}; this unlock spends 1.`
+             : 'Free leads used. Buy a credit bundle (10 unlocks for $19.90) to continue.'}`;
       const btn = document.getElementById('unlock-btn');
-      if (!btn.disabled) btn.lastChild.textContent = free ? ' Unlock for Free' : ' Unlock for $1.99';
+      if (!btn.disabled) {
+        // 'buy' mode sends the owner to Stripe Checkout instead of unlocking.
+        btn.dataset.mode = warn ? 'buy' : 'unlock';
+        btn.lastChild.textContent =
+          free ? ' Unlock for Free' : haveCredits ? ' Unlock (1 credit)' : ' Buy Lead Credits';
+      }
     }
 
     function revealContact(lead) {
@@ -308,8 +317,8 @@
 
     async function load() {
       try {
-        const { leads, free_leads_used } = await api.get('/businesses/me/leads');
-        renderQuota(free_leads_used);
+        const { leads, free_leads_used, lead_credits } = await api.get('/businesses/me/leads');
+        renderQuota(free_leads_used, lead_credits);
         current = leadId ? leads.find(l => String(l.id) === String(leadId)) : leads.find(l => !l.unlocked) || leads[0];
         if (!current) {
           document.getElementById('lead-title').textContent = 'No leads yet';
@@ -330,8 +339,15 @@
     }
 
     document.getElementById('unlock-btn').addEventListener('click', async () => {
-      if (!current || current.unlocked) return;
       const btn = document.getElementById('unlock-btn');
+      // No free leads and no credits → go buy a bundle (redirects to Stripe).
+      if (btn.dataset.mode === 'buy') {
+        showLoading(btn, 'Redirecting to checkout...');
+        try { await api.post('/businesses/credits/buy', {}); }
+        catch (err) { hideLoading(btn); showToast(err.message || 'Could not start checkout', 'error'); }
+        return;
+      }
+      if (!current || current.unlocked) return;
       showLoading(btn, 'Unlocking...');
       try {
         const res = await api.post(`/businesses/me/leads/${current.id}/unlock`, {});
@@ -340,6 +356,11 @@
         revealContact(current);
       } catch (err) {
         hideLoading(btn);
+        if (err.needsCredits) {
+          showToast('Out of credits — taking you to checkout', 'error');
+          try { await api.post('/businesses/credits/buy', {}); } catch (_) {}
+          return;
+        }
         showToast(err.message || 'Unlock failed', 'error');
       }
     });

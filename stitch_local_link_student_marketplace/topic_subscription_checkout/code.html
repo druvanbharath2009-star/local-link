@@ -223,64 +223,19 @@
 <div class="bg-surface-container-lowest rounded-[24px] p-lg shadow-[0_4px_24px_rgba(25,28,30,0.06)] border border-surface-variant">
 <h2 class="font-headline-md text-headline-md text-on-surface mb-md">Payment Details</h2>
 <!-- Express Checkout -->
-<div class="flex flex-col sm:flex-row gap-md mb-lg">
-<button class="flex-1 min-h-[48px] rounded-xl border border-outline-variant bg-surface flex items-center justify-center gap-sm hover:bg-surface-container transition-colors" type="button">
-<span class="material-symbols-outlined text-on-surface" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span class="font-label-md text-label-md text-on-surface">Pay with Wallet</span>
-</button>
-<button class="flex-1 min-h-[48px] rounded-xl border border-outline-variant bg-surface flex items-center justify-center gap-sm hover:bg-surface-container transition-colors" type="button">
-<span class="material-symbols-outlined text-on-surface" data-icon="credit_card">credit_card</span>
-<span class="font-label-md text-label-md text-on-surface">Express Pay</span>
-</button>
+<!-- Card details are collected on Stripe's hosted checkout, not here. -->
+<div class="flex items-start gap-sm bg-surface rounded-xl p-md mb-lg border border-surface-variant">
+<span class="material-symbols-outlined text-primary">lock</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+                        Payment is processed securely by <strong class="text-on-surface">Stripe</strong>. When you continue, you'll enter your card on Stripe's hosted checkout — Local Link never sees your card details.
+                    </p>
 </div>
-<div class="relative flex py-4 items-center mb-lg">
-<div class="flex-grow border-t border-surface-variant"></div>
-<span class="flex-shrink-0 mx-4 font-body-md text-body-md text-outline">or pay with card</span>
-<div class="flex-grow border-t border-surface-variant"></div>
-</div>
-<!-- Manual Form -->
-<form id="checkout-form" action="#" class="flex flex-col gap-md" method="POST">
-<div class="flex flex-col gap-base">
-<label class="font-label-md text-label-md text-on-surface" for="email">Email Address</label>
-<input class="modern-input font-body-md text-body-md" id="email" name="email" placeholder="student@university.edu" required="" type="email"/>
-</div>
-<div class="flex flex-col gap-base">
-<label class="font-label-md text-label-md text-on-surface" for="cardName">Name on Card</label>
-<input class="modern-input font-body-md text-body-md" id="cardName" name="cardName" placeholder="Jane Doe" required="" type="text"/>
-</div>
-<div class="flex flex-col gap-base relative">
-<label class="font-label-md text-label-md text-on-surface" for="cardNumber">Card Information</label>
-<div class="relative">
-<input class="modern-input font-body-md text-body-md pl-[44px]" id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" required="" type="text"/>
-<span class="material-symbols-outlined absolute left-sm top-[12px] text-outline" data-icon="credit_card">credit_card</span>
-</div>
-</div>
-<div class="grid grid-cols-2 gap-md">
-<div class="flex flex-col gap-base">
-<label class="font-label-md text-label-md text-on-surface" for="expiry">Expiry Date</label>
-<input class="modern-input font-body-md text-body-md" id="expiry" name="expiry" placeholder="MM / YY" required="" type="text"/>
-</div>
-<div class="flex flex-col gap-base">
-<label class="font-label-md text-label-md text-on-surface" for="cvc">CVC</label>
-<div class="relative">
-<input class="modern-input font-body-md text-body-md pr-[40px]" id="cvc" name="cvc" placeholder="123" required="" type="text"/>
-<span class="material-symbols-outlined absolute right-sm top-[12px] text-outline text-[20px]" data-icon="help">help</span>
-</div>
-</div>
-</div>
-<div class="flex flex-col gap-base mt-sm">
-<label class="font-label-md text-label-md text-on-surface" for="zipCode">Billing ZIP / Postal Code</label>
-<input class="modern-input font-body-md text-body-md w-full md:w-1/2" id="zipCode" name="zipCode" placeholder="ZIP Code" required="" type="text"/>
-</div>
+<form id="checkout-form" class="flex flex-col gap-md">
 <!-- Summary Block inside form -->
-<div class="bg-surface rounded-xl p-md mt-lg flex flex-col gap-sm">
+<div class="bg-surface rounded-xl p-md flex flex-col gap-sm">
 <div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
 <span>Subtotal</span>
 <span id="sum-subtotal">$39.99</span>
-</div>
-<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
-<span>Taxes</span>
-<span>Calculated at next step</span>
 </div>
 <div class="flex justify-between font-headline-md text-headline-md text-on-surface pt-sm border-t border-surface-variant mt-sm">
 <span>Total due today</span>
@@ -288,11 +243,11 @@
 </div>
 </div>
 <button id="pay-btn" class="w-full mt-md bg-primary-container text-on-primary-container font-label-md text-label-md min-h-[56px] rounded-xl flex items-center justify-center gap-sm shadow-[0_4px_12px_rgba(0,82,255,0.2)] hover:bg-primary transition-colors hover:text-white" type="submit">
-<span>Subscribe &amp; Pay</span>
+<span>Continue to secure payment</span>
 <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
 </button>
 <p class="font-body-md text-body-md text-on-surface-variant text-center text-xs mt-sm">
-                        By confirming your subscription, you allow Local Link to charge your card for this payment and future payments in accordance with their terms.
+                        You'll be redirected to Stripe to complete your payment. Your subscription activates as soon as the payment clears.
                     </p>
 </form>
 </div>

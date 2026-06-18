@@ -86,6 +86,7 @@ const api = {
     if (pathname === '/businesses/me'         && method === 'PUT')      return api._updateMyBusiness(body, isFormData);
     if (pathname === '/businesses/me/leads'   && method === 'GET')      return api._getLeads();
     if (pathname === '/businesses/verify'     && method === 'POST')     return api._requestVerification();
+    if (pathname === '/businesses/credits/buy' && method === 'POST')    return api._buyLeadCredits();
     const unlock = pathname.match(/^\/businesses\/me\/leads\/(\w+)\/unlock$/);
     if (unlock  && method === 'POST')                                   return api._unlockLead(unlock[1]);
     if (pathname === '/businesses'            && method === 'GET')      return api._getBusinesses(query);
@@ -127,8 +128,30 @@ const api = {
   async _login({ email, password }) {
     const { data, error } = await _sb.auth.signInWithPassword({ email, password });
     api._throw(error);
-    const { data: profile, error: pe } = await _sb.from('profiles').select('*').eq('id', data.user.id).single();
+
+    // Look up the profile. Use maybeSingle so a missing row isn't a hard
+    // "Cannot coerce the result to a single JSON object" error.
+    let { data: profile, error: pe } = await _sb.from('profiles')
+      .select('*').eq('id', data.user.id).maybeSingle();
     api._throw(pe);
+
+    // Self-heal: accounts created directly in the Supabase dashboard (or whose
+    // profile insert failed at signup) have an auth user but no profiles row.
+    // Create it now from the auth metadata — the session is active, so the
+    // "Users insert own profile" RLS check (auth.uid() = id) passes.
+    if (!profile) {
+      const md = data.user.user_metadata || {};
+      const { data: created, error: ce } = await _sb.from('profiles').insert({
+        id: data.user.id,
+        email: data.user.email,
+        name: md.name || data.user.email,
+        phone: md.phone || null,
+        role: md.role || 'customer',
+      }).select().single();
+      if (ce) throw new Error('This account has no profile and one could not be created automatically. ' + ce.message);
+      profile = created;
+    }
+
     const user = { id: data.user.id, email: data.user.email, role: profile.role, name: profile.name, phone: profile.phone };
     api.setAuth(data.session.access_token, user);
     return { token: data.session.access_token, user };
@@ -224,21 +247,48 @@ const api = {
     return data;
   },
 
-  async _requestVerification() {
-    const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('*').eq('user_id', user.id).single();
-    if (!biz) throw new Error('Business not found');
-    if (biz.verified) throw new Error('Already verified');
-    if (biz.verification_status === 'pending') throw new Error('Verification already pending');
+  // ── Payments (Stripe via Supabase Edge Functions) ──────────
+  // Browser can no longer grant benefits directly (RLS forbids it). It asks an
+  // Edge Function for a Stripe Checkout URL and redirects; the stripe-webhook
+  // grants the benefit once the payment clears.
 
-    const { error: ve } = await _sb.from('verification_requests').upsert(
-      { business_id: biz.id, status: 'pending', payment_confirmed: 1 },
-      { onConflict: 'business_id' }
-    );
-    api._throw(ve);
-    await _sb.from('businesses').update({ verification_status: 'pending' }).eq('id', biz.id);
-    await _sb.from('payments').insert({ user_id: user.id, amount: 10.00, type: 'verification', reference_id: biz.id });
-    return { message: 'Verification request submitted. Admin will review your application.' };
+  // Wraps _sb.functions.invoke and surfaces the JSON { error } / { needsCredits }
+  // body that our functions return on non-2xx, instead of a generic message.
+  async _invokeFn(name, body) {
+    const { data, error } = await _sb.functions.invoke(name, { body });
+    if (!error) return data;
+    let payload = null;
+    try { payload = await error.context.json(); } catch (_) { /* non-JSON */ }
+    const e = new Error((payload && payload.error) || error.message || 'Request failed');
+    if (payload && payload.needsCredits) e.needsCredits = true;
+    throw e;
+  },
+
+  // Stripe needs where to send the user back. Return to THIS page with a flag
+  // the page (and _wireNav) can read to show a confirmation.
+  _checkoutUrls(tag) {
+    const base = window.location.origin + window.location.pathname;
+    return {
+      success_url: `${base}?paid=success&for=${tag}`,
+      cancel_url:  `${base}?paid=cancel`,
+    };
+  },
+
+  async _requestVerification() {
+    const { url } = await api._invokeFn('create-checkout', {
+      type: 'verification', ...api._checkoutUrls('verification'),
+    });
+    window.location.href = url;
+    return { redirected: true };
+  },
+
+  // Buy a bundle of prepaid lead-unlock credits.
+  async _buyLeadCredits() {
+    const { url } = await api._invokeFn('create-checkout', {
+      type: 'lead_bundle', ...api._checkoutUrls('credits'),
+    });
+    window.location.href = url;
+    return { redirected: true };
   },
 
   async _getLeads() {
@@ -255,24 +305,19 @@ const api = {
       customer_phone: f.unlocked ? f.customer_phone : null,
       message:        f.unlocked ? f.message        : null,
     }));
-    return { leads, free_leads_used: biz.free_leads_used, free_leads_limit: 5 };
+    return {
+      leads,
+      free_leads_used: biz.free_leads_used,
+      free_leads_limit: 5,
+      lead_credits: biz.lead_credits ?? 0,
+    };
   },
 
+  // Unlocking is now done server-side (the Edge Function checks the free quota
+  // / spends a prepaid credit). On an empty balance it throws with
+  // `.needsCredits = true` so the UI can prompt a purchase.
   async _unlockLead(leadId) {
-    const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('*').eq('user_id', user.id).single();
-    const { data: lead } = await _sb.from('interest_forms').select('*').eq('id', leadId).eq('business_id', biz.id).single();
-    if (!lead) throw new Error('Lead not found');
-    if (lead.unlocked) throw new Error('Lead already unlocked');
-
-    const isFree = biz.free_leads_used < 5;
-    await _sb.from('interest_forms').update({ unlocked: 1 }).eq('id', leadId);
-    await _sb.from('businesses').update({ free_leads_used: biz.free_leads_used + 1 }).eq('id', biz.id);
-    if (!isFree) {
-      await _sb.from('payments').insert({ user_id: user.id, amount: 1.99, type: 'lead_unlock', reference_id: lead.id });
-    }
-    const { data: unlocked } = await _sb.from('interest_forms').select('*').eq('id', leadId).single();
-    return { message: isFree ? 'Lead unlocked (free)' : 'Lead unlocked ($1.99 charged)', lead: unlocked };
+    return await api._invokeFn('unlock-lead', { leadId });
   },
 
   // ── Topics ─────────────────────────────────────────────────
@@ -346,20 +391,13 @@ const api = {
     if (plan_type === 'single' && topic_ids.length !== 1) throw new Error('Single plan requires exactly 1 topic');
     if (plan_type === 'bundle' && topic_ids.length !== 3) throw new Error('Bundle plan requires exactly 3 topics');
 
-    const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
-    if (!biz) throw new Error('Business not found');
-
-    const amount = plan_type === 'single' ? 14.99 : 39.99;
-    for (const topic_id of topic_ids) {
-      const { data: existing } = await _sb.from('topic_subscriptions')
-        .select('id').eq('business_id', biz.id).eq('topic_id', topic_id).eq('active', 1).single();
-      if (!existing) {
-        await _sb.from('topic_subscriptions').insert({ business_id: biz.id, topic_id, plan_type });
-      }
-    }
-    await _sb.from('payments').insert({ user_id: user.id, amount, type: 'topic_subscription', reference_id: biz.id });
-    return { message: `Subscribed to ${topic_ids.length} topic(s) for $${amount}` };
+    // Payment first: redirect to Stripe Checkout. The stripe-webhook creates the
+    // topic_subscriptions once the charge clears.
+    const { url } = await api._invokeFn('create-checkout', {
+      type: 'topic', plan_type, topic_ids, ...api._checkoutUrls('topic'),
+    });
+    window.location.href = url;
+    return { redirected: true };
   },
 
   // All submissions across every topic this business is actively subscribed to.
@@ -852,6 +890,47 @@ const api = {
       });
     }).catch(() => {});
   }
+
+  // ── Post-Stripe-Checkout flash ──────────────────────────────
+  // After Stripe redirects back with ?paid=success|cancel, show a banner and
+  // strip the params so a refresh doesn't re-show it. The benefit itself is
+  // granted asynchronously by the webhook, so successes say "may take a moment".
+  (function paymentFlash() {
+    const params = new URLSearchParams(window.location.search);
+    const paid = params.get('paid');
+    if (!paid) return;
+
+    const FOR_LABEL = {
+      credits: 'Lead credits added',
+      topic: 'Subscription active',
+      verification: 'Verification submitted',
+    };
+    const tag = params.get('for');
+    const ok = paid === 'success';
+    const msg = ok
+      ? `${FOR_LABEL[tag] || 'Payment received'} — it may take a moment to appear.`
+      : 'Payment canceled — nothing was charged.';
+
+    const show = () => {
+      const bar = document.createElement('div');
+      bar.textContent = msg;
+      bar.style.cssText = [
+        'position:fixed', 'left:50%', 'top:16px', 'transform:translateX(-50%)',
+        'z-index:9999', 'max-width:90vw', 'padding:12px 20px', 'border-radius:12px',
+        'font:600 14px system-ui,sans-serif', 'color:#fff', 'box-shadow:0 6px 24px rgba(0,0,0,.18)',
+        `background:${ok ? '#1a7f37' : '#9a6700'}`,
+      ].join(';');
+      document.body.appendChild(bar);
+      setTimeout(() => bar.remove(), 6000);
+    };
+    if (document.body) show();
+    else document.addEventListener('DOMContentLoaded', show);
+
+    // Clean the URL.
+    ['paid', 'for'].forEach(k => params.delete(k));
+    const clean = window.location.pathname + (params.toString() ? '?' + params : '');
+    window.history.replaceState({}, '', clean);
+  })();
 })();
 
 // ── UI helpers (unchanged) ─────────────────────────────────

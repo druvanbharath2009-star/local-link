@@ -1,0 +1,16 @@
+# Supabase project config.
+# Run `supabase link --project-ref evksghzxchkkoxwvzmiv` once to connect this
+# folder to your hosted project (see PAYMENTS_SETUP.md).
+project_id = "evksghzxchkkoxwvzmiv"
+
+# The Stripe webhook is called by Stripe's servers, which have no Supabase JWT.
+# It must NOT require auth — it authenticates itself via the Stripe signature.
+[functions.stripe-webhook]
+verify_jwt = false
+
+# These are called by the logged-in browser, which DOES send a JWT.
+[functions.create-checkout]
+verify_jwt = true
+
+[functions.unlock-lead]
+verify_jwt = true

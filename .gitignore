@@ -5,3 +5,8 @@ backend/locallink.db-shm
 backend/locallink.db-wal
 backend/uploads/*
 !backend/uploads/.gitkeep
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
+supabase/.env.local

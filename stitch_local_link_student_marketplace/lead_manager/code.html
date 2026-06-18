@@ -233,7 +233,7 @@
       ${!isUnlocked ? `<div class="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[2px] rounded-xl">
         <button onclick="unlockLead(${lead.id})" class="bg-primary text-on-primary px-6 py-3 rounded-xl font-label-md shadow-md hover:bg-primary/90 flex items-center gap-2">
           <span class="material-symbols-outlined text-[18px]">lock_open</span>
-          ${isFree ? 'Unlock Free' : 'Unlock $1.99'}
+          ${isFree ? 'Unlock Free' : 'Unlock (1 credit)'}
         </button>
       </div>` : ''}
       <div class="flex justify-between items-start mb-4">
@@ -241,7 +241,7 @@
           <span class="material-symbols-outlined text-[16px]">person</span> Interest
         </span>
         <span class="font-label-md text-label-md px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm ${isUnlocked ? 'bg-secondary text-on-secondary' : isFree ? 'bg-primary text-on-primary' : 'bg-outline-variant text-on-surface-variant'}">
-          ${isUnlocked ? '✓ Unlocked' : isFree ? 'Free' : '$1.99'}
+          ${isUnlocked ? '✓ Unlocked' : isFree ? 'Free' : '1 credit'}
         </span>
       </div>
       <div class="flex items-center gap-4 mb-4">
@@ -270,12 +270,23 @@
 
   async function unlockLead(leadId) {
     try {
-      await api.post(`/businesses/me/leads/${leadId}/unlock`, {});
-      showToast('Lead unlocked!');
+      const res = await api.post(`/businesses/me/leads/${leadId}/unlock`, {});
+      showToast(res.message || 'Lead unlocked!');
       loadLeads();
     } catch (err) {
+      if (err.needsCredits) {
+        showToast('Out of credits — taking you to checkout', 'error');
+        try { await api.post('/businesses/credits/buy', {}); } catch (_) {}
+        return;
+      }
       showToast(err.message, 'error');
     }
+  }
+
+  // Redirects to Stripe Checkout for a 10-pack of lead credits.
+  async function buyCredits() {
+    try { await api.post('/businesses/credits/buy', {}); }
+    catch (err) { showToast(err.message || 'Could not start checkout', 'error'); }
   }
 
   async function loadLeads() {
@@ -288,6 +299,30 @@
       let freeRemaining = Math.max(0, (data.free_leads_limit ?? 5) - data.free_leads_used);
       const freeEl = document.querySelector('.font-label-md.text-primary.mb-1');
       if (freeEl) freeEl.nextElementSibling && (freeEl.nextElementSibling.textContent = freeRemaining);
+
+      // Credit-balance banner: visible once free leads are exhausted or whenever
+      // the business is holding prepaid credits.
+      const credits = data.lead_credits ?? 0;
+      let banner = document.getElementById('credit-banner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'credit-banner';
+        grid.parentNode.insertBefore(banner, grid);
+      }
+      if (credits > 0 || freeRemaining === 0) {
+        banner.className = 'mb-6 flex flex-wrap items-center justify-between gap-3 bg-surface-container-lowest border border-surface-variant rounded-xl px-5 py-4';
+        banner.innerHTML = `
+          <div class="flex items-center gap-3 text-on-surface">
+            <span class="material-symbols-outlined text-primary">confirmation_number</span>
+            <span class="font-label-md">Lead credits: <strong>${credits}</strong>${freeRemaining > 0 ? ` · ${freeRemaining} free left` : ''}</span>
+          </div>
+          <button onclick="buyCredits()" class="bg-primary text-on-primary px-5 py-2.5 rounded-xl font-label-md hover:bg-primary/90 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">add_card</span> Buy 10 for $19.90
+          </button>`;
+      } else {
+        banner.innerHTML = '';
+        banner.className = '';
+      }
 
       if (!data.leads.length) {
         grid.innerHTML = '<div class="col-span-full text-center py-12 text-on-surface-variant">No leads yet. Share your business profile to get started!</div>';

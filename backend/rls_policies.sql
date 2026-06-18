@@ -59,10 +59,17 @@ CREATE POLICY "Business reads own leads" ON interest_forms FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
   OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
 );
-DROP POLICY IF EXISTS "Business unlocks leads" ON interest_forms;
-CREATE POLICY "Business unlocks leads" ON interest_forms FOR UPDATE USING (
-  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
+-- Lets a logged-in customer see the interest forms they themselves submitted
+-- (their "My Interest" dashboard). Matches on the JWT email claim.
+DROP POLICY IF EXISTS "Customer reads own submissions" ON interest_forms;
+CREATE POLICY "Customer reads own submissions" ON interest_forms FOR SELECT USING (
+  customer_email = (auth.jwt() ->> 'email')
 );
+-- PAYMENTS LOCKDOWN: a business may NO LONGER flip `unlocked` from the browser.
+-- Unlocking now happens only inside the `unlock-lead` Edge Function (service
+-- role), which checks free quota / spends a prepaid credit first. Dropped, not
+-- recreated.
+DROP POLICY IF EXISTS "Business unlocks leads" ON interest_forms;
 
 -- ── topic_submissions ───────────────────────────────────────
 DROP POLICY IF EXISTS "Anyone submits to topic" ON topic_submissions;
@@ -82,16 +89,17 @@ DROP POLICY IF EXISTS "Business manages own subs" ON topic_subscriptions;
 CREATE POLICY "Business manages own subs" ON topic_subscriptions FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
 );
+-- PAYMENTS LOCKDOWN: subscriptions are now created only by the `stripe-webhook`
+-- Edge Function (service role) after payment confirms. The browser can read its
+-- own subs but can no longer insert them for free. Dropped, not recreated.
 DROP POLICY IF EXISTS "Business inserts own subs" ON topic_subscriptions;
-CREATE POLICY "Business inserts own subs" ON topic_subscriptions FOR INSERT WITH CHECK (
-  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-);
 
 -- ── verification_requests ───────────────────────────────────
+-- PAYMENTS LOCKDOWN: verification is now created/updated only by the
+-- `stripe-webhook` Edge Function (service role) after the $10 fee is paid.
+-- The browser keeps READ access (below) but loses INSERT/UPDATE. Dropped,
+-- not recreated.
 DROP POLICY IF EXISTS "Business submits verification" ON verification_requests;
-CREATE POLICY "Business submits verification" ON verification_requests FOR INSERT WITH CHECK (
-  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-);
 DROP POLICY IF EXISTS "Business or admin reads verifications" ON verification_requests;
 CREATE POLICY "Business or admin reads verifications" ON verification_requests FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
@@ -101,10 +109,8 @@ DROP POLICY IF EXISTS "Admin updates verifications" ON verification_requests;
 CREATE POLICY "Admin updates verifications" ON verification_requests FOR UPDATE USING (
   (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
 );
+-- PAYMENTS LOCKDOWN: client-side verification UPDATE removed (see above).
 DROP POLICY IF EXISTS "Business upserts verification" ON verification_requests;
-CREATE POLICY "Business upserts verification" ON verification_requests FOR UPDATE USING (
-  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-);
 
 -- ── complaints ──────────────────────────────────────────────
 DROP POLICY IF EXISTS "Anyone submits complaint" ON complaints;
@@ -115,9 +121,20 @@ CREATE POLICY "Admin manages complaints" ON complaints FOR ALL USING (
 );
 
 -- ── payments ────────────────────────────────────────────────
+-- PAYMENTS LOCKDOWN: only the `stripe-webhook` Edge Function (service role)
+-- writes payment rows, and only after Stripe confirms the charge. The browser
+-- can no longer log its own payments. Dropped, not recreated.
 DROP POLICY IF EXISTS "Users insert own payments" ON payments;
-CREATE POLICY "Users insert own payments" ON payments FOR INSERT WITH CHECK (auth.uid() = user_id);
 DROP POLICY IF EXISTS "Users or admin read payments" ON payments;
 CREATE POLICY "Users or admin read payments" ON payments FOR SELECT USING (
   auth.uid() = user_id OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
 );
+
+-- ── businesses: protect money-bearing columns ───────────────
+-- RLS is row-level, not column-level. A business legitimately needs to UPDATE
+-- its own row (name, mission, price, image, category) but must NOT be able to
+-- set `verified`, `verification_status`, `lead_credits`, or `free_leads_used`
+-- itself. Column privileges enforce that; the Edge Functions use the service
+-- role, which bypasses these REVOKEs.
+REVOKE UPDATE (verified, verification_status, lead_credits, free_leads_used)
+  ON businesses FROM authenticated, anon;
