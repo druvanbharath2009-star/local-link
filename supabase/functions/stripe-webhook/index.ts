@@ -99,13 +99,12 @@ async function grant(admin: any, meta: Record<string, string>) {
   }
 
   if (meta.grant === "verification") {
-    const { error: vErr } = await admin.from("verification_requests").upsert(
-      { business_id: businessId, status: "pending", payment_confirmed: 1 },
-      { onConflict: "business_id" },
-    );
+    // Payment happens after admin approval, so paying grants the badge now.
+    const { error: vErr } = await admin.from("verification_requests")
+      .update({ payment_confirmed: 1 }).eq("business_id", businessId);
     if (vErr) throw vErr;
     const { error: bErr } = await admin.from("businesses")
-      .update({ verification_status: "pending" }).eq("id", businessId);
+      .update({ verified: 1, verification_status: "approved" }).eq("id", businessId);
     if (bErr) throw bErr;
     return;
   }

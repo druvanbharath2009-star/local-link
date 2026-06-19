@@ -64,8 +64,13 @@ Deno.serve(async (req) => {
       metadata.topic_ids = ids.join(",");
     } else if (type === "verification") {
       if (biz.verified) return json({ error: "Already verified" }, 400);
-      if (biz.verification_status === "pending") {
-        return json({ error: "Verification already pending" }, 400);
+      // Payment is only allowed AFTER an admin has approved the request.
+      const { data: vr } = await admin.from("verification_requests")
+        .select("status").eq("business_id", biz.id).maybeSingle();
+      if (!vr || vr.status !== "approved") {
+        return json({
+          error: "An admin must approve your verification request before you can pay.",
+        }, 400);
       }
       priceKey = "verification";
       metadata.grant = "verification";

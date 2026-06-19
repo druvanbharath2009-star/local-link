@@ -354,22 +354,47 @@
         api.get('/businesses/me/leads')
       ]);
 
-      // Update verification status
-      const statusBadge = document.querySelector('[data-icon="shield"]')?.closest('div.w-10')?.parentElement?.nextElementSibling;
+      // Verification: request -> admin approval -> pay $10 -> badge.
       const verifyBtn = document.querySelector('button.w-full.h-12.bg-primary');
       const statusEl = document.querySelector('.w-2.h-2.rounded-full.bg-outline')?.parentElement;
+      let verify = { verified: false, status: 'none' };
+      try { verify = await api.get('/businesses/verify/status'); } catch (_) {}
 
-      if (statusEl) {
-        if (biz.verified) {
-          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary"></span> ✓ Verified';
-          statusEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/20 text-secondary font-label-md text-[12px]';
-          if (verifyBtn) { verifyBtn.textContent = 'Verified ✓'; verifyBtn.disabled = true; verifyBtn.className += ' opacity-50'; }
-        } else if (biz.verification_status === 'pending') {
-          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-primary"></span> Pending Review';
-          if (verifyBtn) { verifyBtn.textContent = 'Pending Review'; verifyBtn.disabled = true; }
-        } else {
-          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-outline"></span> Unverified';
-        }
+      const setStatus = (html) => { if (statusEl) statusEl.innerHTML = html; };
+      const setBtn = (text, { disabled = false, onClick = null } = {}) => {
+        if (!verifyBtn) return;
+        verifyBtn.textContent = text;
+        verifyBtn.disabled = disabled;
+        if (disabled) verifyBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        if (onClick) verifyBtn.addEventListener('click', onClick);
+      };
+
+      if (verify.verified) {
+        setStatus('<span class="w-2 h-2 rounded-full bg-secondary"></span> ✓ Verified');
+        if (statusEl) statusEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/20 text-secondary font-label-md text-[12px]';
+        setBtn('Verified ✓', { disabled: true });
+      } else if (verify.status === 'pending') {
+        setStatus('<span class="w-2 h-2 rounded-full bg-primary"></span> Pending admin review');
+        setBtn('Pending Review', { disabled: true });
+      } else if (verify.status === 'approved') {
+        setStatus('<span class="w-2 h-2 rounded-full bg-primary"></span> Approved — payment required');
+        setBtn('Pay $10 to Activate', { onClick: async () => {
+          showLoading(verifyBtn, 'Redirecting to payment…');
+          try { await api.post('/businesses/verify/pay', {}); }
+          catch (err) { hideLoading(verifyBtn); showToast(err.message || 'Could not start checkout', 'error'); }
+        }});
+      } else {
+        const rejected = verify.status === 'rejected';
+        setStatus(`<span class="w-2 h-2 rounded-full bg-outline"></span> ${rejected ? 'Rejected' : 'Unverified'}`);
+        setBtn(rejected ? 'Re-submit Request' : 'Get Verified Now', { onClick: async () => {
+          showLoading(verifyBtn, 'Submitting…');
+          try {
+            const res = await api.post('/businesses/verify', {});
+            showToast(res.message || 'Request submitted!');
+            setBtn('Pending Review', { disabled: true });
+          } catch (err) { showToast(err.message, 'error'); }
+          finally { hideLoading(verifyBtn); }
+        }});
       }
 
       // Update lead numbers with real data
@@ -394,22 +419,7 @@
       const header = document.querySelector('h2.font-headline-lg');
       if (header && biz.business_name) header.textContent = `Welcome, ${biz.business_name}`;
 
-      // Verify button action
-      if (verifyBtn && !biz.verified && biz.verification_status !== 'pending') {
-        verifyBtn.addEventListener('click', async () => {
-          showLoading(verifyBtn, 'Submitting...');
-          try {
-            await api.post('/businesses/verify', {});
-            showToast('Verification request submitted!');
-            verifyBtn.textContent = 'Pending Review';
-            verifyBtn.disabled = true;
-          } catch (err) {
-            showToast(err.message, 'error');
-          } finally {
-            hideLoading(verifyBtn);
-          }
-        });
-      }
+      // (verification button is wired above, based on request state)
     } catch (err) {
       if (err.message.includes('token') || err.message.includes('permission')) {
         api.clearAuth();

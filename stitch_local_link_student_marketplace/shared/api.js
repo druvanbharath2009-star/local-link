@@ -86,6 +86,8 @@ const api = {
     if (pathname === '/businesses/me'         && method === 'PUT')      return api._updateMyBusiness(body, isFormData);
     if (pathname === '/businesses/me/leads'   && method === 'GET')      return api._getLeads();
     if (pathname === '/businesses/verify'     && method === 'POST')     return api._requestVerification();
+    if (pathname === '/businesses/verify/pay'    && method === 'POST')  return api._payVerification();
+    if (pathname === '/businesses/verify/status' && method === 'GET')   return api._getMyVerification();
     if (pathname === '/businesses/credits/buy' && method === 'POST')    return api._buyLeadCredits();
     const unlock = pathname.match(/^\/businesses\/me\/leads\/(\w+)\/unlock$/);
     if (unlock  && method === 'POST')                                   return api._unlockLead(unlock[1]);
@@ -274,7 +276,38 @@ const api = {
     };
   },
 
+  // Step 1: business submits a FREE verification request for admin review.
+  // No payment here — the badge is paid for only after an admin approves.
   async _requestVerification() {
+    const user = api.getUser();
+    const { data: biz } = await _sb.from('businesses').select('id, verified').eq('user_id', user.id).single();
+    if (!biz) throw new Error('Business not found');
+    if (biz.verified) throw new Error('Already verified');
+    const { error } = await _sb.from('verification_requests').upsert(
+      { business_id: biz.id, status: 'pending', payment_confirmed: 0, reviewed_at: null, notes: null },
+      { onConflict: 'business_id' }
+    );
+    api._throw(error);
+    return { message: 'Verification request submitted. An admin will review it shortly.' };
+  },
+
+  // The business's current verification state, for the dashboard to render.
+  async _getMyVerification() {
+    const user = api.getUser();
+    if (!user) return { verified: false, status: 'none' };
+    const { data: biz } = await _sb.from('businesses').select('id, verified').eq('user_id', user.id).single();
+    if (!biz) return { verified: false, status: 'none' };
+    const { data: vr } = await _sb.from('verification_requests')
+      .select('status, payment_confirmed').eq('business_id', biz.id).maybeSingle();
+    return {
+      verified: !!biz.verified,
+      status: vr ? vr.status : 'none',
+      payment_confirmed: vr ? vr.payment_confirmed : 0,
+    };
+  },
+
+  // Step 3: once approved, business pays the $10 to activate the badge.
+  async _payVerification() {
     const { url } = await api._invokeFn('create-checkout', {
       type: 'verification', ...api._checkoutUrls('verification'),
     });
@@ -590,19 +623,23 @@ const api = {
     }));
   },
 
+  // Approval no longer grants the badge — it unlocks the business's ability to
+  // PAY for it. The badge (businesses.verified) is set by the webhook on payment.
   async _adminApproveVerification(id) {
     const { data: vr } = await _sb.from('verification_requests').select('*').eq('id', id).single();
     if (!vr) throw new Error('Verification request not found');
-    await _sb.from('verification_requests').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', id);
-    await _sb.from('businesses').update({ verified: 1, verification_status: 'approved' }).eq('id', vr.business_id);
-    return { message: 'Business verified and approved' };
+    const { error } = await _sb.from('verification_requests')
+      .update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', id);
+    api._throw(error);
+    return { message: 'Approved. The business can now pay the $10 fee to activate their badge.' };
   },
 
   async _adminRejectVerification(id, { notes } = {}) {
     const { data: vr } = await _sb.from('verification_requests').select('*').eq('id', id).single();
     if (!vr) throw new Error('Verification request not found');
-    await _sb.from('verification_requests').update({ status: 'rejected', reviewed_at: new Date().toISOString(), notes: notes || null }).eq('id', id);
-    await _sb.from('businesses').update({ verification_status: 'rejected' }).eq('id', vr.business_id);
+    const { error } = await _sb.from('verification_requests')
+      .update({ status: 'rejected', reviewed_at: new Date().toISOString(), notes: notes || null }).eq('id', id);
+    api._throw(error);
     return { message: 'Verification rejected' };
   },
 

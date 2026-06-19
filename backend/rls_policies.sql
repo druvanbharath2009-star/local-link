@@ -112,6 +112,25 @@ CREATE POLICY "Admin updates verifications" ON verification_requests FOR UPDATE 
 -- PAYMENTS LOCKDOWN: client-side verification UPDATE removed (see above).
 DROP POLICY IF EXISTS "Business upserts verification" ON verification_requests;
 
+-- NEW VERIFICATION FLOW (request -> admin approval -> pay -> badge):
+-- A business may CREATE its own request, but only as a fresh 'pending' one
+-- (it cannot self-approve — WITH CHECK forbids any other status). It may also
+-- reset an existing request back to 'pending' (re-apply after a rejection).
+-- It still cannot set status='approved', and the badge (businesses.verified)
+-- stays webhook-only via the column REVOKE below.
+DROP POLICY IF EXISTS "Business submits verification" ON verification_requests;
+CREATE POLICY "Business submits verification" ON verification_requests FOR INSERT WITH CHECK (
+  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
+  AND status = 'pending'
+);
+DROP POLICY IF EXISTS "Business re-requests verification" ON verification_requests;
+CREATE POLICY "Business re-requests verification" ON verification_requests FOR UPDATE USING (
+  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
+) WITH CHECK (
+  business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
+  AND status = 'pending'
+);
+
 -- ── complaints ──────────────────────────────────────────────
 DROP POLICY IF EXISTS "Anyone submits complaint" ON complaints;
 CREATE POLICY "Anyone submits complaint" ON complaints FOR INSERT WITH CHECK (true);
