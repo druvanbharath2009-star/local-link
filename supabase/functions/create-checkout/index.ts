@@ -78,6 +78,9 @@ Deno.serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Force card explicitly so the session doesn't depend on the account's
+      // automatic-payment-methods config (which errors on fresh live accounts).
+      payment_method_types: ["card"],
       line_items: [{ price, quantity: 1 }],
       success_url,
       cancel_url,
