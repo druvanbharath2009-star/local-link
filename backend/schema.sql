@@ -98,6 +98,22 @@ CREATE TABLE IF NOT EXISTS payments (
 -- Row Level Security
 -- ============================================================
 
+-- Admin check. Reads `profiles.role`, NOT the JWT's user_metadata — users can
+-- write their own user_metadata, so trusting it would let anyone self-promote
+-- to admin. `profiles.role` is protected by the REVOKE at the bottom of this
+-- file (and of backend/rls_policies.sql).
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'
+  );
+$$;
+
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE businesses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE topics ENABLE ROW LEVEL SECURITY;
@@ -111,29 +127,30 @@ ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 -- profiles
 CREATE POLICY "Anyone can read profiles" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Users insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
-CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users update own profile" ON profiles FOR UPDATE
+  USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
 CREATE POLICY "Admin deletes profiles" ON profiles FOR DELETE USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 
 -- businesses
 CREATE POLICY "Anyone reads businesses" ON businesses FOR SELECT USING (true);
 CREATE POLICY "Business inserts own" ON businesses FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Business or admin updates" ON businesses FOR UPDATE USING (
-  auth.uid() = user_id OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  auth.uid() = user_id OR public.is_admin()
 );
 
 -- topics
 CREATE POLICY "Anyone reads topics" ON topics FOR SELECT USING (true);
 CREATE POLICY "Admin manages topics" ON topics FOR ALL USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 
 -- interest_forms
 CREATE POLICY "Anyone submits interest" ON interest_forms FOR INSERT WITH CHECK (true);
 CREATE POLICY "Business reads own leads" ON interest_forms FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-  OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  OR public.is_admin()
 );
 CREATE POLICY "Business unlocks leads" ON interest_forms FOR UPDATE USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
@@ -147,7 +164,7 @@ CREATE POLICY "Subscribed business or admin reads" ON topic_submissions FOR SELE
     JOIN businesses b ON ts.business_id = b.id
     WHERE b.user_id = auth.uid() AND ts.active = 1
   )
-  OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  OR public.is_admin()
 );
 
 -- topic_subscriptions
@@ -164,10 +181,10 @@ CREATE POLICY "Business submits verification" ON verification_requests FOR INSER
 );
 CREATE POLICY "Business or admin reads verifications" ON verification_requests FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-  OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  OR public.is_admin()
 );
 CREATE POLICY "Admin updates verifications" ON verification_requests FOR UPDATE USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 CREATE POLICY "Business upserts verification" ON verification_requests FOR UPDATE USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
@@ -176,14 +193,23 @@ CREATE POLICY "Business upserts verification" ON verification_requests FOR UPDAT
 -- complaints
 CREATE POLICY "Anyone submits complaint" ON complaints FOR INSERT WITH CHECK (true);
 CREATE POLICY "Admin manages complaints" ON complaints FOR ALL USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 
 -- payments
 CREATE POLICY "Users insert own payments" ON payments FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users or admin read payments" ON payments FOR SELECT USING (
-  auth.uid() = user_id OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  auth.uid() = user_id OR public.is_admin()
 );
+
+-- ============================================================
+-- Column-level lockdown (row policies can't express this)
+-- ============================================================
+-- A business owns its row but must not set its own badge / balances, and a
+-- user owns their profile but must not set their own role.
+REVOKE UPDATE (verified, verification_status, free_leads_used)
+  ON businesses FROM authenticated, anon;
+REVOKE UPDATE (role, id, email) ON profiles FROM authenticated, anon;
 
 -- ============================================================
 -- Seed default topics (run once after creating tables)

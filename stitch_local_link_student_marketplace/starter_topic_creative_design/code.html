@@ -309,8 +309,6 @@
   let allBiz = [];
   let activeChip = 'All';
 
-  function esc(s) { return (s || '').replace(/</g, '&lt;'); }
-
   function bizCard(b) {
     const initials = (b.business_name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     const avatar = b.image_url
@@ -334,7 +332,7 @@
         <p class="font-body-md text-on-surface-variant text-sm flex-grow">${esc(b.mission) || 'A local student-run business.'}</p>
         <div class="pt-sm border-t border-surface-variant flex justify-between items-center">
           <span class="font-label-md text-sm text-on-surface">${b.price ? '$' + esc(String(b.price)) : ''}</span>
-          <button onclick="openInterest(${b.id}, '${esc(b.business_name).replace(/'/g, "\\'")}')" class="bg-primary text-on-primary font-label-md text-label-md px-sm py-2 rounded-lg hover:bg-primary-container transition-colors min-h-[40px] flex items-center justify-center">
+          <button onclick="openInterest(${b.id}, '${escAttr(b.business_name)}')" class="bg-primary text-on-primary font-label-md text-label-md px-sm py-2 rounded-lg hover:bg-primary-container transition-colors min-h-[40px] flex items-center justify-center">
             Send Interest
           </button>
         </div>

@@ -244,7 +244,7 @@
 
     function itemCard(f) {
       const date = f.created_at ? new Date(f.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
-      const msg = (f.message || 'Interest form submitted.').replace(/</g, '&lt;');
+      const msg = esc(f.message) || 'Interest form submitted.';
       return `
         <div class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant cursor-pointer group">
           <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
@@ -252,7 +252,7 @@
           </div>
           <div class="flex-grow">
             <div class="flex justify-between items-start">
-              <h3 class="font-label-md text-label-md text-on-surface">${(f.business_name || 'Business').replace(/</g, '&lt;')}</h3>
+              <h3 class="font-label-md text-label-md text-on-surface">${esc(f.business_name) || 'Business'}</h3>
               <span class="font-body-md text-[12px] text-outline">${date}</span>
             </div>
             <p class="font-body-md text-[14px] text-on-surface-variant line-clamp-1">${msg}</p>

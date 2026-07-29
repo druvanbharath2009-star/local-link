@@ -272,27 +272,27 @@
 
   function businessCard(b) {
     const verified = b.verified ? `<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm" title="Verified Student Business"><span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>` : '';
-    const img = b.image_url ? `<img src="${b.image_url}" alt="${b.business_name}" class="w-full h-32 object-cover rounded-lg mb-2"/>` : '';
+    const img = b.image_url ? `<img src="${esc(b.image_url)}" alt="${esc(b.business_name)}" class="w-full h-32 object-cover rounded-lg mb-2"/>` : '';
     return `<article class="bg-surface-container-lowest rounded-xl p-6 flex flex-col gap-5 border border-outline-variant/30 shadow-[0_4px_24px_rgba(0,62,199,0.06)] hover:shadow-[0_8px_32px_rgba(0,62,199,0.12)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-32 h-32 bg-secondary-fixed/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
       ${img}
       <div class="flex justify-between items-start">
-        <span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">${b.category || 'General'}</span>
-        <span class="font-label-md text-label-md text-on-surface bg-surface px-2 py-1 rounded-DEFAULT border border-outline-variant/50">${b.price || ''}</span>
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">${esc(b.category) || 'General'}</span>
+        <span class="font-label-md text-label-md text-on-surface bg-surface px-2 py-1 rounded-DEFAULT border border-outline-variant/50">${esc(b.price)}</span>
       </div>
       <div class="flex flex-col gap-1 z-10">
         <div class="flex items-center gap-2">
-          <h3 class="font-headline-md text-headline-md text-on-surface leading-tight">${b.business_name}</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface leading-tight">${esc(b.business_name)}</h3>
           ${verified}
         </div>
-        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-2">${b.mission || 'Student-run business on Local Link.'}</p>
+        <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-2">${esc(b.mission) || 'Student-run business on Local Link.'}</p>
       </div>
       <div class="mt-auto pt-4 flex items-center justify-between border-t border-surface-variant">
         <div class="flex items-center gap-2 text-outline">
           <span class="material-symbols-outlined text-[18px]">storefront</span>
-          <span class="font-label-md text-label-md">${b.owner_name || ''}</span>
+          <span class="font-label-md text-label-md">${esc(b.owner_name)}</span>
         </div>
-        <button onclick="openInterestModal(${b.id}, '${b.business_name.replace(/'/g, "\\'")}')" class="h-[48px] px-6 bg-primary text-on-primary font-label-md text-label-md rounded-DEFAULT shadow-md hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95 flex items-center justify-center">
+        <button onclick="openInterestModal(${b.id}, '${escAttr(b.business_name)}')" class="h-[48px] px-6 bg-primary text-on-primary font-label-md text-label-md rounded-DEFAULT shadow-md hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95 flex items-center justify-center">
           Send Interest
         </button>
       </div>

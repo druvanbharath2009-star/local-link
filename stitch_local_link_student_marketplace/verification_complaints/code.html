@@ -234,17 +234,32 @@
       <div class="absolute top-0 left-0 w-1 h-full bg-secondary-container"></div>
       <div class="flex justify-between items-start mb-sm">
         <div>
-          <h3 class="font-label-md text-label-md text-on-surface text-[16px]">${v.business_name || 'Unknown Business'}</h3>
-          <p class="font-body-md text-body-md text-outline text-sm">Submitted ${new Date(v.submitted_at).toLocaleDateString()} by ${v.owner_name}</p>
-          <p class="text-xs text-on-surface-variant mt-1">${v.email}</p>
+          <h3 class="font-label-md text-label-md text-on-surface text-[16px]">${esc(v.business_name) || 'Unknown Business'}</h3>
+          <p class="font-body-md text-body-md text-outline text-sm">Submitted ${new Date(v.submitted_at).toLocaleDateString()} by ${esc(v.owner_name)}</p>
+          <p class="text-xs text-on-surface-variant mt-1">${esc(v.email)}</p>
         </div>
-        <div class="bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full flex items-center gap-1">
-          <span class="material-symbols-outlined text-[16px]">payments</span>
-          <span class="font-label-md text-[12px]">Fee Paid ($10)</span>
+        <div class="bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">schedule</span>
+          <span class="font-label-md text-[12px]">Awaiting review</span>
         </div>
       </div>
+      <!-- Evidence the student submitted. Blank until backend/verification_evidence_migration.sql is run. -->
+      <div class="bg-surface-container p-sm rounded-lg mb-sm border border-outline-variant/30 space-y-1">
+        <p class="text-sm text-on-surface flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-outline">school</span>
+          ${v.edu_email
+            ? `<a class="text-primary hover:underline" href="mailto:${esc(v.edu_email)}">${esc(v.edu_email)}</a>`
+            : '<span class="text-outline italic">No university email on file</span>'}
+        </p>
+        <p class="text-sm text-on-surface flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+          ${v.id_document
+            ? `<button onclick="viewId('${escAttr(v.id_document)}')" class="text-primary hover:underline">View student ID</button>`
+            : '<span class="text-outline italic">No student ID uploaded</span>'}
+        </p>
+      </div>
       ${v.mission ? `<div class="bg-surface-container p-sm rounded-lg mb-sm border border-outline-variant/30">
-        <p class="text-sm text-on-surface-variant italic">"${v.mission}"</p>
+        <p class="text-sm text-on-surface-variant italic">"${esc(v.mission)}"</p>
       </div>` : ''}
       <div class="flex gap-sm mt-margin">
         <button onclick="approveV(${v.id}, this)" class="flex-1 h-12 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
@@ -264,18 +279,18 @@
       <div class="flex justify-between items-start mb-sm">
         <div>
           <div class="flex items-center gap-2 mb-1">
-            <span class="${statusColor[c.status] || ''} font-label-md text-[10px] uppercase tracking-wider px-2 py-0.5 rounded">${c.status}</span>
+            <span class="${statusColor[c.status] || ''} font-label-md text-[10px] uppercase tracking-wider px-2 py-0.5 rounded">${esc(c.status)}</span>
             <p class="font-body-md text-sm text-outline">${new Date(c.created_at).toLocaleDateString()}</p>
           </div>
-          <h3 class="font-label-md text-label-md text-on-surface text-[16px]">${c.subject}</h3>
+          <h3 class="font-label-md text-label-md text-on-surface text-[16px]">${esc(c.subject)}</h3>
         </div>
       </div>
       <div class="bg-surface-container p-sm rounded-lg mb-margin border border-outline-variant/30">
-        <p class="font-body-md text-sm text-on-surface-variant italic">"${c.description}"</p>
+        <p class="font-body-md text-sm text-on-surface-variant italic">"${esc(c.description)}"</p>
       </div>
       <div class="flex items-center justify-between border-t border-outline-variant/50 pt-sm mb-margin text-xs">
-        ${c.business_name ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-outline">store</span>${c.business_name}</span>` : '<span></span>'}
-        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-outline">person</span>${c.customer_name || 'Anonymous'}</span>
+        ${c.business_name ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-outline">store</span>${esc(c.business_name)}</span>` : '<span></span>'}
+        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-outline">person</span>${esc(c.customer_name) || 'Anonymous'}</span>
       </div>
       <div class="flex gap-sm">
         <button onclick="updateComplaintStatus(${c.id}, 'reviewing')" class="flex-1 h-10 bg-surface-container text-on-surface font-label-md text-sm rounded-lg border border-outline-variant hover:bg-surface-variant transition-all">Mark Reviewing</button>
@@ -284,11 +299,24 @@
     </article>`;
   }
 
+  // Opens the student ID in a new tab via a short-lived signed URL (the
+  // verification-docs bucket is private).
+  async function viewId(path) {
+    try {
+      const url = await api._verificationDocUrl(path);
+      if (url) window.open(url, '_blank', 'noopener');
+      else showToast('Could not open that document', 'error');
+    } catch (err) { showToast(err.message || 'Could not open that document', 'error'); }
+  }
+  window.viewId = viewId;
+
+  // Approving does NOT grant the badge — it lets the business pay the $10 fee,
+  // and the Stripe webhook sets `verified` once that payment clears.
   async function approveV(id, btn) {
     showLoading(btn, '...');
     try {
       await api.post(`/admin/verifications/${id}/approve`, {});
-      showToast('Business approved and verified!');
+      showToast('Approved — the business can now pay the $10 fee to activate their badge.');
       loadVerifications();
     } catch (err) { showToast(err.message, 'error'); hideLoading(btn); }
   }

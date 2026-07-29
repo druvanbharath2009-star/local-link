@@ -172,7 +172,7 @@
 </div>
 <span class="font-headline-md text-headline-md text-on-surface">Starter Topic</span>
 </div>
-<span class="font-headline-md text-headline-md text-on-surface">$14.99<span class="font-body-md text-body-md text-on-surface-variant">/mo</span></span>
+<span class="font-headline-md text-headline-md text-on-surface">$14.99<span class="font-body-md text-body-md text-on-surface-variant">one-time</span></span>
 </div>
 <p class="font-body-md text-body-md text-on-surface-variant pl-8">Standard lead delivery for a single zip code coverage.</p>
 </label>
@@ -190,7 +190,7 @@
 </div>
 <span class="font-headline-md text-headline-md text-on-surface">Growth Bundle</span>
 </div>
-<span class="font-headline-md text-headline-md text-on-surface mt-1">$39.99<span class="font-body-md text-body-md text-on-surface-variant">/mo</span></span>
+<span class="font-headline-md text-headline-md text-on-surface mt-1">$39.99<span class="font-body-md text-body-md text-on-surface-variant">one-time</span></span>
 </div>
 <p class="font-body-md text-body-md text-on-surface-variant pl-8 mb-md">Expand your reach instantly. Includes 3 adjacent geographic topics.</p>
 <!-- Feature List inline -->
@@ -287,21 +287,23 @@
         const names = topics.filter(t => topicIds.includes(String(t.id))).map(t => t.name);
         if (names.length) {
           document.getElementById('checkout-summary-text').innerHTML =
-            `You are subscribing to <strong class="text-on-surface font-semibold">${names.join(', ').replace(/</g, '&lt;')}</strong> on the <strong class="text-on-surface font-semibold">${planType === 'bundle' ? 'Growth Bundle' : 'Starter'}</strong> plan.`;
+            `You are subscribing to <strong class="text-on-surface font-semibold">${esc(names.join(', '))}</strong> on the <strong class="text-on-surface font-semibold">${planType === 'bundle' ? 'Growth Bundle' : 'Starter'}</strong> plan.`;
         }
       } catch {}
     })();
 
     async function doSubscribe(btn) {
       if (!topicIds.length) return;
-      showLoading(btn, 'Processing...');
+      showLoading(btn, 'Redirecting to Stripe...');
       try {
-        const res = await api.post('/topics/subscribe', { topic_ids: topicIds, plan_type: planType });
-        showToast(res.message || 'Subscribed successfully!');
-        setTimeout(() => window.location.href = '/topic_marketplace/code.html', 1200);
+        // This call ends in window.location = Stripe's hosted checkout, so there
+        // is nothing to confirm here — the subscription is only real once the
+        // webhook sees the payment. Don't schedule a redirect of our own: it
+        // would race the Stripe one and could cancel it.
+        await api.post('/topics/subscribe', { topic_ids: topicIds, plan_type: planType });
       } catch (err) {
         hideLoading(btn);
-        showToast(err.message || 'Subscription failed', 'error');
+        showToast(err.message || 'Could not start checkout', 'error');
       }
     }
 

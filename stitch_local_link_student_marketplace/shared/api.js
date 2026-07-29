@@ -85,7 +85,7 @@ const api = {
     if (pathname === '/businesses/me'         && method === 'GET')      return api._getMyBusiness();
     if (pathname === '/businesses/me'         && method === 'PUT')      return api._updateMyBusiness(body, isFormData);
     if (pathname === '/businesses/me/leads'   && method === 'GET')      return api._getLeads();
-    if (pathname === '/businesses/verify'     && method === 'POST')     return api._requestVerification();
+    if (pathname === '/businesses/verify'     && method === 'POST')     return api._requestVerification(body);
     if (pathname === '/businesses/verify/pay'    && method === 'POST')  return api._payVerification();
     if (pathname === '/businesses/verify/status' && method === 'GET')   return api._getMyVerification();
     if (pathname === '/businesses/credits/buy' && method === 'POST')    return api._buyLeadCredits();
@@ -109,7 +109,8 @@ const api = {
     if (pathname === '/admin/verifications'   && method === 'GET')      return api._adminVerifications();
     if (pathname === '/admin/complaints'      && method === 'GET')      return api._adminComplaints(query);
     if (pathname === '/admin/businesses'      && method === 'GET')      return api._adminBusinesses(query);
-    const aUser = pathname.match(/^\/admin\/users\/(\w+)$/);
+    // Profile ids are UUIDs (hyphens), so \w+ would never match here.
+    const aUser = pathname.match(/^\/admin\/users\/([^/]+)$/);
     if (aUser   && method === 'DELETE')                                 return api._adminDeleteUser(aUser[1]);
     const aApprove = pathname.match(/^\/admin\/verifications\/(\w+)\/approve$/);
     if (aApprove && method === 'POST')                                  return api._adminApproveVerification(aApprove[1]);
@@ -191,6 +192,30 @@ const api = {
 
   // ── Businesses ─────────────────────────────────────────────
 
+  // Every business-scoped call needs "which business row is mine?". Doing this
+  // in one place means (a) a missing row is a clear error instead of a raw
+  // PostgREST "coerce to single object" one, and (b) we can self-heal an
+  // account that has role='business' but no businesses row (created straight in
+  // the Supabase dashboard, or a signup whose second insert failed).
+  async _myBusiness(columns = '*', { create = true } = {}) {
+    const user = api.getUser();
+    if (!user) throw new Error('Not signed in');
+    const { data, error } = await _sb.from('businesses')
+      .select(columns).eq('user_id', user.id).maybeSingle();
+    api._throw(error);
+    if (data) return data;
+    if (!create || user.role !== 'business') throw new Error('Business not found');
+
+    const { error: ce } = await _sb.from('businesses')
+      .insert({ user_id: user.id, business_name: user.name || 'My Business', mission: '' });
+    if (ce) throw new Error('Business not found and could not be created: ' + ce.message);
+    const { data: created, error: re } = await _sb.from('businesses')
+      .select(columns).eq('user_id', user.id).maybeSingle();
+    api._throw(re);
+    if (!created) throw new Error('Business not found');
+    return created;
+  },
+
   async _getBusinesses({ category, search, verified } = {}) {
     let q = _sb.from('businesses').select('*, profiles(name, email)');
     if (category) q = q.eq('category', category);
@@ -210,16 +235,12 @@ const api = {
   },
 
   async _getMyBusiness() {
-    const user = api.getUser();
-    const { data, error } = await _sb.from('businesses').select('*').eq('user_id', user.id).single();
-    api._throw(error);
-    if (!data) throw new Error('Business not found');
-    return data;
+    return api._myBusiness();
   },
 
   async _updateMyBusiness(body, isFormData) {
     const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('*').eq('user_id', user.id).single();
+    const biz = await api._myBusiness();
     let image_url = biz.image_url;
 
     let fields = body;
@@ -278,24 +299,63 @@ const api = {
 
   // Step 1: business submits a FREE verification request for admin review.
   // No payment here — the badge is paid for only after an admin approves.
-  async _requestVerification() {
+  // `edu_email` / `id_file` are the evidence collected on the verification page;
+  // without them an admin would be approving a request with nothing to check.
+  async _requestVerification({ edu_email, id_file } = {}) {
     const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('id, verified').eq('user_id', user.id).single();
-    if (!biz) throw new Error('Business not found');
+    const biz = await api._myBusiness('id, verified');
     if (biz.verified) throw new Error('Already verified');
-    const { error } = await _sb.from('verification_requests').upsert(
-      { business_id: biz.id, status: 'pending', payment_confirmed: 0, reviewed_at: null, notes: null },
-      { onConflict: 'business_id' }
-    );
+
+    // Student IDs are personal documents, so they go in a PRIVATE bucket keyed
+    // by user id; admins read them through a short-lived signed URL.
+    let id_document = null;
+    if (id_file && id_file.size > 0) {
+      const ext = (id_file.name.split('.').pop() || 'jpg').toLowerCase();
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error: ue } = await _sb.storage.from('verification-docs')
+        .upload(path, id_file, { upsert: true });
+      if (ue && /bucket not found/i.test(ue.message || '')) {
+        // Migration not run yet — don't block the request over it.
+        console.warn('verification-docs bucket missing — run backend/verification_evidence_migration.sql');
+      } else if (ue) {
+        throw new Error('Could not upload your student ID: ' + ue.message);
+      } else {
+        id_document = path;
+      }
+    }
+
+    const row = { business_id: biz.id, status: 'pending', payment_confirmed: 0, reviewed_at: null, notes: null };
+    if (edu_email) row.edu_email = edu_email;
+    if (id_document) row.id_document = id_document;
+
+    let { error } = await _sb.from('verification_requests').upsert(row, { onConflict: 'business_id' });
+    // 42703 = column does not exist: the evidence migration hasn't been run yet.
+    // Still submit the request rather than blocking the business entirely.
+    if (error && (error.code === '42703' || /column .* does not exist/i.test(error.message || ''))) {
+      console.warn('verification_requests is missing edu_email/id_document — run backend/verification_evidence_migration.sql');
+      ({ error } = await _sb.from('verification_requests').upsert(
+        { business_id: biz.id, status: 'pending', payment_confirmed: 0, reviewed_at: null, notes: null },
+        { onConflict: 'business_id' }
+      ));
+    }
     api._throw(error);
     return { message: 'Verification request submitted. An admin will review it shortly.' };
+  },
+
+  // A time-limited link to a submitted student ID (admin view only — the
+  // bucket is private, so this fails for anyone else).
+  async _verificationDocUrl(path) {
+    if (!path) return null;
+    const { data } = await _sb.storage.from('verification-docs').createSignedUrl(path, 300);
+    return data?.signedUrl || null;
   },
 
   // The business's current verification state, for the dashboard to render.
   async _getMyVerification() {
     const user = api.getUser();
     if (!user) return { verified: false, status: 'none' };
-    const { data: biz } = await _sb.from('businesses').select('id, verified').eq('user_id', user.id).single();
+    const { data: biz } = await _sb.from('businesses')
+      .select('id, verified').eq('user_id', user.id).maybeSingle();
     if (!biz) return { verified: false, status: 'none' };
     const { data: vr } = await _sb.from('verification_requests')
       .select('status, payment_confirmed').eq('business_id', biz.id).maybeSingle();
@@ -325,9 +385,7 @@ const api = {
   },
 
   async _getLeads() {
-    const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('*').eq('user_id', user.id).single();
-    if (!biz) throw new Error('Business not found');
+    const biz = await api._myBusiness();
     const { data: forms, error } = await _sb.from('interest_forms')
       .select('id, customer_name, created_at, unlocked, customer_email, customer_phone, message')
       .eq('business_id', biz.id).order('created_at', { ascending: false });
@@ -406,9 +464,7 @@ const api = {
   },
 
   async _getTopicLeads(topicId) {
-    const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
-    if (!biz) throw new Error('Business not found');
+    const biz = await api._myBusiness('id');
     const { data: sub } = await _sb.from('topic_subscriptions')
       .select('id').eq('business_id', biz.id).eq('topic_id', topicId).eq('active', 1).single();
     if (!sub) throw new Error('Not subscribed to this topic');
@@ -437,7 +493,7 @@ const api = {
   async _getMyTopicLeads() {
     const user = api.getUser();
     if (!user) return [];
-    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
+    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).maybeSingle();
     if (!biz) return [];
     const { data: subs } = await _sb.from('topic_subscriptions')
       .select('topic_id, topics(name, icon)').eq('business_id', biz.id).eq('active', 1);
@@ -451,9 +507,7 @@ const api = {
   },
 
   async _getMySubscriptions() {
-    const user = api.getUser();
-    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
-    if (!biz) throw new Error('Business not found');
+    const biz = await api._myBusiness('id');
     const { data, error } = await _sb.from('topic_subscriptions')
       .select('*, topics(name, description, icon)').eq('business_id', biz.id).eq('active', 1);
     api._throw(error);
@@ -507,7 +561,7 @@ const api = {
     const user = api.getUser();
     if (!user || user.role !== 'business') return [];
 
-    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).single();
+    const { data: biz } = await _sb.from('businesses').select('id').eq('user_id', user.id).maybeSingle();
     if (!biz) return [];
 
     // (a) Direct leads (interest forms sent to this business)
@@ -600,13 +654,16 @@ const api = {
     return data;
   },
 
+  // Deleting the `profiles` row alone is not enough: the auth.users row would
+  // survive, and the self-heal in _login would rebuild the profile on their
+  // next sign-in — so the account would come back. Only the service role can
+  // remove an auth user, so this goes through the admin-delete-user function
+  // (which cascades to profiles/businesses).
   async _adminDeleteUser(id) {
-    const { data: profile } = await _sb.from('profiles').select('role').eq('id', id).single();
+    const { data: profile } = await _sb.from('profiles').select('role').eq('id', id).maybeSingle();
     if (!profile) throw new Error('User not found');
     if (profile.role === 'admin') throw new Error('Cannot delete admin');
-    const { error } = await _sb.from('profiles').delete().eq('id', id);
-    api._throw(error);
-    return { message: 'User deleted' };
+    return await api._invokeFn('admin-delete-user', { userId: id });
   },
 
   async _adminVerifications() {
@@ -970,7 +1027,24 @@ const api = {
   })();
 })();
 
-// ── UI helpers (unchanged) ─────────────────────────────────
+// ── UI helpers ─────────────────────────────────────────────
+
+// Every card/table on this site is built with innerHTML from values other
+// people typed (business names, lead messages, complaint text, user names).
+// Run ALL of them through this first — otherwise a customer can put markup in
+// an interest form and have it execute in the business's (or admin's) browser.
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+// For values dropped inside a JS string in an inline onclick="...".
+function escAttr(s) {
+  return esc(s).replace(/\\/g, '\\\\').replace(/&#39;/g, "\\&#39;");
+}
 
 function showToast(msg, type = 'success') {
   const toast = document.createElement('div');

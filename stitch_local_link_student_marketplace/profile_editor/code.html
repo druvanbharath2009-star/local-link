@@ -350,7 +350,7 @@
     document.getElementById('preview-name').textContent = name || 'Your Business Name';
     document.getElementById('preview-mission').textContent = mission || 'Your mission statement will appear here.';
     document.getElementById('preview-price').innerHTML = price
-      ? (/^\d/.test(price) ? '$' : '') + price.replace(/</g, '&lt;')
+      ? (/^\d/.test(price) ? '$' : '') + esc(price)
       : '—';
 
     const catWrap = document.getElementById('preview-category');

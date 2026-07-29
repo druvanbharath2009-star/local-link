@@ -223,8 +223,8 @@
 </div>
 <!-- Price -->
 <div class="flex items-baseline gap-xs">
-<span id="lead-price" class="font-headline-xl text-headline-xl text-primary">$1.99</span>
-<span class="font-body-md text-body-md text-on-surface-variant">/ lead</span>
+<span id="lead-price" class="font-headline-xl text-headline-xl text-primary">—</span>
+<span id="lead-price-unit" class="font-body-md text-body-md text-on-surface-variant">this unlock</span>
 </div>
 <hr class="border-surface-variant"/>
 <!-- Charge summary -->
@@ -232,7 +232,7 @@
 <div class="flex items-start gap-sm p-sm rounded-lg bg-surface border border-surface-variant">
 <span class="material-symbols-outlined text-primary mt-[2px]">info</span>
 <p class="font-body-md text-sm text-on-surface-variant">
-                                    Unlocking reveals this customer's email and phone. Your first 5 leads are free; after that each unlock is $1.99.
+                                    Unlocking reveals this customer's email and phone. Your first 5 leads are free; after that each unlock spends 1 lead credit (10 credits for $19.90).
                                 </p>
 </div>
 </div>
@@ -262,8 +262,6 @@
       window.location.href = '/lead_manager/code.html';
     });
 
-    function esc(s) { return (s || '').replace(/</g, '&lt;'); }
-
     function renderQuota(used, credits = 0) {
       const remaining = Math.max(0, 5 - used);
       document.getElementById('quota-text').textContent = `${remaining} / 5`;
@@ -272,7 +270,9 @@
       const free = used < 5;
       const haveCredits = credits > 0;
       document.getElementById('lead-price').textContent =
-        free ? 'Free' : (haveCredits ? '1 credit' : 'Buy credits');
+        free ? 'Free' : (haveCredits ? '1 credit' : '$19.90');
+      const unitEl = document.getElementById('lead-price-unit');
+      if (unitEl) unitEl.textContent = free ? 'this unlock' : (haveCredits ? 'this unlock' : 'for 10 unlocks');
       const warn = !free && !haveCredits;
       note.className = `font-body-md text-[13px] mt-sm flex items-start gap-xs ${warn ? 'text-error' : 'text-on-surface-variant'}`;
       note.innerHTML = `<span class="material-symbols-outlined text-[16px] mt-[2px]">info</span> ${

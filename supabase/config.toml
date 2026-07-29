@@ -14,3 +14,6 @@ verify_jwt = true
 
 [functions.unlock-lead]
 verify_jwt = true
+
+[functions.admin-delete-user]
+verify_jwt = true

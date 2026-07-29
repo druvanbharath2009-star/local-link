@@ -308,11 +308,11 @@
         <div class="bg-surface rounded-lg p-sm flex items-center justify-between border border-transparent hover:border-outline-variant transition-colors group">
           <div class="flex items-center gap-margin">
             <div class="w-12 h-12 rounded-lg bg-primary-container text-primary flex items-center justify-center font-headline-md text-lg">
-              ${(v.business_name || 'B').charAt(0)}
+              ${esc((v.business_name || 'B').charAt(0))}
             </div>
             <div>
-              <h4 class="font-label-md text-label-md text-on-surface">${v.business_name || 'Unknown'}</h4>
-              <p class="text-[13px] text-on-surface-variant">${v.owner_name} • ${new Date(v.submitted_at).toLocaleDateString()}</p>
+              <h4 class="font-label-md text-label-md text-on-surface">${esc(v.business_name) || 'Unknown'}</h4>
+              <p class="text-[13px] text-on-surface-variant">${esc(v.owner_name)} • ${new Date(v.submitted_at).toLocaleDateString()}</p>
             </div>
           </div>
           <div class="flex gap-sm">
@@ -332,7 +332,8 @@
   async function approveVerification(id) {
     try {
       await api.post(`/admin/verifications/${id}/approve`, {});
-      showToast('Business verified!');
+      // Approval unlocks payment; the badge is granted by the Stripe webhook.
+      showToast('Approved — the business can now pay the $10 fee.');
       loadStats();
       loadVerificationQueue();
     } catch (err) { showToast(err.message, 'error'); }
@@ -363,8 +364,8 @@
       const wrap = document.getElementById('active-topics');
       wrap.innerHTML = topics.length ? topics.map(t => `
         <div class="bg-surface-container-lowest border border-outline-variant rounded-full px-3 py-1 flex items-center gap-xs text-[13px] text-on-surface hover:border-primary transition-colors">
-          ${(t.name || '').replace(/</g, '&lt;')}
-          <button onclick="removeTopic('${t.id}', '${(t.name || '').replace(/'/g, "\\'")}')" class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
+          ${esc(t.name)}
+          <button onclick="removeTopic('${escAttr(t.id)}', '${escAttr(t.name)}')" class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">cancel</span></button>
         </div>`).join('') : '<p class="text-[13px] text-on-surface-variant">No topics yet.</p>';
     } catch (err) { console.error(err); }
   }
@@ -420,10 +421,10 @@
         <div class="p-margin bg-surface rounded-lg border-l-4 border-error flex flex-col md:flex-row md:items-center justify-between gap-margin">
           <div>
             <div class="flex items-center gap-xs mb-xs">
-              <span class="font-label-md text-label-md text-on-surface">${(c.subject || 'Complaint').replace(/</g, '&lt;')}</span>
-              ${c.business_name ? `<span class="text-[12px] text-on-surface-variant px-2 py-0.5 bg-surface-container-high rounded-full">${c.business_name.replace(/</g, '&lt;')}</span>` : ''}
+              <span class="font-label-md text-label-md text-on-surface">${esc(c.subject) || 'Complaint'}</span>
+              ${c.business_name ? `<span class="text-[12px] text-on-surface-variant px-2 py-0.5 bg-surface-container-high rounded-full">${esc(c.business_name)}</span>` : ''}
             </div>
-            <p class="font-body-md text-body-md text-on-surface-variant">${(c.description || '').replace(/</g, '&lt;')}</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">${esc(c.description)}</p>
           </div>
           <a href="/verification_complaints/code.html" class="px-4 py-2 border border-outline text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors whitespace-nowrap text-center">Review Ticket</a>
         </div>`).join('');

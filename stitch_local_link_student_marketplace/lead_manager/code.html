@@ -249,20 +249,20 @@
           <span class="material-symbols-outlined text-primary text-3xl">person</span>
         </div>
         <div>
-          <h3 class="font-headline-md text-on-surface">${lead.customer_name}</h3>
+          <h3 class="font-headline-md text-on-surface">${esc(lead.customer_name)}</h3>
           <p class="font-body-md text-on-surface-variant text-sm">${new Date(lead.created_at).toLocaleDateString()}</p>
         </div>
       </div>
       ${isUnlocked ? `<div class="space-y-2 mb-4 bg-surface p-4 rounded-xl border border-surface-variant">
         <div class="flex items-center gap-3 text-on-surface-variant font-body-md text-sm">
           <span class="material-symbols-outlined text-[18px]">mail</span>
-          <a href="mailto:${lead.customer_email}" class="hover:text-primary">${lead.customer_email}</a>
+          <a href="mailto:${esc(lead.customer_email)}" class="hover:text-primary">${esc(lead.customer_email)}</a>
         </div>
         ${lead.customer_phone ? `<div class="flex items-center gap-3 text-on-surface-variant text-sm">
           <span class="material-symbols-outlined text-[18px]">call</span>
-          <a href="tel:${lead.customer_phone}" class="hover:text-primary">${lead.customer_phone}</a>
+          <a href="tel:${esc(lead.customer_phone)}" class="hover:text-primary">${esc(lead.customer_phone)}</a>
         </div>` : ''}
-        ${lead.message ? `<p class="text-on-surface-variant text-sm mt-2 italic">"${lead.message}"</p>` : ''}
+        ${lead.message ? `<p class="text-on-surface-variant text-sm mt-2 italic">"${esc(lead.message)}"</p>` : ''}
       </div>
       <a href="/unlock_business_lead/code.html?lead=${lead.id}" class="text-primary text-sm font-label-md hover:underline inline-flex items-center gap-1">View details <span class="material-symbols-outlined text-[16px]">arrow_forward</span></a>` : `<p class="text-on-surface-variant text-sm mb-4 ${!isUnlocked ? 'blur-[3px]' : ''}">Contact details locked.</p>`}
     </div>`;
@@ -298,7 +298,9 @@
       // A locked lead unlocks for free while the business still has free leads left.
       let freeRemaining = Math.max(0, (data.free_leads_limit ?? 5) - data.free_leads_used);
       const freeEl = document.querySelector('.font-label-md.text-primary.mb-1');
-      if (freeEl) freeEl.nextElementSibling && (freeEl.nextElementSibling.textContent = freeRemaining);
+      if (freeEl && freeEl.nextElementSibling) {
+        freeEl.nextElementSibling.textContent = `${freeRemaining} / ${data.free_leads_limit ?? 5}`;
+      }
 
       // Credit-balance banner: visible once free leads are exhausted or whenever
       // the business is holding prepaid credits.
@@ -340,7 +342,6 @@
 
   // Topic submissions from subscribed topics — already unlocked for subscribers.
   function topicLeadCard(l) {
-    const esc = (s) => (s || '').replace(/</g, '&lt;');
     return `<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,20,82,0.08)] p-6 flex flex-col border border-surface-variant">
       <div class="flex justify-between items-start mb-4">
         <span class="bg-primary/10 text-primary font-label-md text-label-md px-3 py-1.5 rounded-full inline-flex items-center gap-1">

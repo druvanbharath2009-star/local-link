@@ -8,6 +8,25 @@
 -- It guarantees the tables have the exact policies the app expects.
 -- ============================================================
 
+-- ── Who counts as an admin? ─────────────────────────────────
+-- SECURITY NOTE: this used to be `auth.jwt() -> 'user_metadata' ->> 'role'`.
+-- `user_metadata` is writable by the user themselves (supabase.auth.updateUser
+-- ({ data: { role: 'admin' } })), so ANY signed-up user could promote
+-- themselves to admin and read every lead, complaint and profile. The role is
+-- now read from the `profiles` table instead, and UPDATE on `profiles.role` is
+-- revoked below so nobody can self-promote there either.
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'
+  );
+$$;
+
 -- Make sure RLS is on for every table.
 ALTER TABLE profiles               ENABLE ROW LEVEL SECURITY;
 ALTER TABLE businesses             ENABLE ROW LEVEL SECURITY;
@@ -25,10 +44,11 @@ CREATE POLICY "Anyone can read profiles" ON profiles FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Users insert own profile" ON profiles;
 CREATE POLICY "Users insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 DROP POLICY IF EXISTS "Users update own profile" ON profiles;
-CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users update own profile" ON profiles FOR UPDATE
+  USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
 DROP POLICY IF EXISTS "Admin deletes profiles" ON profiles;
 CREATE POLICY "Admin deletes profiles" ON profiles FOR DELETE USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 
 -- ── businesses ──────────────────────────────────────────────
@@ -38,7 +58,7 @@ DROP POLICY IF EXISTS "Business inserts own" ON businesses;
 CREATE POLICY "Business inserts own" ON businesses FOR INSERT WITH CHECK (auth.uid() = user_id);
 DROP POLICY IF EXISTS "Business or admin updates" ON businesses;
 CREATE POLICY "Business or admin updates" ON businesses FOR UPDATE USING (
-  auth.uid() = user_id OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  auth.uid() = user_id OR public.is_admin()
 );
 
 -- ── topics ──────────────────────────────────────────────────
@@ -46,7 +66,7 @@ DROP POLICY IF EXISTS "Anyone reads topics" ON topics;
 CREATE POLICY "Anyone reads topics" ON topics FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Admin manages topics" ON topics;
 CREATE POLICY "Admin manages topics" ON topics FOR ALL USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 
 -- ── interest_forms (leads) ──────────────────────────────────
@@ -57,7 +77,7 @@ CREATE POLICY "Anyone submits interest" ON interest_forms FOR INSERT WITH CHECK 
 DROP POLICY IF EXISTS "Business reads own leads" ON interest_forms;
 CREATE POLICY "Business reads own leads" ON interest_forms FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-  OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  OR public.is_admin()
 );
 -- Lets a logged-in customer see the interest forms they themselves submitted
 -- (their "My Interest" dashboard). Matches on the JWT email claim.
@@ -81,7 +101,7 @@ CREATE POLICY "Subscribed business or admin reads" ON topic_submissions FOR SELE
     JOIN businesses b ON ts.business_id = b.id
     WHERE b.user_id = auth.uid() AND ts.active = 1
   )
-  OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  OR public.is_admin()
 );
 
 -- ── topic_subscriptions ─────────────────────────────────────
@@ -103,11 +123,11 @@ DROP POLICY IF EXISTS "Business submits verification" ON verification_requests;
 DROP POLICY IF EXISTS "Business or admin reads verifications" ON verification_requests;
 CREATE POLICY "Business or admin reads verifications" ON verification_requests FOR SELECT USING (
   business_id IN (SELECT id FROM businesses WHERE user_id = auth.uid())
-  OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  OR public.is_admin()
 );
 DROP POLICY IF EXISTS "Admin updates verifications" ON verification_requests;
 CREATE POLICY "Admin updates verifications" ON verification_requests FOR UPDATE USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 -- PAYMENTS LOCKDOWN: client-side verification UPDATE removed (see above).
 DROP POLICY IF EXISTS "Business upserts verification" ON verification_requests;
@@ -136,7 +156,7 @@ DROP POLICY IF EXISTS "Anyone submits complaint" ON complaints;
 CREATE POLICY "Anyone submits complaint" ON complaints FOR INSERT WITH CHECK (true);
 DROP POLICY IF EXISTS "Admin manages complaints" ON complaints;
 CREATE POLICY "Admin manages complaints" ON complaints FOR ALL USING (
-  (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  public.is_admin()
 );
 
 -- ── payments ────────────────────────────────────────────────
@@ -146,7 +166,7 @@ CREATE POLICY "Admin manages complaints" ON complaints FOR ALL USING (
 DROP POLICY IF EXISTS "Users insert own payments" ON payments;
 DROP POLICY IF EXISTS "Users or admin read payments" ON payments;
 CREATE POLICY "Users or admin read payments" ON payments FOR SELECT USING (
-  auth.uid() = user_id OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  auth.uid() = user_id OR public.is_admin()
 );
 
 -- ── businesses: protect money-bearing columns ───────────────
@@ -157,3 +177,10 @@ CREATE POLICY "Users or admin read payments" ON payments FOR SELECT USING (
 -- role, which bypasses these REVOKEs.
 REVOKE UPDATE (verified, verification_status, lead_credits, free_leads_used)
   ON businesses FROM authenticated, anon;
+
+-- ── profiles: nobody promotes themselves to admin ───────────
+-- `is_admin()` above trusts `profiles.role`, and "Users update own profile"
+-- lets a user UPDATE their own row — so without this REVOKE a user could just
+-- set their own role to 'admin'. Same reasoning as the businesses REVOKE:
+-- column privileges, bypassed by the service role.
+REVOKE UPDATE (role, id, email) ON profiles FROM authenticated, anon;

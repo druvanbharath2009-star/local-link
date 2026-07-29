@@ -273,17 +273,17 @@
       <td class="p-4">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center font-headline-md">
-            ${u.name.charAt(0).toUpperCase()}
+            ${esc((u.name || '?').charAt(0).toUpperCase())}
           </div>
           <div>
-            <div class="font-label-md text-label-md text-on-surface">${u.name}</div>
-            <div class="text-[13px] text-on-surface-variant">${u.email}</div>
+            <div class="font-label-md text-label-md text-on-surface">${esc(u.name)}</div>
+            <div class="text-[13px] text-on-surface-variant">${esc(u.email)}</div>
           </div>
         </div>
       </td>
       <td class="p-4">
         <span class="px-2 py-1 rounded-full font-label-md text-[12px] ${roleColor[u.role] || ''}">
-          ${u.role.charAt(0).toUpperCase() + u.role.slice(1)}
+          ${esc((u.role || '').charAt(0).toUpperCase() + (u.role || '').slice(1))}
         </span>
       </td>
       <td class="p-4">
@@ -293,19 +293,25 @@
       </td>
       <td class="p-4 text-[14px] text-on-surface-variant">${new Date(u.created_at).toLocaleDateString()}</td>
       <td class="p-4 text-right">
-        ${u.role !== 'admin' ? `<button onclick="deleteUser(${u.id}, '${u.name.replace(/'/g,"\\'")}', this)" class="px-3 py-1.5 rounded-md border border-error text-error text-[13px] hover:bg-error-container transition-colors">Delete</button>` : ''}
+        ${u.role !== 'admin' ? `<button onclick="deleteUser('${escAttr(u.id)}', '${escAttr(u.name)}', this)" class="px-3 py-1.5 rounded-md border border-error text-error text-[13px] hover:bg-error-container transition-colors">Delete</button>` : ''}
       </td>
     </tr>`;
   }
 
   async function deleteUser(id, name, btn) {
-    if (!confirm(`Delete ${name}? This cannot be undone.`)) return;
+    if (!confirm(`Delete ${name}? This deletes their sign-in account too and cannot be undone.`)) return;
+    if (btn) showLoading(btn, 'Deleting...');
     try {
       await api.delete(`/admin/users/${id}`);
       showToast(`${name} deleted`);
       loadUsers();
-    } catch (err) { showToast(err.message, 'error'); }
+      loadStats();
+    } catch (err) {
+      hideLoading(btn);
+      showToast(err.message, 'error');
+    }
   }
+  window.deleteUser = deleteUser;
 
   const PAGE_SIZE = 10;
   let currentUsers = [];   // after filtering

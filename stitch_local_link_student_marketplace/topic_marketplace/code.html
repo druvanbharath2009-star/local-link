@@ -195,7 +195,7 @@
 <h3 class="font-headline-md text-headline-md text-on-surface">Starter Topic</h3>
 <div class="mt-2 flex items-baseline gap-1">
 <span class="font-headline-lg text-headline-lg text-primary">$14.99</span>
-<span class="font-body-md text-body-md text-on-surface-variant">/mo</span>
+<span class="font-body-md text-body-md text-on-surface-variant">one-time</span>
 </div>
 <p class="font-body-md text-body-md text-on-surface-variant mt-2 text-sm">Perfect for targeted, specialized services.</p>
 </div>
@@ -219,7 +219,7 @@
 <h3 class="font-headline-md text-headline-md text-on-surface">Growth Bundle</h3>
 <div class="mt-2 flex items-baseline gap-1">
 <span class="font-headline-lg text-headline-lg text-primary">$39.99</span>
-<span class="font-body-md text-body-md text-on-surface-variant">/mo</span>
+<span class="font-body-md text-body-md text-on-surface-variant">one-time</span>
 </div>
 <p class="font-body-md text-body-md text-on-surface-variant mt-2 text-sm">Maximize your local footprint with multiple services.</p>
 </div>
@@ -318,13 +318,13 @@
     return `<div class="bg-surface-container-lowest rounded-[1.5rem] p-margin shadow-level-1 flex flex-col gap-4 border ${sel ? 'border-primary border-2' : 'border-surface-container-highest'} hover:shadow-level-2 transition-all cursor-pointer group" data-id="${t.id}">
       <div class="flex justify-between items-start">
         <div class="w-12 h-12 rounded-xl ${sel ? 'bg-primary text-on-primary' : 'bg-primary-fixed text-on-primary-fixed'} flex items-center justify-center transition-colors">
-          <span class="material-symbols-outlined text-[28px]">${t.icon || 'category'}</span>
+          <span class="material-symbols-outlined text-[28px]">${esc(t.icon) || 'category'}</span>
         </div>
         ${isSubscribed ? '<span class="bg-secondary-fixed/20 text-secondary px-3 py-1 rounded-full font-label-md text-[12px]">✓ Subscribed</span>' : ''}
       </div>
       <div>
-        <h4 class="font-headline-md text-[20px] text-on-surface">${t.name}</h4>
-        <p class="font-body-md text-sm text-on-surface-variant mt-1 line-clamp-2">${t.description || ''}</p>
+        <h4 class="font-headline-md text-[20px] text-on-surface">${esc(t.name)}</h4>
+        <p class="font-body-md text-sm text-on-surface-variant mt-1 line-clamp-2">${esc(t.description)}</p>
       </div>
       <div class="mt-auto pt-4 flex justify-between items-center border-t border-surface-variant">
         <span class="font-label-md text-sm text-on-surface-variant">${isBusiness ? 'Get leads from this topic' : 'Find a business in this area'}</span>
@@ -408,9 +408,9 @@
         <h3 class="font-headline-md text-on-surface mb-1" style="font-size:24px;font-weight:600;">Express Interest</h3>
         <p class="text-sm text-on-surface-variant mb-6">A business in this topic will reach out to you.</p>
         <div class="flex flex-col gap-4">
-          <input id="_ti_name" type="text" placeholder="Your name" value="${user?.name || ''}" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md transition-all" style="background:#f2f4f6;"/>
-          <input id="_ti_email" type="email" placeholder="Your email" value="${user?.email || ''}" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md transition-all" style="background:#f2f4f6;"/>
-          <input id="_ti_phone" type="tel" placeholder="Phone (optional)" value="${user?.phone || ''}" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md transition-all" style="background:#f2f4f6;"/>
+          <input id="_ti_name" type="text" placeholder="Your name" value="${esc(user?.name)}" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md transition-all" style="background:#f2f4f6;"/>
+          <input id="_ti_email" type="email" placeholder="Your email" value="${esc(user?.email)}" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md transition-all" style="background:#f2f4f6;"/>
+          <input id="_ti_phone" type="tel" placeholder="Phone (optional)" value="${esc(user?.phone)}" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md transition-all" style="background:#f2f4f6;"/>
           <textarea id="_ti_msg" placeholder="What are you looking for? (optional)" rows="3" class="w-full px-4 py-3 bg-surface-container-low rounded-lg border border-transparent focus:border-primary outline-none font-body-md resize-none transition-all" style="background:#f2f4f6;"></textarea>
         </div>
         <div class="flex gap-3 mt-6">
@@ -448,7 +448,9 @@
 
   document.getElementById('topic-search')?.addEventListener('input', () => loadTopics());
 
-  if (isBusiness) document.getElementById('bundle-bar')?.classList.remove('hidden') && updateBundleBar();
+  // updateBundleBar() decides on its own whether the bar should be visible —
+  // it stays hidden until at least one topic is selected.
+  updateBundleBar();
 
   document.querySelectorAll('button').forEach(btn => {
     if (btn.textContent.trim().startsWith('Upgrade Plan')) {

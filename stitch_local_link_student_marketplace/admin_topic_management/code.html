@@ -334,16 +334,16 @@
     return `<div class="bg-surface-lowest rounded-[1.5rem] p-6 shadow-level-1 hover:shadow-level-2 transition-shadow group border border-transparent hover:border-primary/20">
       <div class="flex justify-between items-start mb-4">
         <div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
-          <span class="material-symbols-outlined text-[22px]">${t.icon || 'category'}</span>
+          <span class="material-symbols-outlined text-[22px]">${esc(t.icon) || 'category'}</span>
         </div>
         <div class="flex gap-2">
-          <button onclick="deleteTopic(${t.id}, '${t.name.replace(/'/g,"\\'")}', this)" class="text-outline hover:text-error">
+          <button onclick="deleteTopic('${escAttr(t.id)}', '${escAttr(t.name)}', this)" class="text-outline hover:text-error">
             <span class="material-symbols-outlined text-[20px]">delete</span>
           </button>
         </div>
       </div>
-      <h3 class="font-headline-md text-headline-md text-on-surface mb-2">${t.name}</h3>
-      <p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">${t.description || ''}</p>
+      <h3 class="font-headline-md text-headline-md text-on-surface mb-2">${esc(t.name)}</h3>
+      <p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">${esc(t.description)}</p>
     </div>`;
   }
 

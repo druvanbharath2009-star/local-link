@@ -171,7 +171,7 @@
 </div>
 <input class="block w-full pl-xl pr-sm py-sm bg-surface-container border-transparent focus:border-primary focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 rounded-lg font-body-md text-body-md text-on-surface transition-all duration-200" id="edu_email" name="edu_email" placeholder="student@university.edu" required="" type="email"/>
 </div>
-<p class="font-body-md text-body-md text-outline-variant text-[12px] mt-xs">We will send a confirmation link to this address.</p>
+<p class="font-body-md text-body-md text-outline-variant text-[12px] mt-xs">An admin checks this address against your student ID — no confirmation email is sent.</p>
 </div>
 <!-- ID Upload Area -->
 <div>
@@ -222,12 +222,48 @@ Submit Verification Request
 <script>
   if (!api.requireAuth('business')) {}
 
+  const eduInput = document.getElementById('edu_email');
+  const fileInput = document.getElementById('file-upload');
+  const MAX_ID_BYTES = 5 * 1024 * 1024;
+
+  // Show the chosen file name — otherwise the drop zone looks like nothing
+  // happened after picking a file.
+  const fileLabel = document.querySelector('label[for="file-upload"] span');
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files[0];
+    if (fileLabel) fileLabel.textContent = f ? f.name : 'Upload a file';
+    if (f && f.size > MAX_ID_BYTES) {
+      showToast('That file is over 5MB — please pick a smaller one.', 'error');
+      fileInput.value = '';
+      if (fileLabel) fileLabel.textContent = 'Upload a file';
+    }
+  });
+
   document.getElementById('verify-pay-btn').addEventListener('click', async () => {
     const btn = document.getElementById('verify-pay-btn');
-    showLoading(btn, 'Processing...');
+    const eduEmail = eduInput.value.trim();
+
+    // These two are the whole point of the request — an admin has nothing to
+    // check without them.
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(eduEmail)) {
+      showToast('Enter the university email you want verified.', 'error');
+      eduInput.focus();
+      return;
+    }
+    const idFile = fileInput.files[0];
+    if (!idFile) {
+      showToast('Attach a photo of your student ID.', 'error');
+      return;
+    }
+    if (idFile.size > MAX_ID_BYTES) {
+      showToast('That file is over 5MB — please pick a smaller one.', 'error');
+      return;
+    }
+
+    showLoading(btn, 'Submitting...');
     try {
-      await api.post('/businesses/verify', {});
-      showToast('Verification submitted! Admin will review your application.');
+      await api.post('/businesses/verify', { edu_email: eduEmail, id_file: idFile });
+      showToast('Verification submitted! An admin will review your application.');
       setTimeout(() => window.location.href = '/business_dashboard/code.html', 2000);
     } catch (err) {
       showToast(err.message, 'error');

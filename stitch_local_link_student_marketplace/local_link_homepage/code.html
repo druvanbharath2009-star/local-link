@@ -374,7 +374,6 @@
   const user = api.getUser();
 
   // Featured Ventures — render real businesses (verified first), no fake data.
-  function esc(s) { return (s || '').replace(/</g, '&lt;'); }
   function featuredCard(b) {
     return `<div class="bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-level-1 flex flex-col hover:-translate-y-1 transition-transform duration-300">
       <div class="flex justify-between items-start mb-4">
@@ -419,16 +418,32 @@
     } else if (text.startsWith('View Pricing Plans')) {
       btn.onclick = () => window.location.href = '/topic_marketplace/code.html';
     } else if (text.startsWith('Send Message')) {
-      btn.onclick = () => {
+      // Contact messages are stored as complaints so they actually reach
+      // someone — they show up in the admin control center's feed.
+      btn.onclick = async () => {
         const form = document.getElementById('contact-form');
+        const [first, last] = form.querySelectorAll('input[type="text"]');
         const email = form.querySelector('input[type="email"]');
         const msg = form.querySelector('textarea');
         if (!email.value.trim() || !msg.value.trim()) {
           showToast('Please add your email and a message.', 'error');
           return;
         }
-        form.reset();
-        showToast("Thanks! We'll get back to you soon.");
+        showLoading(btn, 'Sending...');
+        try {
+          const name = `${first?.value.trim() || ''} ${last?.value.trim() || ''}`.trim() || 'Website visitor';
+          await api.post('/customers/complaint', {
+            customer_id: user?.id || null,
+            subject: `Contact form — ${name} (${email.value.trim()})`,
+            description: msg.value.trim(),
+          });
+          form.reset();
+          showToast("Thanks! We'll get back to you soon.");
+        } catch (err) {
+          showToast(err.message || 'Could not send your message', 'error');
+        } finally {
+          hideLoading(btn);
+        }
       };
     }
   });
